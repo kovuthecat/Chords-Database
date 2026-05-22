@@ -1,0 +1,381 @@
+{
+  "meta": {
+    "title": "Wish You Were Here",
+    "artist": "Pink Floyd",
+    "key": "E",
+    "key_mode": "minor",
+    "capo": 0,
+    "tempo": null,
+    "time_signature": "4/4",
+    "tuning": "standard",
+    "version": "studio",
+    "slug": "pink-floyd-wish-you-were-here",
+    "generated_at": "2026-05-22T10:16:46.565733"
+  },
+  "chords_used": [
+    "A",
+    "Am",
+    "C",
+    "D",
+    "Em7",
+    "G"
+  ],
+  "sources": [
+    {
+      "name": "La Boîte à Chansons",
+      "url": "",
+      "key": null,
+      "capo": 0,
+      "chord_set": [
+        "Am",
+        "Am7/4",
+        "C",
+        "D",
+        "Em7",
+        "G"
+      ],
+      "collected_at": "2026-05-22T10:16:46.668297",
+      "notes": "7 sections détectées"
+    },
+    {
+      "name": "Ultimate Guitar",
+      "url": "",
+      "key": "G",
+      "capo": 0,
+      "chord_set": [
+        "A7sus4",
+        "Am",
+        "C",
+        "D",
+        "Em7",
+        "G"
+      ],
+      "collected_at": "2026-05-22T10:16:46.773390",
+      "notes": "7 sections détectées"
+    },
+    {
+      "name": "Songsterr",
+      "url": "",
+      "key": "G",
+      "capo": 0,
+      "chord_set": [
+        "A",
+        "Am",
+        "C",
+        "D",
+        "Em",
+        "G"
+      ],
+      "collected_at": "2026-05-22T10:16:46.876621",
+      "notes": "8 sections détectées"
+    }
+  ],
+  "sections": [
+    {
+      "id": "intro_1",
+      "type": "intro",
+      "label": "Intro",
+      "is_instrumental": true,
+      "chord_grid": "| Em7 | G | Em7 | G | Em7 | A | Em7 | A | G | G |",
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.76,
+      "source_agreement": 1.0,
+      "chord_agreement": 0.3,
+      "n_sources": 3
+    },
+    {
+      "id": "verse_1",
+      "type": "verse",
+      "label": "Couplet 1",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 0
+            },
+            {
+              "chord": "D",
+              "position": 21
+            }
+          ],
+          "lyrics": "So, so you think you can tell,"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 12
+            }
+          ],
+          "lyrics": "heaven from hell ?"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 16
+            }
+          ],
+          "lyrics": "Blue skies from pain ?"
+        },
+        {
+          "chords": [
+            {
+              "chord": "D",
+              "position": 20
+            }
+          ],
+          "lyrics": "Can you tell a green field,"
+        },
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 16
+            }
+          ],
+          "lyrics": "from a cold steel rail ?"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 8
+            }
+          ],
+          "lyrics": "A smile from a veil ?"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 16
+            }
+          ],
+          "lyrics": "Do you think you can tell ?"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 3
+    },
+    {
+      "id": "verse_2",
+      "type": "verse",
+      "label": "Couplet 2",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 20
+            }
+          ],
+          "lyrics": "Did they get you to trade,"
+        },
+        {
+          "chords": [
+            {
+              "chord": "D",
+              "position": 16
+            }
+          ],
+          "lyrics": "your heroes for ghosts ?"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 12
+            }
+          ],
+          "lyrics": "Hot ashes for trees ?"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 12
+            }
+          ],
+          "lyrics": "Hot air for a cool breeze ?"
+        },
+        {
+          "chords": [
+            {
+              "chord": "D",
+              "position": 16
+            }
+          ],
+          "lyrics": "Cold comfort for change"
+        },
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 12
+            }
+          ],
+          "lyrics": "And did you exchange,"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 20
+            }
+          ],
+          "lyrics": "a walk-on part in the war,"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 16
+            }
+          ],
+          "lyrics": "for a lead role in a cage..."
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 3
+    },
+    {
+      "id": "interlude_1",
+      "type": "interlude",
+      "label": "Interlude",
+      "is_instrumental": true,
+      "chord_grid": "| Em7 | G | Em7 | G | Em7 | A | Em7 | A | G | G |",
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.76,
+      "source_agreement": 1.0,
+      "chord_agreement": 0.3,
+      "n_sources": 3
+    },
+    {
+      "id": "chorus_1",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 0
+            },
+            {
+              "chord": "D",
+              "position": 32
+            }
+          ],
+          "lyrics": "How I wish, how I wish you were here"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 8
+            },
+            {
+              "chord": "G",
+              "position": 40
+            },
+            {
+              "chord": "D",
+              "position": 52
+            }
+          ],
+          "lyrics": "We're just two lost souls swimming in a fishbowl, year after year"
+        },
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 36
+            },
+            {
+              "chord": "Am",
+              "position": 64
+            }
+          ],
+          "lyrics": "Running over the same old ground, what have we found - the same old fears ?"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 12
+            }
+          ],
+          "lyrics": "Wish you were here"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 3
+    },
+    {
+      "id": "solo_1",
+      "type": "outro",
+      "label": "Outro (solo)",
+      "is_instrumental": true,
+      "chord_grid": "| Em7 | G | A | Em7 | G | A | G | G |",
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.76,
+      "source_agreement": 1.0,
+      "chord_agreement": 0.3,
+      "n_sources": 3
+    }
+  ],
+  "structure_sequence": [
+    "intro_1",
+    "verse_1",
+    "verse_2",
+    "interlude_1",
+    "chorus_1",
+    "solo_1"
+  ],
+  "confidence": {
+    "overall": 0.96,
+    "structure": 0.92,
+    "chords": 1.0,
+    "capo": 1.0,
+    "instrumental_sections": 0.87,
+    "lyric_alignment": 1.0
+  },
+  "warnings": [],
+  "variants": [],
+  "validation": {
+    "status": "user_validated",
+    "validated_at": "2026-05-22T10:21:37.953141",
+    "user_corrections": [
+      "Am7/4 simplifie en A (meme accord, notation plus simple)",
+      "Interlude final supprime",
+      "Solo renomme Outro (solo) — devient la section finale"
+    ]
+  },
+  "_collection_status": "validated"
+}

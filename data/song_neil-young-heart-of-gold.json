@@ -1,0 +1,460 @@
+{
+  "meta": {
+    "title": "Heart of Gold",
+    "artist": "Neil Young",
+    "key": "E",
+    "key_mode": "minor",
+    "capo": 0,
+    "tempo": null,
+    "time_signature": "4/4",
+    "tuning": "standard",
+    "version": "studio",
+    "slug": "neil-young-heart-of-gold",
+    "generated_at": "2026-05-22T10:27:04.085872"
+  },
+  "chords_used": [
+    "Am",
+    "Bm",
+    "C",
+    "C/G",
+    "D",
+    "Em",
+    "Em7",
+    "G"
+  ],
+  "sources": [
+    {
+      "name": "La Boîte à Chansons",
+      "url": "",
+      "key": null,
+      "capo": 0,
+      "chord_set": [
+        "Am",
+        "Bm",
+        "C",
+        "D",
+        "Em",
+        "G"
+      ],
+      "collected_at": "2026-05-22T10:27:04.183741",
+      "notes": "6 sections détectées"
+    },
+    {
+      "name": "Ultimate Guitar",
+      "url": "",
+      "key": "G",
+      "capo": 0,
+      "chord_set": [
+        "Am",
+        "Bm",
+        "C",
+        "D",
+        "Em",
+        "G"
+      ],
+      "collected_at": "2026-05-22T10:27:04.286100",
+      "notes": "6 sections détectées"
+    }
+  ],
+  "sections": [
+    {
+      "id": "intro_1",
+      "type": "intro",
+      "label": "Intro",
+      "is_instrumental": true,
+      "chord_grid": "| Em7 | D | Em |  x2\n| Em | C | D | G |  x3\n| Em7 | D | Em |",
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "verse_1",
+      "type": "verse",
+      "label": "Couplet 1",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 6
+            },
+            {
+              "chord": "D",
+              "position": 14
+            },
+            {
+              "chord": "G",
+              "position": 22
+            }
+          ],
+          "lyrics": "I wanna live, I wanna give"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Em",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 12
+            },
+            {
+              "chord": "D",
+              "position": 24
+            },
+            {
+              "chord": "G",
+              "position": 32
+            }
+          ],
+          "lyrics": "I've been a miner for a heart of gold"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Em",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 16
+            },
+            {
+              "chord": "D",
+              "position": 24
+            },
+            {
+              "chord": "G",
+              "position": 32
+            }
+          ],
+          "lyrics": "It's these expressions, I never give"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "chorus_1",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Em",
+              "position": 0
+            },
+            {
+              "chord": "G",
+              "position": 21
+            },
+            {
+              "chord": "C",
+              "position": 27
+            },
+            {
+              "chord": "C/G",
+              "position": 32
+            }
+          ],
+          "lyrics": "That keep me searchin for a heart of gold"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Bm",
+              "position": 16
+            },
+            {
+              "chord": "Am",
+              "position": 20
+            },
+            {
+              "chord": "G",
+              "position": 24
+            }
+          ],
+          "lyrics": "And I'm getting old"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Em",
+              "position": 0
+            },
+            {
+              "chord": "G",
+              "position": 21
+            },
+            {
+              "chord": "C",
+              "position": 27
+            },
+            {
+              "chord": "C/G",
+              "position": 32
+            }
+          ],
+          "lyrics": "That keep me searchin for a heart of gold"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Bm",
+              "position": 16
+            },
+            {
+              "chord": "Am",
+              "position": 20
+            },
+            {
+              "chord": "G",
+              "position": 24
+            }
+          ],
+          "lyrics": "And I'm getting old"
+        }
+      ],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "interlude_1",
+      "type": "interlude",
+      "label": "Interlude",
+      "is_instrumental": true,
+      "chord_grid": "| Em | C | D | G |  x3\n| Em7 | D | Em |",
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "verse_2",
+      "type": "verse",
+      "label": "Couplet 2",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 16
+            },
+            {
+              "chord": "D",
+              "position": 24
+            },
+            {
+              "chord": "G",
+              "position": 36
+            }
+          ],
+          "lyrics": "I've been to Holywood, I've been Redwood"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Em",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 16
+            },
+            {
+              "chord": "D",
+              "position": 28
+            },
+            {
+              "chord": "G",
+              "position": 36
+            }
+          ],
+          "lyrics": "I'd cross the ocean for a heart of gold"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Em",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 16
+            },
+            {
+              "chord": "D",
+              "position": 24
+            },
+            {
+              "chord": "G",
+              "position": 32
+            }
+          ],
+          "lyrics": "I've been in my mind, for such a fine line"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "interlude_2",
+      "type": "interlude",
+      "label": "Interlude",
+      "is_instrumental": true,
+      "chord_grid": "| Em | C | D | G |\n| Em | C | D | G |\n| Em | C | D | G |",
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "outro_1",
+      "type": "outro",
+      "label": "Outro",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Em",
+              "position": 0
+            },
+            {
+              "chord": "D",
+              "position": 20
+            },
+            {
+              "chord": "Em",
+              "position": 28
+            }
+          ],
+          "lyrics": "Keep me searchin for a heart a gold"
+        },
+        {
+          "chords": [
+            {
+              "chord": "D",
+              "position": 20
+            },
+            {
+              "chord": "Em",
+              "position": 28
+            }
+          ],
+          "lyrics": "You keep me searchin and I'm growin old"
+        },
+        {
+          "chords": [
+            {
+              "chord": "D",
+              "position": 16
+            },
+            {
+              "chord": "Em",
+              "position": 24
+            }
+          ],
+          "lyrics": "Keep me searchin for a heart of gold"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 16
+            },
+            {
+              "chord": "D",
+              "position": 24
+            },
+            {
+              "chord": "C",
+              "position": 28
+            },
+            {
+              "chord": "Bm",
+              "position": 32
+            },
+            {
+              "chord": "Am",
+              "position": 36
+            },
+            {
+              "chord": "G",
+              "position": 40
+            }
+          ],
+          "lyrics": "I've been a miner for a heart of gold"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    }
+  ],
+  "structure_sequence": [
+    "intro_1",
+    "verse_1",
+    "chorus_1",
+    "interlude_1",
+    "verse_2",
+    "chorus_1",
+    "interlude_2",
+    "outro_1"
+  ],
+  "confidence": {
+    "overall": 1.0,
+    "structure": 1.0,
+    "chords": 1.0,
+    "capo": 1.0,
+    "instrumental_sections": 1.0,
+    "lyric_alignment": 1.0
+  },
+  "warnings": [],
+  "variants": [],
+  "validation": {
+    "status": "user_validated",
+    "validated_at": "2026-05-22T10:33:49.314716",
+    "user_corrections": [
+      "Intro corrigee : Em7 D Em x2 / Em C D G x3 / Em7 D Em",
+      "Refrain extrait du couplet : Em G C C/G + Bm Am G",
+      "Interlude 1 : ajout Em7 D Em en 2e ligne",
+      "2eme refrain ajoute apres le couplet 2"
+    ]
+  },
+  "_collection_status": "validated"
+}

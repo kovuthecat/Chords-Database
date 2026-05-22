@@ -1,0 +1,653 @@
+{
+  "meta": {
+    "title": "La Symphonie des Eclairs",
+    "artist": "Zaho de Sagazan",
+    "key": "G",
+    "key_mode": "major",
+    "capo": 1,
+    "tempo": 100,
+    "time_signature": "4/4",
+    "tuning": "standard",
+    "version": "studio",
+    "slug": "zaho-de-sagazan-la-symphonie-des-eclairs",
+    "generated_at": "2026-05-22T10:45:33.955764",
+    "album": "La Symphonie des eclairs (2023)"
+  },
+  "chords_used": [
+    "Am",
+    "Bm",
+    "Cm",
+    "D7",
+    "Fm",
+    "G"
+  ],
+  "sources": [
+    {
+      "name": "PDF source",
+      "url": "",
+      "key": "G",
+      "capo": 1,
+      "chord_set": [
+        "Am",
+        "Bm",
+        "Cm",
+        "D7",
+        "Fm",
+        "G"
+      ],
+      "collected_at": "2026-05-22T10:45:52.277734",
+      "notes": "8 sections détectées"
+    }
+  ],
+  "sections": [
+    {
+      "id": "intro_1",
+      "type": "intro",
+      "label": "Intro",
+      "is_instrumental": true,
+      "chord_grid": "| G Cm | G Cm | Fm Cm | G G |",
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "chorus_1",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 40
+            }
+          ],
+          "lyrics": "Il fait toujours beau au-dessus des nuages"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 52
+            }
+          ],
+          "lyrics": "Mais moi, si j'étais un oiseau, j'irais danser sous l'orage"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 35
+            }
+          ],
+          "lyrics": "Je traverserais les nuages comme le fait la lumière"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 32
+            }
+          ],
+          "lyrics": "J'écouterais sous la pluie la symphonie des éclairs"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "verse_1",
+      "type": "verse",
+      "label": "Couplet 1",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 23
+            }
+          ],
+          "lyrics": "Dès sa plus tendre enfance"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 36
+            }
+          ],
+          "lyrics": "Elle ne savait pas parler autrement"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 27
+            }
+          ],
+          "lyrics": "Qu'en criant tout bas, pas faute d'essayer"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 16
+            }
+          ],
+          "lyrics": "De les retenir, ces cris et ces larmes qui les faisaient tant-"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "chorus_2",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 40
+            }
+          ],
+          "lyrics": "Il fait toujours beau au-dessus des nuages"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 52
+            }
+          ],
+          "lyrics": "Mais moi, si j'étais un oiseau, j'irais danser sous l'orage"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 35
+            }
+          ],
+          "lyrics": "Je traverserais les nuages comme le fait la lumière"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 32
+            }
+          ],
+          "lyrics": "J'écouterais sous la pluie la symphonie des éclairs"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "verse_2",
+      "type": "verse",
+      "label": "Couplet 2",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 27
+            }
+          ],
+          "lyrics": "En grandissant, rien ne s'est calmé"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 15
+            }
+          ],
+          "lyrics": "Petite tempête s'est trouvé des raisons de pleuvoir autant"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 27
+            }
+          ],
+          "lyrics": "Qui pourrait l'aimer, franchement ?"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 32
+            }
+          ],
+          "lyrics": "Personne n'aimerait se retrouver au cœur d'une tempête, avouez"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 31
+            }
+          ],
+          "lyrics": "Il y a des raisons de pleurer"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 16
+            }
+          ],
+          "lyrics": "Elle a ses raisons, mais"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "chorus_3",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 40
+            }
+          ],
+          "lyrics": "Il fait toujours beau au-dessus des nuages"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 52
+            }
+          ],
+          "lyrics": "Mais moi, si j'étais un oiseau, j'irais danser sous l'orage"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 35
+            }
+          ],
+          "lyrics": "Je traverserais les nuages comme le fait la lumière"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 36
+            }
+          ],
+          "lyrics": "J'écouterais sous la pluie la symphonie des éclairs, hmm"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "bridge_1",
+      "type": "bridge",
+      "label": "Pont",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Cm",
+              "position": 20
+            }
+          ],
+          "lyrics": "Quand la tempête a su"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Cm",
+              "position": 34
+            }
+          ],
+          "lyrics": "Que des mélodies pouvaient s'échapper du vent"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Cm",
+              "position": 13
+            },
+            {
+              "chord": "Fm",
+              "position": 28
+            },
+            {
+              "chord": "Cm",
+              "position": 40
+            }
+          ],
+          "lyrics": "Et se retrouver dans le cœur des gens"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "G",
+              "position": 15
+            }
+          ],
+          "lyrics": "Celle-ci s'est dit"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Cm",
+              "position": 20
+            }
+          ],
+          "lyrics": "Nulle raison d'envier le soleil"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Cm",
+              "position": 42
+            }
+          ],
+          "lyrics": "Je ferai danser les gens au rythme de mes pleurs"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Cm",
+              "position": 13
+            },
+            {
+              "chord": "Fm",
+              "position": 29
+            },
+            {
+              "chord": "Cm",
+              "position": 46
+            }
+          ],
+          "lyrics": "La tourmente de mes chants viendra réchauffer les cœurs"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "G",
+              "position": 15
+            }
+          ],
+          "lyrics": "Réchauffer mon cœur"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "outro_1",
+      "type": "outro",
+      "label": "Outro",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 40
+            }
+          ],
+          "lyrics": "Il fait toujours beau au-dessus des nuages"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 55
+            }
+          ],
+          "lyrics": "Mais moi, je suis de ces oiseaux qui nous font danser sous l'orage"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Bm",
+              "position": 31
+            }
+          ],
+          "lyrics": "Je traverserais tous les nuages pour trouver la lumière"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "D7",
+              "position": 32
+            }
+          ],
+          "lyrics": "En chantant sous la pluie la symphonie des éclairs"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    }
+  ],
+  "structure_sequence": [
+    "intro_1",
+    "chorus_1",
+    "verse_1",
+    "chorus_2",
+    "verse_2",
+    "chorus_3",
+    "bridge_1",
+    "outro_1"
+  ],
+  "confidence": {
+    "overall": 1.0,
+    "structure": 1.0,
+    "chords": 1.0,
+    "capo": 1.0,
+    "instrumental_sections": 1.0,
+    "lyric_alignment": 1.0
+  },
+  "warnings": [
+    {
+      "severity": "low",
+      "section": null,
+      "message": "Accords hors gamme (G major) : Fm — vérifier (peut être normal : emprunt modal, dominante secondaire)"
+    }
+  ],
+  "variants": [],
+  "validation": {
+    "status": "user_validated",
+    "validated_at": "2026-05-22T10:46:29.418476",
+    "user_corrections": []
+  },
+  "_collection_status": "validated"
+}

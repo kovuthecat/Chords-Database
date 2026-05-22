@@ -1,0 +1,166 @@
+{
+  "_comment": "Schéma de référence pour un fichier chords. Chaque chanson traitée produit un fichier data/song_<slug>.json conforme à ce schéma.",
+
+  "meta": {
+    "title": "Nom de la chanson",
+    "artist": "Nom de l'artiste",
+    "key": "F",
+    "key_mode": "major",
+    "capo": 0,
+    "tempo": null,
+    "time_signature": "4/4",
+    "tuning": "standard",
+    "version": "studio",
+    "slug": "artiste-titre",
+    "generated_at": "2026-05-21T10:00:00"
+  },
+
+  "chords_used": [
+    "_comment: liste unique de tous les accords du morceau",
+    "Am", "F", "C", "G"
+  ],
+
+  "sources": [
+    {
+      "name": "Ultimate Guitar",
+      "url": "https://...",
+      "key": "Am",
+      "capo": 0,
+      "chord_set": ["Am", "F", "C", "G"],
+      "collected_at": "2026-05-21T09:55:00",
+      "notes": "Version 5 étoiles, 847 votes"
+    },
+    {
+      "name": "La Boîte à Musique",
+      "url": "https://...",
+      "key": "Am",
+      "capo": 0,
+      "chord_set": ["Am", "F", "C", "G"],
+      "collected_at": "2026-05-21T09:56:00",
+      "notes": ""
+    }
+  ],
+
+  "sections": [
+    {
+      "id": "intro_1",
+      "type": "intro",
+      "_types_possibles": ["intro", "verse", "pre_chorus", "chorus", "bridge", "interlude", "solo", "breakdown", "outro"],
+      "label": "Intro",
+      "is_instrumental": true,
+      "chord_grid": "| Am | F | C | G |",
+      "repeats": 2,
+      "bars": 4,
+      "lines": [],
+      "confidence": 0.90,
+      "source_agreement": 1.0
+    },
+    {
+      "id": "verse_1",
+      "type": "verse",
+      "label": "Couplet 1",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {"chord": "Am", "position": 0},
+            {"chord": "F", "position": 20}
+          ],
+          "lyrics": "Exemple de parole avec changements d'accords"
+        },
+        {
+          "chords": [
+            {"chord": "C", "position": 0},
+            {"chord": "G", "position": 18}
+          ],
+          "lyrics": "Deuxième ligne de paroles"
+        }
+      ],
+      "confidence": 0.85,
+      "source_agreement": 0.90
+    },
+    {
+      "id": "chorus_1",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.88,
+      "source_agreement": 0.95
+    },
+    {
+      "id": "solo_1",
+      "type": "solo",
+      "label": "Solo",
+      "is_instrumental": true,
+      "chord_grid": "| Am | F | Am | F | C | G | C | G |",
+      "repeats": 1,
+      "bars": 8,
+      "lines": [],
+      "confidence": 0.70,
+      "source_agreement": 0.75
+    },
+    {
+      "id": "outro_1",
+      "type": "outro",
+      "label": "Outro",
+      "is_instrumental": false,
+      "chord_grid": "| Am | F | C | G |",
+      "repeats": 1,
+      "bars": 4,
+      "lines": [],
+      "confidence": 0.80,
+      "source_agreement": 0.85
+    }
+  ],
+
+  "structure_sequence": [
+    "_comment: ordre réel de jeu du morceau — peut référencer plusieurs fois le même id de section",
+    "intro_1",
+    "verse_1",
+    "chorus_1",
+    "verse_1",
+    "chorus_1",
+    "solo_1",
+    "chorus_1",
+    "outro_1"
+  ],
+
+  "confidence": {
+    "overall": 0.85,
+    "structure": 0.90,
+    "chords": 0.85,
+    "capo": 1.0,
+    "instrumental_sections": 0.75,
+    "lyric_alignment": 0.70
+  },
+
+  "warnings": [
+    {
+      "severity": "low",
+      "_severities": ["low", "medium", "high"],
+      "section": "solo_1",
+      "message": "Durée du solo incertaine : 6 ou 8 mesures selon les sources"
+    }
+  ],
+
+  "variants": [
+    {
+      "name": "Version acoustique",
+      "differences": "Capo 2, tempo plus lent, refrain x2 au lieu de x3"
+    }
+  ],
+
+  "validation": {
+    "status": "pending",
+    "_statuses": ["pending", "user_validated", "rejected"],
+    "validated_at": null,
+    "user_corrections": []
+  }
+}

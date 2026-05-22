@@ -1,0 +1,494 @@
+{
+  "meta": {
+    "title": "Endlessly",
+    "artist": "Muse",
+    "key": "A",
+    "key_mode": "minor",
+    "capo": 0,
+    "tempo": 80,
+    "time_signature": "4/4",
+    "tuning": "standard",
+    "version": "studio",
+    "slug": "muse-endlessly",
+    "generated_at": "2026-05-22T10:45:34.044913",
+    "album": "Absolution (2003)"
+  },
+  "chords_used": [
+    "A",
+    "Am",
+    "Asus4",
+    "Bb",
+    "Bm7b5",
+    "C",
+    "Dm",
+    "E7",
+    "F",
+    "F/A",
+    "G"
+  ],
+  "sources": [
+    {
+      "name": "PDF source",
+      "url": "",
+      "key": "Am",
+      "capo": 0,
+      "chord_set": [
+        "A",
+        "Am",
+        "Asus4",
+        "Bb",
+        "Bm7b5",
+        "C",
+        "Dm",
+        "E7",
+        "F",
+        "F/A",
+        "G"
+      ],
+      "collected_at": "2026-05-22T10:45:52.365140",
+      "notes": "7 sections détectées"
+    }
+  ],
+  "sections": [
+    {
+      "id": "intro_1",
+      "type": "intro",
+      "label": "Intro",
+      "is_instrumental": true,
+      "chord_grid": "| Asus4 | Am | Bm7b5 | E7 |  x2",
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "verse_1",
+      "type": "verse",
+      "label": "Couplet 1",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Asus4",
+              "position": 0
+            },
+            {
+              "chord": "Am",
+              "position": 12
+            },
+            {
+              "chord": "Bm7b5",
+              "position": 24
+            },
+            {
+              "chord": "E7",
+              "position": 32
+            }
+          ],
+          "lyrics": "There's a part in me you'll never know"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Asus4",
+              "position": 0
+            },
+            {
+              "chord": "Am",
+              "position": 12
+            },
+            {
+              "chord": "Bm7b5",
+              "position": 24
+            },
+            {
+              "chord": "E7",
+              "position": 32
+            }
+          ],
+          "lyrics": "The only thing I'll never show"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "chorus_1",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Dm",
+              "position": 0
+            },
+            {
+              "chord": "Am",
+              "position": 24
+            }
+          ],
+          "lyrics": "Hopelessly, I'll love you endlessly"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Dm",
+              "position": 0
+            },
+            {
+              "chord": "F",
+              "position": 32
+            }
+          ],
+          "lyrics": "Hopelessly, I'll give you everything"
+        },
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 0
+            }
+          ],
+          "lyrics": "But I won't give you up"
+        },
+        {
+          "chords": [
+            {
+              "chord": "E7",
+              "position": 0
+            }
+          ],
+          "lyrics": "I won't let you down"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Bb",
+              "position": 0
+            },
+            {
+              "chord": "A",
+              "position": 16
+            },
+            {
+              "chord": "Dm",
+              "position": 28
+            }
+          ],
+          "lyrics": "And I won't leave you falling"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 20
+            }
+          ],
+          "lyrics": "If the moment ever comes"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "verse_2",
+      "type": "verse",
+      "label": "Couplet 2",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Asus4",
+              "position": 0
+            },
+            {
+              "chord": "Am",
+              "position": 12
+            },
+            {
+              "chord": "Bm7b5",
+              "position": 24
+            },
+            {
+              "chord": "E7",
+              "position": 32
+            }
+          ],
+          "lyrics": "It's plain to see it's trying to speak"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Asus4",
+              "position": 0
+            },
+            {
+              "chord": "Am",
+              "position": 12
+            },
+            {
+              "chord": "Bm7b5",
+              "position": 24
+            },
+            {
+              "chord": "E7",
+              "position": 32
+            }
+          ],
+          "lyrics": "Cherished dreams forever I sleep"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "chorus_2",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Dm",
+              "position": 0
+            },
+            {
+              "chord": "Am",
+              "position": 24
+            }
+          ],
+          "lyrics": "Hopelessly, I'll love you endlessly"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Dm",
+              "position": 0
+            },
+            {
+              "chord": "F",
+              "position": 32
+            }
+          ],
+          "lyrics": "Hopelessly, I'll give you everything"
+        },
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 0
+            }
+          ],
+          "lyrics": "But I won't give you up"
+        },
+        {
+          "chords": [
+            {
+              "chord": "E7",
+              "position": 0
+            }
+          ],
+          "lyrics": "I won't let you down"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Bb",
+              "position": 0
+            },
+            {
+              "chord": "A",
+              "position": 16
+            },
+            {
+              "chord": "Dm",
+              "position": 28
+            }
+          ],
+          "lyrics": "And I won't leave you falling"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 20
+            }
+          ],
+          "lyrics": "If the moment ever comes"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "interlude_1",
+      "type": "interlude",
+      "label": "Interlude",
+      "is_instrumental": true,
+      "chord_grid": "| Am | F/A | Bm7b5 | E7 |",
+      "repeats": 1,
+      "bars": null,
+      "lines": [],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    },
+    {
+      "id": "chorus_3",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Dm",
+              "position": 0
+            },
+            {
+              "chord": "Am",
+              "position": 24
+            }
+          ],
+          "lyrics": "Hopelessly, I'll love you endlessly"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Dm",
+              "position": 0
+            },
+            {
+              "chord": "F",
+              "position": 32
+            }
+          ],
+          "lyrics": "Hopelessly, I'll give you everything"
+        },
+        {
+          "chords": [
+            {
+              "chord": "C",
+              "position": 0
+            }
+          ],
+          "lyrics": "But I won't give you up"
+        },
+        {
+          "chords": [
+            {
+              "chord": "E7",
+              "position": 0
+            }
+          ],
+          "lyrics": "I won't let you down"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Bb",
+              "position": 0
+            },
+            {
+              "chord": "A",
+              "position": 16
+            },
+            {
+              "chord": "Dm",
+              "position": 28
+            }
+          ],
+          "lyrics": "And I won't leave you falling"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 20
+            }
+          ],
+          "lyrics": "But the moment never comes"
+        }
+      ],
+      "confidence": 0.9,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 1
+    }
+  ],
+  "structure_sequence": [
+    "intro_1",
+    "verse_1",
+    "chorus_1",
+    "verse_2",
+    "chorus_2",
+    "interlude_1",
+    "chorus_3"
+  ],
+  "confidence": {
+    "overall": 1.0,
+    "structure": 1.0,
+    "chords": 1.0,
+    "capo": 1.0,
+    "instrumental_sections": 1.0,
+    "lyric_alignment": 1.0
+  },
+  "warnings": [
+    {
+      "severity": "low",
+      "section": null,
+      "message": "Accords hors gamme (A minor) : Bb — vérifier (peut être normal : emprunt modal, dominante secondaire)"
+    }
+  ],
+  "variants": [],
+  "validation": {
+    "status": "user_validated",
+    "validated_at": "2026-05-22T10:46:29.420464",
+    "user_corrections": []
+  },
+  "_collection_status": "validated"
+}

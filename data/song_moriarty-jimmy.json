@@ -1,0 +1,627 @@
+{
+  "meta": {
+    "title": "Jimmy",
+    "artist": "Moriarty",
+    "key": "A",
+    "key_mode": "minor",
+    "capo": 1,
+    "tempo": null,
+    "time_signature": "4/4",
+    "tuning": "standard",
+    "version": "studio",
+    "slug": "moriarty-jimmy",
+    "generated_at": "2026-05-22T09:22:49.850498"
+  },
+  "chords_used": [
+    "Am",
+    "C",
+    "E",
+    "Em",
+    "F",
+    "G"
+  ],
+  "sources": [
+    {
+      "name": "Ultimate Guitar",
+      "url": "",
+      "key": "Am",
+      "capo": 1,
+      "chord_set": [
+        "Am",
+        "C",
+        "E",
+        "F",
+        "G"
+      ],
+      "collected_at": "2026-05-22T09:22:49.961103",
+      "notes": "9 sections détectées"
+    },
+    {
+      "name": "La Boîte à Chansons",
+      "url": "https://www.boiteachansons.net/partitions/moriarty/jimmy",
+      "key": "Am",
+      "capo": 1,
+      "chord_set": [
+        "Am",
+        "C",
+        "E",
+        "Em",
+        "F",
+        "G"
+      ],
+      "collected_at": "2026-05-22T09:22:50.059103",
+      "notes": "Source PDF validée — référence principale"
+    }
+  ],
+  "sections": [
+    {
+      "id": "intro_1",
+      "type": "intro",
+      "label": "Intro",
+      "is_instrumental": true,
+      "chord_grid": "| Am | C | G | F |",
+      "repeats": 1,
+      "bars": 4,
+      "lines": [],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "verse_1",
+      "type": "verse",
+      "label": "Couplet 1",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 16
+            }
+          ],
+          "lyrics": "Jimmy won't you please come home"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 10
+            },
+            {
+              "chord": "F",
+              "position": 33
+            }
+          ],
+          "lyrics": "Where the grass is green and the buffaloes roam"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 16
+            }
+          ],
+          "lyrics": "Come see Jimmy your uncle Jim"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 8
+            },
+            {
+              "chord": "F",
+              "position": 30
+            }
+          ],
+          "lyrics": "And your auntie Jim and your cousin Jim"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 16
+            }
+          ],
+          "lyrics": "Come home Jimmy 'cause you need a bath"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 8
+            },
+            {
+              "chord": "F",
+              "position": 29
+            }
+          ],
+          "lyrics": "And your grandpa Jimmy is still gone daft"
+        }
+      ],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "transition_1",
+      "type": "interlude",
+      "label": "Transition (harmonica)",
+      "is_instrumental": true,
+      "chord_grid": "| Am | C | G | Em |\n| Em | E  | E  |",
+      "repeats": 1,
+      "bars": 7,
+      "lines": [],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "verse_2",
+      "type": "verse",
+      "label": "Couplet 2",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 8
+            },
+            {
+              "chord": "C",
+              "position": 24
+            }
+          ],
+          "lyrics": "Now there's buffalo Jim and buffalo Jim"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 8
+            },
+            {
+              "chord": "F",
+              "position": 30
+            }
+          ],
+          "lyrics": "There's Jim buffalo now didn't you know"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 28
+            }
+          ],
+          "lyrics": "Jim, Jim, Jimmy it's your last cigarette"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 8
+            },
+            {
+              "chord": "F",
+              "position": 30
+            }
+          ],
+          "lyrics": "There's buffalo piss, it's all kind of wet"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 28
+            }
+          ],
+          "lyrics": "Jambo Jimmy you'd better hold your nose"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 4
+            },
+            {
+              "chord": "F",
+              "position": 30
+            },
+            {
+              "chord": "Am",
+              "position": 44
+            }
+          ],
+          "lyrics": "All roads lead to roam with the buffalo__es"
+        }
+      ],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "transition_2",
+      "type": "interlude",
+      "label": "Transition (harmonica)",
+      "is_instrumental": true,
+      "chord_grid": "| Am | C | G | Em |\n| E  |",
+      "repeats": 1,
+      "bars": 5,
+      "lines": [],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "chorus_vocal_1",
+      "type": "chorus",
+      "label": "Refrain",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 8
+            },
+            {
+              "chord": "F",
+              "position": 25
+            },
+            {
+              "chord": "G",
+              "position": 30
+            },
+            {
+              "chord": "Am",
+              "position": 39
+            }
+          ],
+          "lyrics": "And the Buffaloes used to say be proud of your name"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 4
+            },
+            {
+              "chord": "F",
+              "position": 20
+            },
+            {
+              "chord": "G",
+              "position": 25
+            },
+            {
+              "chord": "Am",
+              "position": 33
+            }
+          ],
+          "lyrics": "The Buffaloes used to say be what you are"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 4
+            },
+            {
+              "chord": "F",
+              "position": 20
+            },
+            {
+              "chord": "G",
+              "position": 25
+            },
+            {
+              "chord": "Am",
+              "position": 37
+            }
+          ],
+          "lyrics": "The Buffaloes used to say roam where you roam"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 4
+            },
+            {
+              "chord": "F",
+              "position": 20
+            },
+            {
+              "chord": "G",
+              "position": 25
+            },
+            {
+              "chord": "Am",
+              "position": 33
+            }
+          ],
+          "lyrics": "The Buffaloes used to say do what you do"
+        }
+      ],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "chorus_instr_1",
+      "type": "interlude",
+      "label": "Refrain (instrumental)",
+      "is_instrumental": true,
+      "chord_grid": "| Am | F | G | Am |",
+      "repeats": 3,
+      "bars": 4,
+      "lines": [],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "verse_3",
+      "type": "verse",
+      "label": "Couplet 3",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 1,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 38
+            }
+          ],
+          "lyrics": "Hey! You've gotta have a wash but you can't clean your name"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 8
+            },
+            {
+              "chord": "F",
+              "position": 44
+            }
+          ],
+          "lyrics": "You're not called Jimmy you'll be Jimmy just the same"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 4
+            },
+            {
+              "chord": "C",
+              "position": 32
+            }
+          ],
+          "lyrics": "The keys are in the bag in the chest by the door"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 4
+            },
+            {
+              "chord": "F",
+              "position": 32
+            }
+          ],
+          "lyrics": "One of Jimmy's friends has taken the floor"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 16
+            }
+          ],
+          "lyrics": "Jimmy won't you please come home"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 10
+            },
+            {
+              "chord": "F",
+              "position": 33
+            }
+          ],
+          "lyrics": "Where the grass is green and the buffaloes roam"
+        },
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 0
+            },
+            {
+              "chord": "C",
+              "position": 16
+            }
+          ],
+          "lyrics": "Dear old Jimmy forgot you're young"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 8
+            },
+            {
+              "chord": "F",
+              "position": 30
+            },
+            {
+              "chord": "Am",
+              "position": 40
+            }
+          ],
+          "lyrics": "But you can't ignore the buffalo song___"
+        }
+      ],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "transition_3",
+      "type": "interlude",
+      "label": "Transition (harmonica)",
+      "is_instrumental": true,
+      "chord_grid": "| Am | C | G | Em |\n| E  |",
+      "repeats": 1,
+      "bars": 5,
+      "lines": [],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2
+    },
+    {
+      "id": "outro_1",
+      "type": "outro",
+      "label": "Outro",
+      "is_instrumental": false,
+      "chord_grid": null,
+      "repeats": 4,
+      "bars": null,
+      "lines": [
+        {
+          "chords": [
+            {
+              "chord": "Am",
+              "position": 8
+            },
+            {
+              "chord": "F",
+              "position": 22
+            }
+          ],
+          "lyrics": "If you remember you're unknown"
+        },
+        {
+          "chords": [
+            {
+              "chord": "G",
+              "position": 0
+            },
+            {
+              "chord": "Am",
+              "position": 16
+            }
+          ],
+          "lyrics": "Buffaloland will be your home"
+        }
+      ],
+      "confidence": 1.0,
+      "source_agreement": 1.0,
+      "chord_agreement": 1.0,
+      "n_sources": 2,
+      "_note": "Dernière répétition : G Am (sans G7) — à corriger manuellement"
+    }
+  ],
+  "structure_sequence": [
+    "intro_1",
+    "verse_1",
+    "transition_1",
+    "verse_2",
+    "transition_2",
+    "chorus_vocal_1",
+    "chorus_instr_1",
+    "verse_3",
+    "transition_3",
+    "chorus_vocal_1",
+    "outro_1"
+  ],
+  "confidence": {
+    "overall": 1.0,
+    "structure": 1.0,
+    "chords": 1.0,
+    "capo": 1.0,
+    "instrumental_sections": 1.0,
+    "lyric_alignment": 0.85
+  },
+  "warnings": [
+    {
+      "severity": "low",
+      "section": "outro_1",
+      "message": "Dernière répétition de l'outro : G Am (sans G7) — à ajuster manuellement"
+    }
+  ],
+  "variants": [],
+  "validation": {
+    "status": "user_validated",
+    "validated_at": "2026-05-22T10:30:00",
+    "user_corrections": [
+      "Structure corrigée depuis PDF La Boîte à Chansons (source de référence)",
+      "G7 ajouté partout (couplets, refrain, outro) — absent de UG",
+      "Paroles des 3 couplets entièrement corrigées depuis PDF",
+      "Refrain : 'And the Buffaloes used to say...' (pas 'Oh Jimmy...')",
+      "Transition 1 : | Am | C | G | Em | Em | E | E |",
+      "Transition 2 et 3 : | Am | C | G | Em | E |",
+      "Outro chanté x4 : 'If you remember you're unknown / Buffaloland will be your home'",
+      "E7 supprimé (artefact — c'était G7 mal identifié)",
+      "G7 remplacé par G partout (accord simplifié pour guitare/chant)"
+    ]
+  },
+  "_collection_status": "validated"
+}

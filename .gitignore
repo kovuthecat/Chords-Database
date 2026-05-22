@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Audio (fichiers locaux non versionnés)
+audio/*.mp3
+audio/*.wav
+audio/*.ogg
+audio/*.flac
+audio/*.m4a
+audio/*.aac
+
+# Lock files LibreOffice/Word
+output/.~lock.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
