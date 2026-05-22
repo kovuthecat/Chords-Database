@@ -33,8 +33,9 @@
 - [x] A3 — Tempo + tonalité (fiable) — beat_track + KS, capo-aware, relatif maj/min
 - [x] A4 — Segmentation structure (novelty chroma+MFCC beat-sync, recurrence matrix)
 - [x] A5 — Chromagramme + templates triades, capo-aware (expérimental)
-- [ ] A6 — Divergences + recommandations
-- [ ] A8 — Tests + calibrage
+- [x] A6 — Divergences unifiées (toutes dimensions, sévérités, score global)
+- [x] A7 — Rapport Markdown complet (résumé, divergences A6, scores)
+- [ ] A8 — Tests sur 5 chansons + calibrage
 
 Dépendance : `librosa` + `soundfile` uniquement.
 

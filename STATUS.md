@@ -77,8 +77,8 @@ Phase 2 — pipeline complet opérationnel, 6 chansons générées, format DOCX 
 | A3 — tempo + tonalité (librosa) | Fait — testé sur Jimmy (127.8 BPM, relatif conforme) |
 | A4 — structure (matrice de récurrence) | Fait — novelty chroma+MFCC, frontières, repeat count |
 | A5 — chromagramme + templates accords | Fait (expérimental) — capo-aware, 4/6 accords retrouvés |
-| A6 — divergences JSON/audio | À faire |
-| A7 — génération rapport Markdown | Squelette présent, enrichissement A3–A6 |
+| A6 — divergences JSON/audio | Fait — table unifiée, sévérités, score global, verdict |
+| A7 — génération rapport Markdown | Fait — résumé exécutif, table A6, scores complets |
 | A8 — tests sur 5 chansons + calibrage | À faire |
 
 ## Prochaines étapes suggérées

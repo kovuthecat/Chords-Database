@@ -26,7 +26,8 @@
 - [x] A3 — `audio_compare.py` : tempo + tonalité (librosa `beat_track` + Krumhansl-Schmuckler). Gestion capo + relatif major/mineur.
 - [x] A4 — `audio_compare.py` : structure (novelty chroma+MFCC, matrice de récurrence, frontières). Testé sur Jimmy : 9 sections vs 11 JSON.
 - [x] A5 — `audio_compare.py` : chromagramme + templates accords, capo-aware. Testé sur Jimmy : 4/6 accords retrouvés.
-- [ ] A6 — `audio_compare.py` : divergences JSON/audio + recommandations.
+- [x] A6 — `audio_compare.py` : divergences unifiées toutes dimensions + score global + verdict.
+- [x] A7 — Rapport Markdown finalisé : résumé exécutif, table divergences A6, scores complets.
 - [ ] A8 — Tests sur 5 chansons existantes + calibrage des seuils de confiance.
 
 ### Pipeline

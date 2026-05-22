@@ -390,6 +390,137 @@ def analyze_chords(y, sr, json_chords_used: list, capo: int = 0) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# A6 — Divergences unifiées + score global
+# ---------------------------------------------------------------------------
+
+def build_divergences(result: dict) -> list:
+    """A6 — Table unifiée des divergences sur toutes dimensions, avec sévérité."""
+    divs = []
+    audio = result["audio"]
+    js = result["json"]
+    kc = audio.get("key_comparison", {})
+
+    # Tempo
+    j_tempo = js.get("tempo")
+    a_tempo = audio.get("tempo_bpm")
+    if j_tempo is None and a_tempo:
+        divs.append({"dimension": "Tempo", "severity": "info",
+                     "json": "null", "audio": f"{a_tempo} BPM",
+                     "note": "JSON vide — envisager mise à jour"})
+    elif j_tempo and a_tempo and abs(float(a_tempo) - float(j_tempo)) > 5:
+        divs.append({"dimension": "Tempo", "severity": "warning",
+                     "json": f"{j_tempo} BPM", "audio": f"{a_tempo} BPM",
+                     "note": f"Écart {abs(float(a_tempo)-float(j_tempo)):.0f} BPM"})
+
+    # Tonalité
+    if kc.get("match"):
+        pass
+    elif kc.get("relative_match"):
+        divs.append({"dimension": "Tonalité", "severity": "info",
+                     "json": kc.get("sounding_key", "—"), "audio": kc.get("audio_key", "—"),
+                     "note": "Relatif conforme — même gamme, ambiguïté KS normale"})
+    elif kc.get("key_match") and not kc.get("mode_match"):
+        divs.append({"dimension": "Tonalité", "severity": "warning",
+                     "json": kc.get("sounding_key", "—"), "audio": kc.get("audio_key", "—"),
+                     "note": "Note conforme, mode diverge"})
+    elif kc.get("match") is False:
+        divs.append({"dimension": "Tonalité", "severity": "error",
+                     "json": kc.get("sounding_key", "—"), "audio": kc.get("audio_key", "—"),
+                     "note": kc.get("status", "Divergence")})
+
+    # Structure
+    seg = audio.get("segments")
+    j_count = js.get("section_count", 0)
+    if seg is not None and j_count > 0:
+        diff = abs(seg - j_count)
+        if diff >= 2:
+            divs.append({"dimension": "Structure",
+                         "severity": "warning" if diff >= 3 else "info",
+                         "json": f"{j_count} sections", "audio": f"{seg} sections",
+                         "note": f"Écart de {diff} — vérifier répétitions/frontières"})
+
+    # Accords
+    for c in audio.get("missing_from_audio", []):
+        divs.append({"dimension": "Accord", "severity": "low",
+                     "json": c, "audio": "Non dans top-8",
+                     "note": "Peu fréquent ou confusion maj/min"})
+    for c in audio.get("unexpected_in_audio", []):
+        divs.append({"dimension": "Accord", "severity": "low",
+                     "json": "—", "audio": c,
+                     "note": "Absent du JSON — artefact probable"})
+
+    return divs
+
+
+def compute_overall_score(result: dict) -> dict:
+    """A6 — Score global (0→1) et verdict basé sur toutes les dimensions."""
+    audio = result["audio"]
+    js = result["json"]
+    kc = audio.get("key_comparison", {})
+
+    score = 1.0
+
+    # Tonalité
+    if not kc.get("match") and not kc.get("relative_match") and kc.get("match") is False:
+        score -= 0.30
+
+    # Tempo (seulement si JSON a une valeur)
+    j_tempo = js.get("tempo")
+    a_tempo = audio.get("tempo_bpm")
+    if j_tempo and a_tempo and abs(float(a_tempo) - float(j_tempo)) > 10:
+        score -= 0.10
+
+    # Structure
+    seg = audio.get("segments")
+    j_count = js.get("section_count", 0)
+    if seg is not None and j_count > 0:
+        diff = abs(seg - j_count)
+        score -= 0.15 if diff >= 4 else (0.05 if diff >= 2 else 0)
+
+    # Accords (poids réduit — expérimental)
+    score -= 0.04 * len(audio.get("missing_from_audio", []))
+    score -= 0.02 * len(audio.get("unexpected_in_audio", []))
+
+    score = round(max(0.0, min(1.0, score)), 2)
+    verdict = "OK" if score >= 0.80 else ("À vérifier" if score >= 0.60 else "Problème détecté")
+
+    # Résumé une ligne par dimension
+    if a_tempo:
+        if j_tempo is None:
+            tempo_sum = f"{a_tempo} BPM (JSON vide)"
+        elif abs(float(a_tempo) - float(j_tempo)) <= 5:
+            tempo_sum = f"{a_tempo} BPM — conforme"
+        else:
+            tempo_sum = f"{a_tempo} BPM vs JSON {j_tempo} BPM"
+    else:
+        tempo_sum = "Non disponible"
+
+    kcs = kc.get("status", "—")
+    key_sum = kcs[:70] + ("…" if len(kcs) > 70 else "")
+
+    if seg is not None:
+        diff = abs(seg - j_count)
+        struct_sum = f"{seg} sections vs {j_count} JSON" + (f" — écart {diff}" if diff else " — conforme")
+    else:
+        struct_sum = "Non disponible"
+
+    n_total = len(audio.get("json_chord_set_normalized", [])) or 1
+    n_found = n_total - len(audio.get("missing_from_audio", []))
+    chord_sum = f"{n_found}/{n_total} accords JSON retrouvés (expérimental)"
+
+    return {
+        "score": score,
+        "verdict": verdict,
+        "summary": {
+            "tempo": tempo_sum,
+            "key": key_sum,
+            "structure": struct_sum,
+            "chords": chord_sum,
+        },
+    }
+
+
+# ---------------------------------------------------------------------------
 # Recommandations
 # ---------------------------------------------------------------------------
 
@@ -473,6 +604,7 @@ def analyze(json_path: Path, audio_path: Path):
         "audio": {},
         "divergences": [],
         "recommendations": [],
+        "overall_score": {},
     }
 
     # A3
@@ -487,23 +619,16 @@ def analyze(json_path: Path, audio_path: Path):
         "structure": a4.get("confidence_structure"),
     })
 
-    # A5
+    # A5 — extraire confidence avant update pour ne pas écraser A3/A4
     capo = int(song["meta"].get("capo") or 0)
     a5 = analyze_chords(y, sr, result["json"]["chords_used"], capo=capo)
+    a5_conf = a5.pop("confidence", {})
     result["audio"].update(a5)
-    result["audio"]["confidence"].update(a5.get("confidence", {}))
+    result["audio"]["confidence"].update(a5_conf)
 
-    # Divergences
-    result["divergences"] = [
-        {"type": "accord_manquant", "detail": c,
-         "note": "Présent dans JSON, absent du top-8 audio"}
-        for c in a5.get("missing_from_audio", [])
-    ] + [
-        {"type": "accord_inattendu", "detail": c,
-         "note": "Présent en audio, absent du JSON"}
-        for c in a5.get("unexpected_in_audio", [])
-    ]
-
+    # A6 — Divergences unifiées + score global
+    result["divergences"] = build_divergences(result)
+    result["overall_score"] = compute_overall_score(result)
     result["recommendations"] = build_recommendations(result)
     return result, y, sr, song
 
@@ -526,11 +651,33 @@ def write_report(result: dict, output_dir: Path) -> Path:
     def fmt(val, fallback="—"):
         return str(val) if val is not None else fallback
 
+    ov = result.get("overall_score", {})
+    verdict = ov.get("verdict", "—")
+    score = ov.get("score", "—")
+    summary = ov.get("summary", {})
+
+    _SEV = {"info": "Info", "warning": "Attention", "low": "Faible", "error": "Erreur"}
+
     lines = [
         f"# Rapport de comparaison audio — {meta['title']} ({meta['artist']})",
         f"Généré : {meta['generated_at']}  ",
         f"Fichier audio : `{meta['audio_file']}` ({format_duration(meta['duration'])})  ",
         f"JSON source : `{meta['json_path']}`",
+        "",
+        "---",
+        "",
+        "## Résumé",
+        "",
+        f"**Score global : {score} — {verdict}**",
+        "",
+        "| Dimension | Résultat |",
+        "|-----------|---------|",
+        f"| Tempo | {summary.get('tempo', '—')} |",
+        f"| Tonalité | {summary.get('key', '—')} |",
+        f"| Structure | {summary.get('structure', '—')} |",
+        f"| Accords | {summary.get('chords', '—')} |",
+        "",
+        "> Rapport orientatif. **La validation humaine reste obligatoire avant génération DOCX.**",
         "",
         "---",
         "",
@@ -638,15 +785,20 @@ def write_report(result: dict, output_dir: Path) -> Path:
         for s in suspicious:
             lines.append(f"| {s['chord']} | {s['signal']} | {s['note']} |")
 
-    # --- Divergences ---
+    # --- Divergences A6 ---
     lines += ["", "---", "", "## Divergences", ""]
     if divergences:
-        lines += ["| Type | Accord | Note |",
-                  "|------|--------|------|"]
+        lines += [
+            "| Dimension | Sévérité | JSON | Audio | Note |",
+            "|-----------|---------|------|-------|------|",
+        ]
         for d in divergences:
-            lines.append(f"| {d['type']} | {d['detail']} | {d['note']} |")
+            sev = _SEV.get(d.get("severity", ""), d.get("severity", "—"))
+            lines.append(
+                f"| {d['dimension']} | {sev} | {d['json']} | {d['audio']} | {d['note']} |"
+            )
     else:
-        lines.append("Aucune divergence majeure détectée.")
+        lines.append("Aucune divergence détectée.")
 
     # --- Confiance ---
     lines += ["", "---", "", "## Scores de confiance", "",
@@ -736,6 +888,11 @@ def main():
             print(f"  Absents du top audio : {', '.join(missing)}")
         if unexpected:
             print(f"  Inattendus (audio only) : {', '.join(unexpected)}")
+
+    ov = result.get("overall_score", {})
+    print(f"\n--- A6 : Score global ---")
+    print(f"  Score   : {ov.get('score')} — {ov.get('verdict')}")
+    print(f"  Divergences : {len(result['divergences'])}")
 
     if result["recommendations"]:
         print("\n--- Recommandations ---")
