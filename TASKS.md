@@ -22,6 +22,14 @@
 
 ## À faire
 
+### Module audio
+- [ ] A3 — `audio_compare.py` : tempo + tonalité (librosa `beat_track` + Krumhansl-Schmuckler).
+- [ ] A4 — `audio_compare.py` : structure (matrice de récurrence → comptage sections).
+- [ ] A5 — `audio_compare.py` : chromagramme + templates accords (expérimental).
+- [ ] A6 — `audio_compare.py` : divergences JSON/audio + recommandations.
+- [ ] A8 — Tests sur 5 chansons existantes + calibrage des seuils de confiance.
+
+### Pipeline
 - [ ] `main.py` — orchestration complète en une commande (titre + artiste → DOCX).
 - [ ] Afficher l'album dans le bloc en-tête du DOCX.
 - [ ] Export PDF optionnel (`docx2pdf` ou LibreOffice CLI).
@@ -40,6 +48,8 @@
 - [x] T5 — `scripts/display_validation.py` (brouillon terminal, boucle OK/corrections).
 - [x] T7 — `scripts/generate_docx.py` (Consolas, keep_with_next, grilles multi-lignes, plein rendu reprises).
 - [x] Pipeline end-to-end testé et affiné sur 6 chansons.
+- [x] A1 — `audio/` + `.gitkeep` + `.gitignore` audio.
+- [x] A2 — Squelette `scripts/audio_compare.py` (argparse, chargement JSON+audio, rapport Markdown vide).
 
 ## Chansons traitées
 

@@ -24,12 +24,25 @@
 - [ ] Plusieurs versions dans un même document (ex: version capo / version ouverte).
 - [ ] Diagrammes d'accords en ASCII dans le DOCX.
 
+## Version 1.5 — Module audio (en cours)
+
+Étude de faisabilité réalisée. Architecture : `scripts/audio_compare.py` + `audio/` (gitignored) + `output/audio_report_*.md`.
+
+- [x] A1 — `audio/` + `.gitkeep`
+- [x] A2 — Squelette `audio_compare.py` (argparse, chargement, rapport vide)
+- [ ] A3 — Tempo + tonalité (fiable)
+- [ ] A4 — Segmentation structure (orientatif)
+- [ ] A5 — Chromagramme + progression accords (expérimental)
+- [ ] A6 — Divergences + recommandations
+- [ ] A8 — Tests + calibrage
+
+Dépendance : `librosa` + `soundfile` uniquement.
+
 ## Idées futures (hors périmètre actuel)
 
 - Tablatures simplifiées pour intros/solos connus.
 - Interface web légère (pas de priorité — le workflow CLI est suffisant).
 - Base locale de chansons (SQLite ou JSON index) pour éviter de recollectes.
-- Intégration audio : vérification tonalité via Chordify.
 
 ## À éviter
 

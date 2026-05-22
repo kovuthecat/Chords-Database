@@ -1,6 +1,6 @@
 # STATUS.md
 
-> Dernière mise à jour : 2026-05-22
+> Dernière mise à jour : 2026-05-22 (module audio A1+A2)
 
 ## Phase actuelle
 
@@ -63,12 +63,30 @@ Phase 2 — pipeline complet opérationnel, 6 chansons générées, format DOCX 
 - **Reprises** : toujours réécrire complètement les paroles + accords (pas de shorthand).
 - **Accords empruntés** (Cm, Fm, Bb) : avertissement low uniquement, pas bloquant.
 
+## Module audio (en cours — Phase A)
+
+Étude de faisabilité réalisée le 2026-05-22. Architecture MVP définie :
+- `audio/` ignoré par Git (fichiers locaux uniquement)
+- `scripts/audio_compare.py` → rapport orientatif dans `output/audio_report_<slug>.md`
+- Dépendance unique : `librosa` + `soundfile`
+
+| Tâche | Statut |
+|-------|--------|
+| A1 — `audio/` + `.gitkeep` + `.gitignore` | Fait |
+| A2 — squelette `audio_compare.py` (argparse, chargement, rapport vide) | Fait |
+| A3 — tempo + tonalité (librosa) | À faire |
+| A4 — structure (matrice de récurrence) | À faire |
+| A5 — chromagramme + templates accords | À faire (expérimental) |
+| A6 — divergences JSON/audio | À faire |
+| A7 — génération rapport Markdown | Squelette présent, enrichissement A3–A6 |
+| A8 — tests sur 5 chansons + calibrage | À faire |
+
 ## Prochaines étapes suggérées
 
-1. `main.py` — orchestration complète en une commande (`titre + artiste → DOCX`).
-2. Affiner le placement accords/paroles sur les syllabes exactes (review manuelle).
-3. Ajouter un champ `album` visible dans le DOCX (actuellement en meta JSON uniquement).
-4. Envisager export PDF via `docx2pdf` ou LibreOffice CLI.
+1. A3 — Tempo + tonalité dans `audio_compare.py` (1h).
+2. `main.py` — orchestration complète en une commande (`titre + artiste → DOCX`).
+3. Affiner le placement accords/paroles sur les syllabes exactes (review manuelle).
+4. Ajouter un champ `album` visible dans le DOCX (actuellement en meta JSON uniquement).
 
 ## Architecture actuelle
 
@@ -82,13 +100,16 @@ Chords/
 │   ├── song_neil-young-heart-of-gold.json
 │   ├── song_zaho-de-sagazan-la-symphonie-des-eclairs.json
 │   └── song_muse-endlessly.json
+├── audio/                       ← ignoré Git — y placer mp3/wav/ogg
 ├── output/
-│   └── *.docx                   ← documents générés
+│   ├── *.docx                   ← documents générés
+│   └── audio_report_*.md        ← rapports comparaison audio (à venir)
 ├── scripts/
 │   ├── collect.py               ← T2 — init + parser + ingestion
 │   ├── reconstruct.py           ← T3 — unification multi-sources
 │   ├── validate_harmony.py      ← T4 — scoring harmonique
 │   ├── display_validation.py    ← T5 — validation utilisateur terminal
-│   └── generate_docx.py         ← T7 — génération DOCX finale
+│   ├── generate_docx.py         ← T7 — génération DOCX finale
+│   └── audio_compare.py         ← A2 — comparaison audio (squelette)
 └── [fichiers contexte projet]
 ```
