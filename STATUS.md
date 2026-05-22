@@ -74,7 +74,7 @@ Phase 2 — pipeline complet opérationnel, 6 chansons générées, format DOCX 
 |-------|--------|
 | A1 — `audio/` + `.gitkeep` + `.gitignore` | Fait |
 | A2 — squelette `audio_compare.py` (argparse, chargement, rapport vide) | Fait |
-| A3 — tempo + tonalité (librosa) | À faire |
+| A3 — tempo + tonalité (librosa) | Fait — testé sur Jimmy (127.8 BPM, relatif conforme) |
 | A4 — structure (matrice de récurrence) | À faire |
 | A5 — chromagramme + templates accords | À faire (expérimental) |
 | A6 — divergences JSON/audio | À faire |

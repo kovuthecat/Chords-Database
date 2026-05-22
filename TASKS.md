@@ -23,7 +23,7 @@
 ## À faire
 
 ### Module audio
-- [ ] A3 — `audio_compare.py` : tempo + tonalité (librosa `beat_track` + Krumhansl-Schmuckler).
+- [x] A3 — `audio_compare.py` : tempo + tonalité (librosa `beat_track` + Krumhansl-Schmuckler). Gestion capo + relatif major/mineur.
 - [ ] A4 — `audio_compare.py` : structure (matrice de récurrence → comptage sections).
 - [ ] A5 — `audio_compare.py` : chromagramme + templates accords (expérimental).
 - [ ] A6 — `audio_compare.py` : divergences JSON/audio + recommandations.
