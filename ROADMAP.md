@@ -31,8 +31,8 @@
 - [x] A1 — `audio/` + `.gitkeep`
 - [x] A2 — Squelette `audio_compare.py` (argparse, chargement, rapport vide)
 - [x] A3 — Tempo + tonalité (fiable) — beat_track + KS, capo-aware, relatif maj/min
-- [ ] A4 — Segmentation structure (orientatif)
-- [ ] A5 — Chromagramme + progression accords (expérimental)
+- [x] A4 — Segmentation structure (novelty chroma+MFCC beat-sync, recurrence matrix)
+- [x] A5 — Chromagramme + templates triades, capo-aware (expérimental)
 - [ ] A6 — Divergences + recommandations
 - [ ] A8 — Tests + calibrage
 
