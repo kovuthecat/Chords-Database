@@ -13,9 +13,22 @@ Usage :
 """
 
 import argparse
+import io
 import json
 import sys
+import unicodedata
 from pathlib import Path
+
+
+def _ascii_key(slug: str, filename: str) -> str:
+    """Clé Storage ASCII-safe (Supabase/S3 rejette les caractères non-ASCII)."""
+    safe = unicodedata.normalize("NFKD", filename).encode("ascii", "ignore").decode("ascii")
+    return f"{slug}/{safe}"
+
+# Force UTF-8 output on Windows
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 ROOT_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT_DIR / "scripts"))
@@ -195,7 +208,7 @@ def migrate(dry_run: bool = True) -> None:
                 try:
                     data_bytes = pdf_path.read_bytes()
                     client.storage.from_(bucket).upload(
-                        f"{matched_slug}/{pdf_path.name}",
+                        _ascii_key(matched_slug, pdf_path.name),
                         data_bytes,
                         {"content-type": "application/pdf", "upsert": "true"},
                     )

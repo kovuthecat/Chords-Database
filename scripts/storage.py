@@ -14,8 +14,16 @@ Usage dans app.py :
 
 import json
 import os
+import unicodedata
 from abc import ABC, abstractmethod
 from pathlib import Path
+
+
+def _ascii_storage_key(slug: str, filename: str) -> str:
+    """Construit la clé Storage en remplaçant les caractères accentués par leur équivalent ASCII.
+    Supabase Storage (S3) rejette les clés contenant des caractères non-ASCII."""
+    safe = unicodedata.normalize("NFKD", filename).encode("ascii", "ignore").decode("ascii")
+    return f"{slug}/{safe}"
 
 STORAGE_BACKEND: str = os.environ.get("STORAGE_BACKEND", "local")
 
@@ -352,13 +360,13 @@ class SupabaseStorage(StorageBackend):
 
     def _public_url(self, slug: str, filename: str) -> str:
         return self._client.storage.from_(self._bucket).get_public_url(
-            f"{slug}/{filename}"
+            _ascii_storage_key(slug, filename)
         )
 
     def save_pdf_export(self, slug: str, filename: str, pdf_bytes: bytes) -> str:
-        path = f"{slug}/{filename}"
+        key = _ascii_storage_key(slug, filename)
         self._client.storage.from_(self._bucket).upload(
-            path,
+            key,
             pdf_bytes,
             {"content-type": "application/pdf", "upsert": "true"},
         )
