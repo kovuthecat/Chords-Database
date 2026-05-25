@@ -302,7 +302,22 @@
   <div class="error-box"><strong>Erreur :</strong> {{ error }}</div>
   {% endif %}
   {% if exported %}
-  <div class="success-box">2 PDFs exportés avec succès dans {{ export_dir }}</div>
+  <div class="success-box" style="padding:16px 20px">
+    <strong>✓ 2 PDFs exportés avec succès</strong>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+      {% if pdf_chords_exists %}
+      <a href="{{ pdf_chords_url }}" style="display:inline-block;background:#1F4E79;color:#fff;padding:10px 18px;border-radius:5px;text-decoration:none;font-size:.95rem;font-weight:bold">
+        ⬇ Paroles &amp; Accords
+      </a>
+      {% endif %}
+      {% if pdf_memo_exists %}
+      <a href="{{ pdf_memo_url }}" style="display:inline-block;background:#1F4E79;color:#fff;padding:10px 18px;border-radius:5px;text-decoration:none;font-size:.95rem;font-weight:bold">
+        ⬇ Mémo Guitare
+      </a>
+      {% endif %}
+    </div>
+    <div style="margin-top:8px;font-size:.8rem;color:#555">Appuyez sur un bouton pour ouvrir le PDF, puis utilisez le bouton Partage pour l'enregistrer.</div>
+  </div>
   {% endif %}
   {% if gen_warning %}
   <div class="warn-box"><strong>Avertissement PDF :</strong> {{ gen_warning }}<br>
@@ -619,10 +634,10 @@
       {% if pdf_chords_exists or pdf_memo_exists %}
       <div style="margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap">
         {% if pdf_chords_exists %}
-        <a class="btn btn-outline" style="font-size:.84rem;padding:6px 12px" href="{{ pdf_chords_url }}" target="_blank">Paroles &amp; Accords PDF</a>
+        <a class="btn btn-outline" style="font-size:.84rem;padding:6px 12px" href="{{ pdf_chords_url }}">Paroles &amp; Accords PDF</a>
         {% endif %}
         {% if pdf_memo_exists %}
-        <a class="btn btn-outline" style="font-size:.84rem;padding:6px 12px" href="{{ pdf_memo_url }}" target="_blank">Mémo Guitare PDF</a>
+        <a class="btn btn-outline" style="font-size:.84rem;padding:6px 12px" href="{{ pdf_memo_url }}">Mémo Guitare PDF</a>
         {% endif %}
       </div>
       {% endif %}
