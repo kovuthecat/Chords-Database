@@ -2,66 +2,85 @@
 
 ## Objectif du projet
 
-Créer des fichiers de chords au format document pour guitariste et chanteur, à partir du titre d’une chanson fourni par l’utilisateur.
+**Éditeur local de songbook guitare/chant** : générer des fiches PDF lisibles, imprimables
+et directement utilisables en répétition, à partir d'un **fichier JSON externe** conforme au template officiel.
 
-Le résultat attendu est un document lisible, imprimable et directement utilisable en répétition ou en accompagnement chant/guitare, avec les accords placés précisément au-dessus des paroles, ainsi que l’intro, les interludes, les solos, les ponts et les parties instrumentales correctement indiqués.
+Le projet ne génère pas les données chanson. Il les consomme.
+
+## Principe produit
+
+1. Le JSON est créé en dehors du projet (ex: via Claude AI avec le prompt dédié).
+2. L'utilisateur uploade le JSON dans l'interface web locale.
+3. Le projet valide, génère le DOCX, propose un aperçu HTML interactif.
+4. L'utilisateur édite les accords, les paroles et la structure directement dans l'aperçu.
+5. L'utilisateur valide et exporte 2 PDFs séparés.
+6. La Bibliothèque (`/library`) permet de consulter, rechercher, télécharger et gérer tous les morceaux.
+7. Chaque sauvegarde crée un backup automatique — restauration en un clic depuis l'historique.
+
+**Le projet ne recherche jamais automatiquement des sources sur le web.**
+**Le projet n'extrait jamais depuis PDF, MIDI, audio.**
 
 ## Usage prévu
 
 - Usage personnel : oui
-- Usage local : oui
-- Déploiement prévu : non par défaut
-- Utilisateurs autres que moi : possible, mais non prioritaire
+- Usage local uniquement : oui
+- Déploiement : non
+- Connexion internet : aucune (usage entièrement local)
 
-## Fonctionnalités MVP
+## Workflow
 
-1. Recevoir le titre d’une chanson et, si nécessaire, l’artiste.
-2. Rechercher les accords et la structure depuis des sources publiques pertinentes, par exemple Songsterr, La Boîte à Musique, Ultimate Guitar, Chordify ou autres sources fiables.
-3. Produire un fichier `.docx` contenant :
-   - titre ;
-   - artiste ;
-   - tonalité estimée ou source ;
-   - capo si pertinent ;
-   - accords utilisés ;
-   - paroles avec accords positionnés ;
-   - intro ;
-   - couplets ;
-   - refrains ;
-   - ponts ;
-   - parties instrumentales ;
-   - outro ;
-   - notes utiles pour guitare/chant.
+```
+JSON externe conforme au template
+  → python app.py (http://localhost:5000)
+    → validate_song_json.py : validation de la structure (slug regex, IDs, positions)
+    → generate_docx.py : DOCX complet + aperçu PDF
+    → [édition inline dans l'aperçu HTML interactif]
+      - accords paroles : modifier / supprimer / insérer
+      - accords instrumentaux : modifier / supprimer / insérer
+      - paroles : édition texte inline
+      - structure + rythme : éditeurs dédiés
+    → generate_split_pdf() : 2 PDFs exportés dans PDF_EXPORT_DIR
+  → /library : bibliothèque des morceaux validés
+    - recherche live (titre, artiste, album)
+    - télécharger JSON
+    - régénérer PDFs
+    - supprimer
+  → data/backups/<slug>/ : historique automatique des sauvegardes
+```
 
-## Règle produit obligatoire
+## Format d'entrée
 
-Avant toute génération finale de document, Claude Code doit toujours demander explicitement à l’utilisateur de valider :
+Le JSON doit être conforme à `song_template_with_rhythm.json`.
+Le schéma formel est dans `schema/song_schema.json`.
 
-1. les accords retenus ;
-2. la tonalité ;
-3. le capo proposé, si besoin ;
-4. la structure globale de la chanson.
+Champs obligatoires :
+- `meta.title`, `meta.artist`
+- `meta.slug` : regex `^[a-z0-9_-]+$` (minuscules, chiffres, tirets, underscores)
+- `sections` (avec `id` conforme `^[a-zA-Z0-9_-]+$`, `type`)
+- `structure_sequence` (IDs dans l'ordre de jeu)
 
-Aucun fichier final `.docx` ne doit être généré avant cette validation.
+## Livrables
 
-## Hors périmètre v1
+Pour chaque chanson :
+- `data/song_<slug>.json` — JSON importé
+- `data/backups/<slug>/<timestamp>.json` — backups automatiques (20 max)
+- `output/song_<slug>.docx` — document complet
+- `output/song_<slug>.pdf` — aperçu complet
+- `PDF_EXPORT_DIR/Artiste - Titre - Paroles & Accords.pdf`
+- `PDF_EXPORT_DIR/Artiste - Titre - Mémo Guitare.pdf`
 
-- Génération automatique d’un arrangement avancé.
-- Transcription audio complète depuis un fichier son.
-- Gestion multi-instruments complexe.
-- Base de données locale de chansons.
-- Interface graphique complète.
-- Publication ou redistribution de paroles protégées.
+## Fiches produites
 
-## Contraintes importantes
+1. **Paroles & Accords** — structure complète, accords positionnés au-dessus des paroles
+2. **Mémo Guitare** — conducteur guitare multi-lignes, rythmes, répétitions
 
-- Les fichiers sont destinés exclusivement à un usage guitariste + chanteur.
-- Priorité à la lisibilité et à la précision du placement des accords.
-- Ne pas sur-ingénier : un script simple ou un workflow manuel assisté suffit pour commencer.
-- Toujours distinguer brouillon de validation et document final.
-- Respecter les limites légales : ne pas créer une base de paroles redistribuable ; privilégier un usage personnel et des sources fournies/validées par l’utilisateur.
+## Contraintes
 
-## Format de sortie cible
-
-Format principal : `.docx`
-
-Optionnel : `.md` intermédiaire pour faciliter relecture, correction et versioning Git.
+- Pas de base de données.
+- Pas d'authentification.
+- Pas de déploiement web.
+- Interface web locale uniquement (Flask).
+- Pas d'analyse audio.
+- Pas de scraping.
+- Pas de dépendances lourdes.
+- Rester simple et maintenable.

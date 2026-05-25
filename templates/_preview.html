@@ -1,0 +1,166 @@
+{#
+  Fragment aperçu interactif — inclus dans song.html ET renvoyé par /song/<slug>/preview-html.
+  Variables requises : structure_items, sections_by_id, song, slug.
+  Ne pas inclure de balises <html>/<head>/<body>.
+#}
+{% for sid in structure_items %}
+{% set sec = sections_by_id[sid] %}
+<div class="prev-section">
+
+  <div class="prev-header">
+    <span class="prev-label">{{ sec.label }}</span>
+    {% if sec.repeats and sec.repeats > 1 %}
+    <span class="prev-repeat">×{{ sec.repeats }}</span>
+    {% endif %}
+    {% if sec.is_instrumental %}
+    <span class="prev-tag-instrumental">instrumental</span>
+    {% endif %}
+  </div>
+
+  {# --- Sections avec paroles --- #}
+  {% if sec.lines %}
+  <div class="prev-lines">
+    {% for line in sec.lines %}
+    <div class="prev-line" data-section="{{ sec.id }}" data-li="{{ loop.index0 }}">
+
+      {# Rangée accords (absolue, unité ch = 1 caractère monospace) #}
+      <div class="prev-chords-row">
+        {% for ch in line.chords %}
+        {% if ch.chord %}
+        <span class="prev-chord"
+              style="left:{{ ch.position }}ch"
+              data-chord="{{ ch.chord }}"
+              data-ci="{{ loop.index0 }}"
+              title="{{ ch.chord }} — cliquer pour modifier / supprimer"
+              onclick="openEditChord(this)">{{ ch.chord }}</span>
+        {% endif %}
+        {% endfor %}
+      </div>
+
+      {# Rangée paroles — cliquer pour éditer inline #}
+      <div class="prev-lyrics-wrap">
+        <div class="prev-lyrics-text"
+             onclick="openEditLyrics(this)"
+             title="Cliquer pour modifier les paroles">{{ line.lyrics if line.lyrics else '​' }}</div>
+        <div class="prev-inserts" aria-hidden="true">
+          {% for wp in (line.lyrics or '') | word_positions %}
+          <span class="insert-pt"
+                style="left:{{ wp.pos }}ch"
+                data-pos="{{ wp.pos }}"
+                title="Ajouter un accord ici"
+                onclick="openInsertChord(this)">+</span>
+          {% endfor %}
+          {% if line.lyrics %}
+          <span class="insert-pt"
+                style="left:{{ line.lyrics | length }}ch"
+                data-pos="{{ line.lyrics | length }}"
+                title="Ajouter un accord ici"
+                onclick="openInsertChord(this)">+</span>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  {# --- Sections instrumentales (pas de lignes) --- #}
+  {% elif sec.is_instrumental or sec.chord_grid or sec.performance_progression or sec.summary_progression %}
+  <div class="prev-instrumental">
+    {% if sec.performance_progression %}
+    {% for pp in sec.performance_progression %}
+    {% set ppi = loop.index0 %}
+    <div class="prev-grid-line">
+      {# Point d'insertion avant le 1er accord #}
+      <span class="insert-instr-pt"
+            data-instr-type="pp" data-section="{{ sec.id }}"
+            data-ppi="{{ ppi }}" data-li="0" data-insert-at="0"
+            title="Insérer un accord ici"
+            onclick="openInsertInstrChord(this)">+</span>
+      {% for chord_tok in pp.chords.split() %}
+      <span class="instr-chord"
+            data-chord="{{ chord_tok }}"
+            data-instr-type="pp"
+            data-section="{{ sec.id }}"
+            data-ppi="{{ ppi }}"
+            data-ci="{{ loop.index0 }}"
+            title="{{ chord_tok }} — cliquer pour modifier / supprimer"
+            onclick="openEditChord(this)">{{ chord_tok }}</span>
+      {# Point d'insertion après chaque accord #}
+      <span class="insert-instr-pt"
+            data-instr-type="pp" data-section="{{ sec.id }}"
+            data-ppi="{{ ppi }}" data-li="0" data-insert-at="{{ loop.index }}"
+            title="Insérer un accord ici"
+            onclick="openInsertInstrChord(this)">+</span>
+      {% endfor %}
+      {% if pp.repeat and pp.repeat > 1 %}
+      <span class="prev-grid-repeat">×{{ pp.repeat }}</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% elif sec.chord_grid %}
+    {% for cg_entry in sec.chord_grid | parse_chord_grid %}
+    <div class="prev-grid-line">
+      <span class="insert-instr-pt"
+            data-instr-type="cg" data-section="{{ sec.id }}"
+            data-ppi="0" data-li="{{ cg_entry.li }}" data-insert-at="0"
+            title="Insérer un accord ici"
+            onclick="openInsertInstrChord(this)">+</span>
+      {% for cg_chord in cg_entry.chords %}
+      <span class="instr-chord"
+            data-chord="{{ cg_chord.chord }}"
+            data-instr-type="cg"
+            data-section="{{ sec.id }}"
+            data-li="{{ cg_entry.li }}"
+            data-ci="{{ cg_chord.ci }}"
+            title="{{ cg_chord.chord }} — cliquer pour modifier / supprimer"
+            onclick="openEditChord(this)">{{ cg_chord.chord }}</span>
+      <span class="insert-instr-pt"
+            data-instr-type="cg" data-section="{{ sec.id }}"
+            data-ppi="0" data-li="{{ cg_entry.li }}" data-insert-at="{{ loop.index }}"
+            title="Insérer un accord ici"
+            onclick="openInsertInstrChord(this)">+</span>
+      {% endfor %}
+    </div>
+    {% endfor %}
+    {% elif sec.summary_progression %}
+    <div class="prev-grid-line">
+      <span class="insert-instr-pt"
+            data-instr-type="sp" data-section="{{ sec.id }}"
+            data-ppi="0" data-li="0" data-insert-at="0"
+            title="Insérer un accord ici"
+            onclick="openInsertInstrChord(this)">+</span>
+      {% for sp_tok in sec.summary_progression.split() %}
+      <span class="instr-chord"
+            data-chord="{{ sp_tok }}"
+            data-instr-type="sp"
+            data-section="{{ sec.id }}"
+            data-ci="{{ loop.index0 }}"
+            title="{{ sp_tok }} — cliquer pour modifier / supprimer"
+            onclick="openEditChord(this)">{{ sp_tok }}</span>
+      <span class="insert-instr-pt"
+            data-instr-type="sp" data-section="{{ sec.id }}"
+            data-ppi="0" data-li="0" data-insert-at="{{ loop.index }}"
+            title="Insérer un accord ici"
+            onclick="openInsertInstrChord(this)">+</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  {% else %}
+  {# Section sans paroles ni accords — afficher un point d'insertion pour démarrer #}
+  <div class="prev-instrumental">
+    <div class="prev-grid-line">
+      <span class="insert-instr-pt"
+            data-instr-type="sp" data-section="{{ sec.id }}"
+            data-ppi="0" data-li="0" data-insert-at="0"
+            title="Insérer un premier accord dans cette section"
+            onclick="openInsertInstrChord(this)">+</span>
+      <span class="prev-empty">section vide — cliquer + pour ajouter un accord</span>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endfor %}

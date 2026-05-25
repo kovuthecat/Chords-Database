@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ song.meta.title }} — Mode répétition</title>
+  <style>
+    :root { --fs: 1.1rem; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Consolas, monospace; background: #f8f9fb; color: #222; transition: background .2s, color .2s; }
+    body.dark { background: #1a1a2e; color: #d8d8e8; }
+
+    /* ---- Barre de contrôles (sticky) ---- */
+    .ctrl-bar {
+      position: sticky; top: 0; z-index: 200;
+      background: #1F4E79; color: #fff;
+      display: flex; align-items: center; gap: 4px;
+      padding: 8px 14px; flex-wrap: wrap;
+    }
+    body.dark .ctrl-bar { background: #0d1b2e; }
+    .ctrl-btn {
+      color: #aac4e0; font-size: .82rem; text-decoration: none;
+      background: none; border: none; cursor: pointer;
+      padding: 5px 9px; border-radius: 3px; font-family: Calibri, Arial, sans-serif; white-space: nowrap;
+    }
+    .ctrl-btn:hover { color: #fff; background: rgba(255,255,255,.12); }
+    .ctrl-sep { color: rgba(255,255,255,.2); padding: 0 4px; font-size: .8rem; }
+    .ctrl-right { margin-left: auto; display: flex; gap: 4px; align-items: center; }
+    .ctrl-title { color: #fff; font-weight: bold; font-family: Calibri, Arial, sans-serif; font-size: .92rem; white-space: nowrap; }
+
+    /* ---- Barre auto-scroll ---- */
+    .scroll-bar {
+      background: #163a5c; padding: 5px 14px;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    body.dark .scroll-bar { background: #0a152a; }
+    .scroll-label { font-size: .75rem; color: #8ab0d0; font-family: Calibri, Arial, sans-serif; white-space: nowrap; }
+    .scroll-bar input[type=range] { width: 80px; accent-color: #aac4e0; vertical-align: middle; }
+    .scroll-btn {
+      font-size: .78rem; padding: 3px 10px; border-radius: 3px;
+      border: 1px solid #5588aa; background: none; color: #aac4e0;
+      cursor: pointer; font-family: Calibri, Arial, sans-serif;
+    }
+    .scroll-btn:hover { background: rgba(255,255,255,.1); }
+    .scroll-btn.running { background: #1a7a3c; border-color: #1a7a3c; color: #fff; }
+    .scroll-hint { font-size: .7rem; color: #5588aa; font-family: Calibri, Arial, sans-serif; }
+
+    /* ---- En-tête chanson ---- */
+    .song-hdr { padding: 24px 28px 14px; border-bottom: 2px solid #dde4ec; }
+    body.dark .song-hdr { border-bottom-color: #2a3050; }
+    .song-hdr h1 { font-size: calc(var(--fs) * 1.7); font-family: Calibri, Arial, sans-serif; color: #1F4E79; font-weight: bold; }
+    body.dark .song-hdr h1 { color: #7ab4d8; }
+    .song-hdr .artist { font-size: calc(var(--fs) * 1.05); font-family: Calibri, Arial, sans-serif; color: #555; margin-top: 4px; }
+    body.dark .song-hdr .artist { color: #8888a8; }
+    .meta-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .meta-chip {
+      background: #eef3f8; border: 1px solid #c0d4e8; border-radius: 4px;
+      padding: 3px 10px; font-size: calc(var(--fs) * 0.8); color: #1F4E79;
+      font-family: Calibri, Arial, sans-serif; font-weight: bold;
+    }
+    body.dark .meta-chip { background: #1e3050; border-color: #2a4a70; color: #7ab4d8; }
+    .chords-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .chord-chip {
+      background: #eef3f8; border: 1px solid #c0d4e8; border-radius: 4px;
+      padding: 3px 10px; font-family: Consolas, monospace; font-size: var(--fs);
+      color: #1F4E79; font-weight: bold;
+    }
+    body.dark .chord-chip { background: #1e3050; border-color: #2a4a70; color: #7ab4d8; }
+
+    /* ---- Contenu sections ---- */
+    .content { max-width: 820px; margin: 0 auto; padding: 22px 28px 100px; }
+
+    .reh-section { margin-bottom: 28px; padding-bottom: 22px; border-bottom: 1px solid #e4eaf0; }
+    body.dark .reh-section { border-bottom-color: #252545; }
+    .reh-section:last-child { border-bottom: none; }
+
+    .reh-label {
+      font-family: Calibri, Arial, sans-serif; font-weight: bold;
+      text-transform: uppercase; letter-spacing: .09em;
+      color: #1F4E79; margin-bottom: 10px;
+      font-size: calc(var(--fs) * 0.75);
+      display: flex; align-items: center; gap: 8px;
+    }
+    body.dark .reh-label { color: #7ab4d8; }
+    .reh-repeat { color: #aaa; font-weight: normal; text-transform: none; letter-spacing: 0; font-family: Consolas, monospace; font-size: calc(var(--fs) * 0.85); }
+
+    /* ---- Lignes paroles+accords ---- */
+    .reh-line { margin-bottom: 10px; }
+    .reh-chords-row {
+      position: relative; height: calc(var(--fs) * 1.55);
+      font-family: Consolas, monospace; font-size: var(--fs);
+      overflow: visible; margin-bottom: 2px;
+    }
+    .reh-chord {
+      position: absolute; color: #1F4E79; font-weight: bold;
+      font-family: Consolas, monospace; font-size: var(--fs);
+      white-space: nowrap; line-height: 1;
+    }
+    body.dark .reh-chord { color: #6da8d4; }
+    .reh-lyrics {
+      font-family: Consolas, monospace; font-size: var(--fs);
+      white-space: pre; line-height: 1.55; color: #222;
+    }
+    body.dark .reh-lyrics { color: #c8c8d8; }
+
+    /* ---- Sections instrumentales ---- */
+    .reh-instr { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 4px 0; }
+    .reh-instr-chord { color: #1F4E79; font-weight: bold; font-family: Consolas, monospace; font-size: var(--fs); }
+    body.dark .reh-instr-chord { color: #6da8d4; }
+    .reh-instr-sep { color: #ccc; }
+    .reh-instr-repeat { color: #999; font-size: calc(var(--fs) * 0.85); font-family: Calibri, Arial, sans-serif; }
+
+    /* ---- Rythme ---- */
+    .reh-rhythm { margin-top: 6px; font-size: calc(var(--fs) * 0.78); color: #888; font-family: Calibri, Arial, sans-serif; }
+    body.dark .reh-rhythm { color: #5a6080; }
+    .reh-rhythm .r-pattern { font-family: Consolas, monospace; color: #aaa; letter-spacing: .05em; }
+    body.dark .reh-rhythm .r-pattern { color: #5a7090; }
+
+    @media (max-width: 600px) {
+      .content { padding: 14px 14px 80px; }
+      .song-hdr { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Barre de contrôles sticky -->
+<div class="ctrl-bar">
+  <span class="ctrl-title">{{ song.meta.title }}</span>
+  <span class="ctrl-sep">|</span>
+  <a class="ctrl-btn" href="/library">← Biblio</a>
+  <a class="ctrl-btn" href="/song/{{ slug }}">Éditer</a>
+  <a class="ctrl-btn" href="/song/{{ slug }}/rehearsal/memo">Mémo →</a>
+  <div class="ctrl-right">
+    <button class="ctrl-btn" onclick="changeFontSize(-0.1)" title="Réduire police (−)">A−</button>
+    <button class="ctrl-btn" onclick="changeFontSize(+0.1)" title="Agrandir police (+)">A+</button>
+    <button class="ctrl-btn" id="btn-dark" onclick="toggleDark()" title="Thème (D)">🌙</button>
+    <button class="ctrl-btn" onclick="toggleFullscreen()" title="Plein écran (F)">⛶</button>
+  </div>
+</div>
+
+<!-- Barre auto-scroll -->
+<div class="scroll-bar">
+  <span class="scroll-label">Auto-scroll :</span>
+  <button class="scroll-btn" id="btn-scroll" onclick="toggleScroll()">▶ Démarrer</button>
+  <label class="scroll-label">Vitesse :
+    <input type="range" id="scroll-speed" min="5" max="100" value="30" oninput="setScrollSpeed(this.value)">
+  </label>
+  <span class="scroll-hint">Espace = pause · + / − = police · F = plein écran · L = biblio</span>
+</div>
+
+<!-- En-tête -->
+<div class="song-hdr">
+  <h1>{{ song.meta.title }}</h1>
+  <div class="artist">{{ song.meta.artist }}{% if song.meta.album %} — {{ song.meta.album }}{% endif %}</div>
+  <div class="meta-chips">
+    {% if song.meta.key %}
+    <span class="meta-chip">{{ song.meta.key }} {% if song.meta.key_mode == 'major' %}majeur{% else %}mineur{% endif %}</span>
+    {% endif %}
+    {% if song.meta.capo %}
+    <span class="meta-chip">Capo {{ song.meta.capo }}</span>
+    {% endif %}
+    {% if song.meta.tempo %}
+    <span class="meta-chip">♩ {{ song.meta.tempo }} bpm</span>
+    {% endif %}
+  </div>
+  {% if song.chords_used %}
+  <div class="chords-chips">
+    {% for c in song.chords_used %}{% if not c.startswith('_') %}
+    <span class="chord-chip">{{ c }}</span>
+    {% endif %}{% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<!-- Contenu -->
+<div class="content">
+  {% for sid in structure_items %}
+  {% set sec = sections_by_id[sid] %}
+  <div class="reh-section">
+
+    <div class="reh-label">
+      {{ sec.label }}
+      {% if sec.repeats and sec.repeats > 1 %}
+      <span class="reh-repeat">×{{ sec.repeats }}</span>
+      {% endif %}
+    </div>
+
+    {# Sections avec paroles #}
+    {% if sec.lines %}
+    {% for line in sec.lines %}
+    <div class="reh-line">
+      <div class="reh-chords-row">
+        {% for ch in line.chords %}{% if ch.chord %}
+        <span class="reh-chord" style="left:{{ ch.position }}ch">{{ ch.chord }}</span>
+        {% endif %}{% endfor %}
+      </div>
+      <div class="reh-lyrics">{{ line.lyrics if line.lyrics else ' ' }}</div>
+    </div>
+    {% endfor %}
+
+    {# Sections instrumentales #}
+    {% elif sec.performance_progression %}
+    {% for pp in sec.performance_progression %}
+    <div class="reh-instr">
+      {% for tok in pp.chords.split() %}
+      <span class="reh-instr-chord">{{ tok }}</span>
+      {% if not loop.last %}<span class="reh-instr-sep">·</span>{% endif %}
+      {% endfor %}
+      {% if pp.repeat and pp.repeat > 1 %}
+      <span class="reh-instr-repeat">(×{{ pp.repeat }})</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    {% elif sec.chord_grid %}
+    {% for cg_line in sec.chord_grid.split('\n') %}
+    {% if cg_line.strip() %}
+    <div class="reh-instr">
+      {% for tok in cg_line.strip().split('|') %}{% if tok.strip() %}
+      <span class="reh-instr-chord">{{ tok.strip() }}</span>
+      <span class="reh-instr-sep">·</span>
+      {% endif %}{% endfor %}
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    {% elif sec.summary_progression %}
+    <div class="reh-instr">
+      {% for tok in sec.summary_progression.split() %}
+      <span class="reh-instr-chord">{{ tok }}</span>
+      {% if not loop.last %}<span class="reh-instr-sep">·</span>{% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {# Rythme #}
+    {% if sec.rhythm and (sec.rhythm.pattern or sec.rhythm.feel) %}
+    <div class="reh-rhythm">
+      {% if sec.rhythm.pattern %}<span class="r-pattern">{{ sec.rhythm.pattern }}</span>{% endif %}
+      {% if sec.rhythm.pattern and sec.rhythm.feel %} · {% endif %}
+      {% if sec.rhythm.feel %}{{ sec.rhythm.feel }}{% endif %}
+    </div>
+    {% endif %}
+
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+  /* ---- Police ---- */
+  var _fs = parseFloat(localStorage.getItem('chords_font_size') || '1.1');
+  document.documentElement.style.setProperty('--fs', _fs + 'rem');
+
+  function changeFontSize(delta) {
+    _fs = Math.max(0.7, Math.min(2.4, parseFloat((_fs + delta).toFixed(1))));
+    document.documentElement.style.setProperty('--fs', _fs + 'rem');
+    localStorage.setItem('chords_font_size', _fs);
+  }
+
+  /* ---- Thème sombre ---- */
+  var _dark = localStorage.getItem('chords_dark') === '1';
+  if (_dark) document.body.classList.add('dark');
+  document.getElementById('btn-dark').textContent = _dark ? '☀' : '🌙';
+
+  function toggleDark() {
+    _dark = !_dark;
+    document.body.classList.toggle('dark', _dark);
+    document.getElementById('btn-dark').textContent = _dark ? '☀' : '🌙';
+    localStorage.setItem('chords_dark', _dark ? '1' : '0');
+  }
+
+  /* ---- Plein écran ---- */
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(function() {});
+    } else {
+      document.exitFullscreen().catch(function() {});
+    }
+  }
+
+  /* ---- Auto-scroll ---- */
+  var _scrollRAF = null;
+  var _scrollSpeed = parseFloat(localStorage.getItem('chords_scroll_speed') || '30');
+  var _scrollLast = null;
+
+  document.getElementById('scroll-speed').value = _scrollSpeed;
+
+  function setScrollSpeed(v) {
+    _scrollSpeed = parseFloat(v);
+    localStorage.setItem('chords_scroll_speed', _scrollSpeed);
+  }
+
+  function toggleScroll() {
+    _scrollRAF ? stopScroll() : startScroll();
+  }
+
+  function startScroll() {
+    if (_scrollRAF) return;
+    _scrollLast = null;
+    var btn = document.getElementById('btn-scroll');
+    btn.textContent = '⏸ Pause';
+    btn.classList.add('running');
+    function step(ts) {
+      if (!_scrollRAF) return;
+      if (_scrollLast !== null) window.scrollBy(0, _scrollSpeed / 1000 * (ts - _scrollLast));
+      _scrollLast = ts;
+      _scrollRAF = requestAnimationFrame(step);
+    }
+    _scrollRAF = requestAnimationFrame(step);
+  }
+
+  function stopScroll() {
+    if (_scrollRAF) { cancelAnimationFrame(_scrollRAF); _scrollRAF = null; }
+    var btn = document.getElementById('btn-scroll');
+    btn.textContent = '▶ Démarrer';
+    btn.classList.remove('running');
+    _scrollLast = null;
+  }
+
+  /* ---- Raccourcis clavier ---- */
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.ctrlKey || e.metaKey) return;
+    switch (e.key) {
+      case 'l': case 'L': window.location.href = '/library'; break;
+      case 'f': case 'F': e.preventDefault(); toggleFullscreen(); break;
+      case 'd': case 'D': toggleDark(); break;
+      case '+': case '=': changeFontSize(0.1); break;
+      case '-': changeFontSize(-0.1); break;
+      case ' ': e.preventDefault(); toggleScroll(); break;
+    }
+  });
+</script>
+</body>
+</html>

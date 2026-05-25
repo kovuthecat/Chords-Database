@@ -1,80 +1,99 @@
 # TASKS.md
 
-## Règles
+## Workflow par chanson
 
-- Une chanson = une tâche.
-- Toujours produire un brouillon de validation avant le `.docx` final.
-- Ne jamais générer le document final sans validation des accords, du capo et de la structure.
-- La Boîte à Chansons est la source de référence prioritaire.
-- Garder le workflow simple.
+1. Créer un JSON conforme au template (`song_template_with_rhythm.json`) via Claude AI ou manuellement.
+2. Lancer l'interface web : `python app.py` → http://localhost:5000
+3. Uploader le JSON.
+4. Vérifier et éditer l'aperçu HTML interactif :
+   - **Sections avec paroles** :
+     - Clic sur accord → popup modifier/supprimer (confirmation avant suppression)
+     - Survol ligne → points `+` pour insérer un accord
+     - Clic sur paroles → édition inline du texte (sauvegarde AJAX)
+   - **Sections instrumentales** :
+     - Clic sur accord (pp / chord_grid / summary) → modifier/supprimer
+     - Survol → points `+` pour insérer un accord entre les existants
+   - **Éditeur structure** : réordonner, renommer, changer type/répétitions
+   - **Éditeur rythme** : pattern + feel par section
+   - **Bouton "Sauvegarder et rafraîchir l'aperçu"** : sauvegarde structure + rythme en un clic
+5. Cliquer "Valider et exporter 2 PDFs" (Paroles & Accords + Mémo Guitare).
+6. Retrouver les morceaux validés dans la Bibliothèque : http://localhost:5000/library
 
-## Workflow standard par chanson
-
+**En CLI :**
+```bash
+python main.py data/song_<slug>.json --split-pdf
 ```
-1. collect.py "Titre" "Artiste"
-2. collect.py data/song_slug.json --ingest "Source" --file fichier.txt
-   (répéter pour 2-3 sources)
-3. reconstruct.py data/song_slug.json
-4. validate_harmony.py data/song_slug.json
-5. display_validation.py data/song_slug.json   ← validation utilisateur
-6. generate_docx.py data/song_slug.json
+
+## Tâches techniques courantes
+
+### Ajouter une chanson
+
+1. Préparer le JSON en suivant `song_template_with_rhythm.json`.
+2. Uploader via l'interface web.
+3. Si des erreurs de validation → corriger le JSON et reuploader.
+
+**Règles slug** : `meta.slug` doit suivre `^[a-z0-9_-]+$` (minuscules, chiffres, tirets, underscores uniquement).
+
+### Corriger une chanson existante
+
+1. Ouvrir la fiche chanson → cliquer sur un accord pour le modifier/supprimer.
+   - Fonctionne sur les sections avec paroles ET sur les sections instrumentales (pp, chord_grid, summary).
+2. Survol d'une ligne de paroles → `+` pour insérer un accord (paroles) ou accord instrumental.
+3. Clic sur une ligne de paroles pour l'éditer directement.
+4. Modifier structure/rythme dans les éditeurs, puis "Sauvegarder et rafraîchir l'aperçu".
+5. Pour des corrections structurelles complexes : éditer `data/song_<slug>.json`, puis "Régénérer depuis un JSON corrigé".
+
+### Restaurer une version précédente
+
+1. Ouvrir la fiche chanson.
+2. Ouvrir "Historique / Backups" (dans la section Actions).
+3. Cliquer "Restaurer" sur la version souhaitée.
+4. Confirmer — la version actuelle est sauvegardée en backup avant écrasement.
+
+### Configurer PDF_EXPORT_DIR
+
+Créer ou modifier `.env.local` à la racine du projet :
+```
+PDF_EXPORT_DIR=C:\Users\kovu\SynologyDrive\Thibault\Guitartabs\Chords
 ```
 
-## À faire
+### Supprimer une chanson
 
-### Module audio
-- [x] A3 — `audio_compare.py` : tempo + tonalité (librosa `beat_track` + Krumhansl-Schmuckler). Gestion capo + relatif major/mineur.
-- [x] A4 — `audio_compare.py` : structure (novelty chroma+MFCC, matrice de récurrence, frontières). Testé sur Jimmy : 9 sections vs 11 JSON.
-- [x] A5 — `audio_compare.py` : chromagramme + templates accords, capo-aware. Testé sur Jimmy : 4/6 accords retrouvés.
-- [x] A6 — `audio_compare.py` : divergences unifiées toutes dimensions + score global + verdict.
-- [x] A7 — Rapport Markdown finalisé : résumé exécutif, table divergences A6, scores complets.
-- [ ] A8 — Tests sur 5 chansons existantes + calibrage des seuils de confiance.
+- Dans la Bibliothèque (`/library`) → bouton "Supprimer" (confirmation requise).
+- Supprime : `data/song_<slug>.json`, `output/song_<slug>.*`, PDFs exportés dans `PDF_EXPORT_DIR`.
+- Note : les backups dans `data/backups/<slug>/` ne sont PAS supprimés (conservation intentionnelle).
 
-### Pipeline
-- [ ] `main.py` — orchestration complète en une commande (titre + artiste → DOCX).
-- [ ] Afficher l'album dans le bloc en-tête du DOCX.
-- [ ] Export PDF optionnel (`docx2pdf` ou LibreOffice CLI).
+### Télécharger le JSON d'une chanson
 
-## En cours
+- Dans la Bibliothèque (`/library`) → bouton "JSON" sur la card.
+- Ou directement : `GET /song/<slug>/download-json`
 
-- [ ] Affiner le placement accords/paroles (review manuelle des DOCX générés).
+### Ajouter/modifier la logique métier
 
-## Fait
+- Fiche mémo → `scripts/memo.py`
+- Génération DOCX/PDF → `scripts/generate_docx.py`
+- Édition JSON ciblée → `scripts/editor.py` (13 fonctions)
+- Backup/restauration → `scripts/backup.py`
+- Validation JSON → `scripts/validate_song_json.py`
+- Chemins + .env.local → `scripts/config.py`
+- Bibliothèque → route `/library` dans `app.py` + `templates/library.html`
+- Aperçu interactif → `templates/_preview.html`
 
-- [x] Concevoir la méthodologie complète (pipeline, scoring, JSON, risques).
-- [x] T1 — Structure répertoires + `schema/song_schema.json`.
-- [x] T2 — `scripts/collect.py` (init, parser chord, ingestion multi-sources, statut).
-- [x] T3 — `scripts/reconstruct.py` (unification, source_agreement, divergences).
-- [x] T4 — `scripts/validate_harmony.py` (tonalité, diatonique, capo, scoring).
-- [x] T5 — `scripts/display_validation.py` (brouillon terminal, boucle OK/corrections).
-- [x] T7 — `scripts/generate_docx.py` (Consolas, keep_with_next, grilles multi-lignes, plein rendu reprises).
-- [x] Pipeline end-to-end testé et affiné sur 6 chansons.
-- [x] A1 — `audio/` + `.gitkeep` + `.gitignore` audio.
-- [x] A2 — Squelette `scripts/audio_compare.py` (argparse, chargement JSON+audio, rapport Markdown vide).
+### Lancer les tests
 
-## Chansons traitées
+```bash
+python -m pytest tests/ -v
+```
 
-| Chanson | Artiste | Sources | Score | Fichier |
-|---|---|---|---|---|
-| Jimmy | Moriarty | UG + BAC | 96% | `song_moriarty-jimmy.docx` |
-| Wish You Were Here | Pink Floyd | BAC + UG + Songsterr | 96% | `song_pink-floyd-wish-you-were-here.docx` |
-| Heart of Gold | Neil Young | BAC + UG | 100% | `song_neil-young-heart-of-gold.docx` |
-| La Symphonie des Éclairs | Zaho de Sagazan | PDF source | 100% | `song_zaho-de-sagazan-la-symphonie-des-eclairs.docx` |
-| Endlessly | Muse | PDF source | 100% | `song_muse-endlessly.docx` |
+129 tests — 0 échec.
 
-## Bugs corrigés (bénéficient aux futures chansons)
+## Chansons dans le repo
 
-- [x] Regex `tonali...` sans `m` → Am non reconnu comme mineur.
-- [x] `key_mode` non extrait de clé brute ("Am" → key=A, mode=minor).
-- [x] Grilles multi-lignes : overwrite → concaténation `\n`.
-- [x] Outro auto-instrumental → désactivé (seuls intro/interlude/solo).
-- [x] Faux positif capo rel. maj/min → tolérance ±3 demi-tons.
-- [x] Regex chord : `Am7/4`, `Bm7b5`, `Asus4`, `F/A`, `b5` maintenant reconnus.
-
-## Améliorations futures
-
-- [ ] Export PDF.
-- [ ] Transposition automatique.
-- [ ] Diagrammes d'accords (ASCII ou images).
-- [ ] Plusieurs versions : originale / capo simplifié / tonalité adaptée voix.
-- [ ] Gestion des tablatures simples pour intro/solo.
+| Fichier | Statut |
+|---|---|
+| `song_moriarty-jimmy.json` | user_validated |
+| `song_pink-floyd-wish-you-were-here.json` | user_validated |
+| `song_neil-young-heart-of-gold.json` | user_validated |
+| `song_zaho-de-sagazan-la-symphonie-des-eclairs.json` | user_validated |
+| `song_muse-endlessly.json` | user_validated |
+| `song_cocoon-on-my-way.json` | user_validated |

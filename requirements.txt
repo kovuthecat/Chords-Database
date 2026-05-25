@@ -1,0 +1,20 @@
+# Dépendances du projet Chords
+#
+# Installation :
+#   python -m venv .venv
+#   .venv\Scripts\activate       # Windows
+#   source .venv/bin/activate    # Linux / macOS
+#   pip install -r requirements.txt
+
+# Interface web (obligatoire)
+flask>=3.0.0
+
+# Génération DOCX (obligatoire)
+python-docx>=1.1.0
+
+# Génération PDF via reportlab (obligatoire — fallback LibreOffice)
+reportlab>=4.0
+
+# Backend Supabase (requis si STORAGE_BACKEND=supabase)
+# Automatiquement installé sur Vercel via vercel.json
+supabase>=2.0.0

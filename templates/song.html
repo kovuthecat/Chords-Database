@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ song.meta.title }} — {{ song.meta.artist }}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Calibri, Arial, sans-serif; background: #f5f5f5; color: #222; }
+    header { background: #1F4E79; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
+    header h1 { font-size: 1.4rem; }
+    header a { color: #aac4e0; font-size: 0.88rem; text-decoration: none; }
+    header a:hover { color: #fff; }
+    main { max-width: 900px; margin: 28px auto; padding: 0 16px 60px; }
+
+    /* Cards */
+    .card { background: #fff; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.12); padding: 24px; margin-bottom: 20px; }
+    .card h2 { font-size: 1.05rem; color: #1F4E79; margin-bottom: 14px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px; }
+    .editor-card { background: #fff; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.12); padding: 24px; margin-bottom: 20px; border-left: 3px solid #1F4E79; }
+    .editor-card h2 { font-size: 1.05rem; color: #1F4E79; margin-bottom: 14px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px; }
+
+    /* Meta */
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .meta-item label { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.06em; color: #888; display: block; margin-bottom: 2px; }
+    .meta-item span  { font-size: 0.95rem; font-weight: bold; color: #222; }
+
+    /* Score */
+    .score-section { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .score-bar-big { width: 120px; height: 12px; background: #ddd; border-radius: 6px; overflow: hidden; }
+    .score-fill-big { height: 100%; background: #1F4E79; border-radius: 6px; }
+    .score-label { font-size: 1.1rem; font-weight: bold; color: #1F4E79; }
+    .sub-scores { font-size: 0.82rem; color: #666; }
+
+    /* Warnings */
+    .warn-list { list-style: none; }
+    .warn-list li { padding: 6px 8px 6px 28px; position: relative; margin-bottom: 4px; border-radius: 3px; font-size: 0.88rem; }
+    .warn-list li::before { content: "⚠"; position: absolute; left: 6px; }
+    .warn-high   { background: #fff0f0; color: #c0392b; }
+    .warn-medium { background: #fff8e1; color: #856404; }
+    .warn-low    { background: #f0f0f0; color: #555; }
+
+    /* Chords */
+    .chords-used { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chord-chip { background: #eef3f8; border: 1px solid #c0d4e8; border-radius: 4px; padding: 4px 10px; font-family: Consolas, monospace; font-size: 0.9rem; color: #1F4E79; font-weight: bold; }
+
+    /* Sections */
+    .section-chip { background: #f0f7ee; border: 1px solid #b8d8b4; border-radius: 3px; padding: 3px 8px; color: #1a5c16; font-size: 0.88rem; }
+
+    /* Buttons */
+    .btn { display: inline-block; padding: 9px 18px; border-radius: 4px; font-size: 0.92rem; cursor: pointer; border: none; text-decoration: none; }
+    .btn-primary { background: #1F4E79; color: #fff; }
+    .btn-primary:hover { background: #163a5c; }
+    .btn-outline  { background: #fff; color: #1F4E79; border: 1px solid #1F4E79; }
+    .btn-outline:hover  { background: #eef3f8; }
+    .btn-success { background: #1a7a3c; color: #fff; }
+    .btn-success:hover { background: #125d2c; }
+    .btn-warning { background: #856404; color: #fff; }
+    .btn-warning:hover { background: #6b5003; }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+    /* Alerts */
+    .error-box { background: #fff0f0; border-left: 4px solid #c0392b; padding: 12px 16px; border-radius: 4px; margin-bottom: 16px; color: #c0392b; }
+    .error-box ul { margin-top: 6px; padding-left: 18px; }
+    .error-box li { font-size: 0.9rem; }
+    .success-box { background: #d4edda; border-left: 4px solid #1a7a3c; padding: 12px 16px; border-radius: 4px; margin-bottom: 16px; color: #155724; }
+    .warn-box    { background: #fff3cd; border-left: 4px solid #856404; padding: 12px 16px; border-radius: 4px; margin-bottom: 16px; }
+
+    /* Upload */
+    .upload-zone { border: 2px dashed #aac4e0; border-radius: 6px; padding: 18px; text-align: center; cursor: pointer; margin-bottom: 10px; }
+    .upload-zone input[type=file] { display: none; }
+    .upload-zone label { cursor: pointer; color: #1F4E79; font-size: 0.9rem; }
+    .upload-zone .hint { font-size: 0.78rem; color: #888; margin-top: 4px; }
+    .upload-zone .fname { margin-top: 4px; font-size: 0.85rem; color: #333; }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.78rem; font-weight: bold; }
+    .badge-validated { background: #d4edda; color: #155724; }
+    .badge-pending   { background: #fff3cd; color: #856404; }
+    .badge-draft     { background: #f0f0f0; color: #555; }
+    .export-path { font-size: 0.82rem; color: #555; margin-top: 8px; font-family: Consolas, monospace; }
+
+    /* Editor form controls */
+    .editor-nav { background: #eef3f8; padding: 10px 16px; border-radius: 4px; margin-bottom: 20px; font-size: 0.85rem; color: #555; }
+    .editor-nav a { color: #1F4E79; text-decoration: none; margin: 0 4px; }
+    .editor-nav a:hover { text-decoration: underline; }
+    .seq-row { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #f0f0f0; }
+    .seq-row:last-child { border-bottom: none; }
+    .btn-move { background: #f0f0f0; border: 1px solid #ddd; border-radius: 3px; cursor: pointer; padding: 3px 7px; font-size: 0.85rem; color: #555; line-height: 1; }
+    .btn-move:hover { background: #e0e0e0; }
+    .btn-remove { background: #fff0f0; border: 1px solid #f5c6cb; border-radius: 3px; cursor: pointer; padding: 3px 8px; color: #c0392b; font-size: 0.85rem; margin-left: auto; flex-shrink: 0; }
+    .btn-remove:hover { background: #ffe0e0; }
+    .sec-id-tag { font-size: 0.72rem; color: #999; font-family: Consolas, monospace; background: #f5f5f5; padding: 2px 5px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
+    .input-label-ed { border: 1px solid #ddd; border-radius: 3px; padding: 5px 8px; font-size: 0.88rem; width: 140px; flex-shrink: 0; }
+    .input-label-ed:focus { outline: none; border-color: #1F4E79; }
+    select.type-select { border: 1px solid #ddd; border-radius: 3px; padding: 5px 6px; font-size: 0.84rem; color: #444; background: #fff; flex-shrink: 0; }
+    .input-repeats { border: 1px solid #ddd; border-radius: 3px; padding: 5px; font-size: 0.85rem; width: 44px; text-align: center; }
+    .repeats-label { font-size: 0.84rem; color: #666; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .add-seq-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ddd; flex-wrap: wrap; }
+    .form-row { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+    .input-chord { border: 1px solid #ddd; border-radius: 3px; padding: 7px 10px; font-size: 0.92rem; font-family: Consolas, monospace; width: 150px; }
+    .input-chord:focus { outline: none; border-color: #1F4E79; }
+    .rhythm-table { width: 100%; border-collapse: collapse; }
+    .rhythm-table th { text-align: left; padding: 6px 8px; border-bottom: 2px solid #e0e0e0; color: #555; font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .rhythm-table td { padding: 7px 8px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+    .input-rhythm { border: 1px solid #ddd; border-radius: 3px; padding: 5px 8px; font-size: 0.85rem; width: 100%; font-family: Consolas, monospace; }
+    .input-rhythm:focus { outline: none; border-color: #1F4E79; }
+    .input-full { border: 1px solid #ddd; border-radius: 3px; padding: 7px 10px; font-size: 0.88rem; width: 100%; font-family: Consolas, monospace; }
+    .input-full:focus { outline: none; border-color: #1F4E79; }
+    .field-group { margin-top: 10px; }
+    .field-label { font-size: 0.8rem; color: #888; display: block; margin-bottom: 3px; }
+
+    /* ================================================================ */
+    /* Aperçu interactif                                                 */
+    /* ================================================================ */
+    #preview-wrap { position: relative; }
+    #preview-error { display: none; background: #fff0f0; border-left: 3px solid #c0392b; padding: 8px 12px; margin-bottom: 10px; font-size: .85rem; color: #c0392b; border-radius: 3px; }
+    #preview-content { transition: opacity .15s; }
+    .prev-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #f0f0f0; }
+    .prev-section:last-child { border-bottom: none; margin-bottom: 0; }
+    .prev-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .prev-label { font-weight: 700; color: #1F4E79; font-size: .85rem; text-transform: uppercase; letter-spacing: .07em; }
+    .prev-repeat { color: #aaa; font-size: .82rem; }
+    .prev-tag-instrumental { font-size: .7rem; color: #888; background: #f5f5f5; padding: 1px 6px; border-radius: 10px; }
+    .prev-lines { }
+    .prev-line { margin-bottom: 8px; }
+    .prev-chords-row {
+      position: relative;
+      height: 1.5em;
+      font-family: Consolas, monospace;
+      font-size: .92rem;
+      overflow: visible;
+      margin-bottom: 1px;
+    }
+    .prev-chord {
+      position: absolute;
+      color: #1F4E79;
+      font-weight: bold;
+      font-family: Consolas, monospace;
+      font-size: .92rem;
+      cursor: pointer;
+      padding: 1px 3px;
+      border-radius: 3px;
+      white-space: nowrap;
+      user-select: none;
+      line-height: 1;
+    }
+    .prev-chord:hover { background: #eef3f8; outline: 1px solid #1F4E79; }
+    .prev-lyrics-wrap { position: relative; }
+    .prev-lyrics-text { font-family: Consolas, monospace; font-size: .92rem; white-space: pre; line-height: 1.5; }
+    .prev-inserts { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+    .insert-pt {
+      position: absolute;
+      pointer-events: all;
+      color: #c0d4e8;
+      font-size: .7rem;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      opacity: 0;
+      user-select: none;
+      transform: translateX(-50%);
+      top: 0;
+      line-height: 1.5em;
+    }
+    .prev-line:hover .insert-pt { opacity: 1; }
+    .insert-pt:hover { color: #1F4E79; }
+    .prev-instrumental { }
+    .prev-grid-line { font-family: Consolas, monospace; font-size: .88rem; color: #555; padding: 2px 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .prev-grid-repeat { color: #aaa; font-size: .82rem; }
+    .instr-chord {
+      color: #1F4E79; font-weight: bold; font-family: Consolas, monospace; font-size: .92rem;
+      cursor: pointer; padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+      user-select: none; line-height: 1.4; display: inline-block;
+    }
+    .instr-chord:hover { background: #eef3f8; outline: 1px solid #1F4E79; }
+    .prev-empty { color: #aaa; font-size: .82rem; font-style: italic; }
+    .prev-hint { font-size: .78rem; color: #aaa; margin-top: 10px; }
+
+    /* Points d'insertion accords instrumentaux */
+    .insert-instr-pt {
+      color: #c0d4e8; font-size: .7rem; font-weight: bold;
+      cursor: pointer; opacity: 0; user-select: none;
+      padding: 0 2px;
+    }
+    .prev-grid-line:hover .insert-instr-pt { opacity: 1; }
+    .insert-instr-pt:hover { color: #1F4E79; }
+
+    /* Paroles éditables inline */
+    .prev-lyrics-text { cursor: text; }
+    .prev-lyrics-text:hover { outline: 1px dashed #c0d4e8; border-radius: 2px; }
+    .lyrics-edit-input {
+      font-family: Consolas, monospace; font-size: .92rem;
+      white-space: pre; line-height: 1.5;
+      border: 1px solid #1F4E79; border-radius: 3px;
+      padding: 1px 4px; width: 100%; background: #f8fafd;
+      box-sizing: border-box;
+    }
+
+    /* Backups */
+    .backup-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .backup-table th { text-align: left; padding: 4px 8px; border-bottom: 1px solid #eee; color: #888; font-weight: 600; font-size: .78rem; }
+    .backup-table td { padding: 5px 8px; border-bottom: 1px solid #f5f5f5; color: #555; vertical-align: middle; }
+    .backup-table tr:last-child td { border-bottom: none; }
+    .backup-ts { font-family: Consolas, monospace; }
+
+    /* ================================================================ */
+    /* Popups flottants (chord edit + insert)                            */
+    /* ================================================================ */
+    .chord-popup {
+      display: none;
+      position: fixed;
+      background: #fff;
+      border: 1px solid #1F4E79;
+      border-radius: 8px;
+      padding: 14px 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.18);
+      z-index: 1000;
+      min-width: 210px;
+    }
+    .popup-title { font-size: .75rem; color: #888; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .06em; }
+    .popup-input {
+      border: 1px solid #ddd; border-radius: 3px;
+      padding: 6px 10px;
+      font-family: Consolas, monospace; font-size: 1rem;
+      width: 130px;
+    }
+    .popup-input:focus { outline: none; border-color: #1F4E79; }
+    .popup-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+    .popup-btn { padding: 5px 11px; border-radius: 3px; border: none; cursor: pointer; font-size: .85rem; }
+    .popup-btn-ok  { background: #1F4E79; color: #fff; }
+    .popup-btn-ok:hover { background: #163a5c; }
+    .popup-btn-del { background: #fff0f0; color: #c0392b; border: 1px solid #f5c6cb; }
+    .popup-btn-del:hover { background: #ffe0e0; }
+    .popup-btn-cancel { background: #f5f5f5; color: #555; }
+    .popup-btn-cancel:hover { background: #e8e8e8; }
+    .popup-err { color: #c0392b; font-size: .78rem; margin-top: 6px; display: none; }
+
+    iframe { width: 100%; height: 600px; border: 1px solid #ddd; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- Popup : modifier / supprimer un accord existant -->
+<div class="chord-popup" id="edit-popup">
+  <div class="popup-title">Modifier l'accord</div>
+  <input class="popup-input" type="text" id="edit-chord-input" autocomplete="off" autocorrect="off" spellcheck="false">
+  <div class="popup-actions">
+    <button class="popup-btn popup-btn-ok" onclick="confirmEditChord()">OK</button>
+    <button class="popup-btn popup-btn-del" onclick="confirmDeleteChord()">Supprimer</button>
+    <button class="popup-btn popup-btn-cancel" onclick="closePopups()">Annuler</button>
+  </div>
+  <div class="popup-err" id="edit-popup-err"></div>
+</div>
+
+<!-- Popup : insérer un nouvel accord (sections avec paroles) -->
+<div class="chord-popup" id="insert-popup">
+  <div class="popup-title">Ajouter un accord</div>
+  <input class="popup-input" type="text" id="insert-chord-input" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ex: Am">
+  <div class="popup-actions">
+    <button class="popup-btn popup-btn-ok" onclick="confirmInsertChord()">Ajouter</button>
+    <button class="popup-btn popup-btn-cancel" onclick="closePopups()">Annuler</button>
+  </div>
+  <div class="popup-err" id="insert-popup-err"></div>
+</div>
+
+<!-- Popup : insérer un accord dans une section instrumentale -->
+<div class="chord-popup" id="insert-instr-popup">
+  <div class="popup-title">Insérer un accord</div>
+  <input class="popup-input" type="text" id="insert-instr-chord-input" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ex: G">
+  <div class="popup-actions">
+    <button class="popup-btn popup-btn-ok" onclick="confirmInsertInstrChord()">Insérer</button>
+    <button class="popup-btn popup-btn-cancel" onclick="closePopups()">Annuler</button>
+  </div>
+  <div class="popup-err" id="insert-instr-popup-err"></div>
+</div>
+
+<header>
+  <h1>{{ song.meta.title }}</h1>
+  <span style="color:#aac4e0;font-size:.9rem">{{ song.meta.artist }}</span>
+  <a href="/library" style="margin-left:auto">← Bibliothèque</a>
+  <a href="/">Accueil</a>
+</header>
+<main>
+
+  {% if edit_ok %}
+  <div class="success-box">✓ {{ edit_ok }}</div>
+  {% endif %}
+  {% if edit_error %}
+  <div class="error-box"><strong>Erreur :</strong> {{ edit_error }}</div>
+  {% endif %}
+  {% if errors %}
+  <div class="error-box">
+    <strong>Validation échouée :</strong>
+    <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+  {% if error %}
+  <div class="error-box"><strong>Erreur :</strong> {{ error }}</div>
+  {% endif %}
+  {% if exported %}
+  <div class="success-box">2 PDFs exportés avec succès dans {{ export_dir }}</div>
+  {% endif %}
+  {% if gen_warning %}
+  <div class="warn-box"><strong>Avertissement PDF :</strong> {{ gen_warning }}<br>
+    <small>Installer reportlab pour l'aperçu PDF (<code>pip install reportlab</code>).</small>
+  </div>
+  {% endif %}
+
+  <!-- Métadonnées -->
+  <div class="card">
+    <h2>Métadonnées</h2>
+    <div class="meta-grid">
+      <div class="meta-item"><label>Artiste</label><span>{{ song.meta.artist }}</span></div>
+      {% if song.meta.album %}
+      <div class="meta-item"><label>Album</label><span>{{ song.meta.album }}</span></div>
+      {% endif %}
+      {% if song.meta.key %}
+      <div class="meta-item">
+        <label>Tonalité</label>
+        <span>{{ song.meta.key }} {% if song.meta.key_mode == 'major' %}majeur{% else %}mineur{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if song.meta.capo %}
+      <div class="meta-item"><label>Capo</label><span>{{ song.meta.capo }}</span></div>
+      {% endif %}
+      {% if song.meta.tempo %}
+      <div class="meta-item"><label>Tempo</label><span>~{{ song.meta.tempo }} bpm</span></div>
+      {% endif %}
+      <div class="meta-item">
+        <label>Statut</label>
+        {% if song.validation and song.validation.status == 'user_validated' %}
+          <span class="badge badge-validated">Validé</span>
+        {% elif song.validation and song.validation.status == 'pending' %}
+          <span class="badge badge-pending">En attente</span>
+        {% else %}
+          <span class="badge badge-draft">{{ song.validation.status if song.validation else '—' }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Accords utilisés -->
+  {% if song.chords_used %}
+  <div class="card">
+    <h2>Accords utilisés</h2>
+    <div class="chords-used">
+      {% for c in song.chords_used %}{% if not c.startswith('_') %}
+      <span class="chord-chip">{{ c }}</span>
+      {% endif %}{% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Score de confiance -->
+  {% set conf = song.confidence if song.confidence else {} %}
+  {% set overall = conf.overall if conf.overall else 0 %}
+  {% if overall > 0 %}
+  <div class="card">
+    <h2>Score de confiance</h2>
+    <div class="score-section">
+      <div class="score-bar-big"><div class="score-fill-big" style="width:{{ (overall * 100)|int }}%"></div></div>
+      <span class="score-label">{{ (overall * 100)|int }}%</span>
+      <div class="sub-scores">
+        Structure : {{ (conf.structure * 100)|int if conf.structure else '—' }}% &nbsp;·&nbsp;
+        Accords : {{ (conf.chords * 100)|int if conf.chords else '—' }}% &nbsp;·&nbsp;
+        Alignement : {{ (conf.lyric_alignment * 100)|int if conf.lyric_alignment else '—' }}%
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Warnings -->
+  {% set warnings = song.warnings if song.warnings else [] %}
+  {% if warnings %}
+  <div class="card">
+    <h2>Avertissements</h2>
+    <ul class="warn-list">
+      {% for w in warnings %}
+      <li class="warn-{{ w.severity if w.severity else 'low' }}">{{ w.message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- Mode répétition -->
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;padding:12px 16px;background:#fff;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.1);border-left:3px solid #1a5c16">
+    <span style="font-size:.82rem;color:#555;font-weight:bold">Mode répétition :</span>
+    <a class="btn btn-outline" href="/song/{{ slug }}/rehearsal/chords" target="_blank" style="font-size:.84rem;padding:6px 12px">🎵 Paroles &amp; Accords</a>
+    <a class="btn btn-outline" href="/song/{{ slug }}/rehearsal/memo" target="_blank" style="font-size:.84rem;padding:6px 12px">🎸 Mémo Guitare</a>
+    <span style="font-size:.73rem;color:#bbb;margin-left:4px">S'ouvre dans un nouvel onglet</span>
+  </div>
+
+  <!-- Navigation éditeurs -->
+  <div class="editor-nav">
+    Éditeurs : <a href="#editor-structure">Structure</a> ·
+    <a href="#editor-chords">Accords</a> ·
+    <a href="#editor-transpose">Transposition</a> ·
+    <a href="#editor-rhythm">Rythme</a> ·
+    <a href="#editor-add-section">Nouvelle section</a>
+  </div>
+
+  <!-- Bouton global de sauvegarde (structure + rythme) -->
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:14px 20px;background:#fff;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.12);border-left:3px solid #1a7a3c">
+    <button id="btn-save-all" class="btn btn-success" onclick="saveAll()">Sauvegarder et rafraîchir l'aperçu</button>
+    <span id="save-all-status" style="font-size:.88rem"></span>
+    <small style="color:#aaa;font-size:.78rem;margin-left:auto">Sauvegarde la structure et le rythme</small>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- APERÇU INTERACTIF                                                 -->
+  <!-- ================================================================ -->
+  <div class="card" id="song-preview">
+    <h2>Aperçu — Paroles &amp; Accords
+      <span style="font-size:.75rem;font-weight:normal;color:#888;margin-left:8px">
+        Cliquer sur un accord pour le modifier · survol d'une ligne pour ajouter
+      </span>
+    </h2>
+    <div id="preview-wrap">
+      <div id="preview-error"></div>
+      <div id="preview-content">
+        {% include "_preview.html" %}
+      </div>
+      <p class="prev-hint">Après modification, cliquer sur « Régénérer » dans Actions pour mettre à jour le PDF.</p>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- ÉDITEUR STRUCTURE                                                 -->
+  <!-- ================================================================ -->
+  <div class="editor-card" id="editor-structure">
+    <h2>Éditeur — Structure</h2>
+    <form action="/song/{{ slug }}/edit-structure" method="post" id="form-structure" onsubmit="return false">
+      <input type="hidden" name="new_sequence" id="seq-hidden" value="">
+
+      <div id="seq-list">
+        {% for sid in structure_items %}
+        {% set sec = sections_by_id[sid] %}
+        <div class="seq-row" data-id="{{ sid }}">
+          <div style="display:flex;gap:3px">
+            <button type="button" class="btn-move" onclick="moveUp(this)">↑</button>
+            <button type="button" class="btn-move" onclick="moveDown(this)">↓</button>
+          </div>
+          <span class="sec-id-tag">{{ sid }}</span>
+          <input type="text" name="label_{{ sid }}" value="{{ sec.label }}" class="input-label-ed">
+          <select name="type_{{ sid }}" class="type-select">
+            {% for st in section_types %}
+            <option value="{{ st }}"{% if sec.type == st %} selected{% endif %}>{{ st }}</option>
+            {% endfor %}
+          </select>
+          <label class="repeats-label">×
+            <input type="number" name="repeats_{{ sid }}" value="{{ sec.repeats if sec.repeats else 1 }}" min="1" max="20" class="input-repeats">
+          </label>
+          <button type="button" class="btn-remove" onclick="removeRow(this)">✕</button>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="add-seq-row">
+        <label style="font-size:.85rem;color:#555">Ajouter à la séquence :</label>
+        <select id="add-existing">
+          {% for sec in song.sections %}
+          <option value="{{ sec.id }}">{{ sec.label }} ({{ sec.id }})</option>
+          {% endfor %}
+        </select>
+        <button type="button" class="btn btn-outline" style="padding:6px 12px;font-size:.85rem" onclick="addToSequence()">+ Ajouter</button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- ÉDITEUR ACCORD                                                    -->
+  <!-- ================================================================ -->
+  <div class="editor-card" id="editor-chords">
+    <h2>Éditeur — Remplacement d'accord</h2>
+    <form action="/song/{{ slug }}/replace-chord" method="post">
+      <div class="form-row">
+        <div>
+          <label class="field-label">Accord à remplacer *</label>
+          <input type="text" name="old_chord" placeholder="ex: Am" class="input-chord" required>
+        </div>
+        <div style="align-self:flex-end;padding-bottom:7px;font-size:1.1rem;color:#aaa">→</div>
+        <div>
+          <label class="field-label">Nouvel accord *</label>
+          <input type="text" name="new_chord" placeholder="ex: A" class="input-chord" required>
+        </div>
+        <div>
+          <label class="field-label">Portée</label>
+          <select name="section_id" style="border:1px solid #ddd;border-radius:3px;padding:7px 8px;font-size:.88rem;background:#fff">
+            <option value="">Tout le morceau</option>
+            {% for sec in song.sections %}
+            <option value="{{ sec.id }}">{{ sec.label }} ({{ sec.id }})</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top:14px">Remplacer l'accord</button>
+    </form>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- TRANSPOSITION                                                     -->
+  <!-- ================================================================ -->
+  <div class="editor-card" id="editor-transpose">
+    <h2>Transposition automatique</h2>
+    <p style="font-size:.85rem;color:#666;margin-bottom:14px">
+      Transpose tous les accords et la tonalité du morceau.
+      Le capo n'est pas modifié. Un backup est créé automatiquement.
+    </p>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-outline" style="font-size:.9rem;min-width:42px" onclick="doTranspose(-2)">−2</button>
+      <button class="btn btn-outline" style="font-size:.9rem;min-width:42px" onclick="doTranspose(-1)">−1</button>
+      <button class="btn btn-outline" style="font-size:.9rem;min-width:42px" onclick="doTranspose(+1)">+1</button>
+      <button class="btn btn-outline" style="font-size:.9rem;min-width:42px" onclick="doTranspose(+2)">+2</button>
+      <span style="color:#ccc;margin:0 4px">|</span>
+      <input type="number" id="transpose-custom" value="0" min="-11" max="11"
+             style="width:60px;border:1px solid #ddd;border-radius:3px;padding:6px 8px;font-size:.9rem;text-align:center">
+      <button class="btn btn-primary" style="font-size:.88rem" onclick="doTransposeCustom()">Appliquer</button>
+      <span id="transpose-status" style="font-size:.85rem;margin-left:4px"></span>
+    </div>
+    <p style="font-size:.73rem;color:#bbb;margin-top:10px">demi-tons · −11 à +11</p>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- ÉDITEUR RYTHME                                                    -->
+  <!-- ================================================================ -->
+  {% if unique_sections %}
+  <div class="editor-card" id="editor-rhythm">
+    <h2>Éditeur — Rythme par section</h2>
+    <form action="/song/{{ slug }}/edit-rhythm" method="post" id="form-rhythm" onsubmit="return false">
+      <table class="rhythm-table">
+        <thead>
+          <tr>
+            <th style="width:28%">Section</th>
+            <th style="width:36%">Pattern (ex: D DU UDU)</th>
+            <th style="width:36%">Feel (ex: straight, swing)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sec in unique_sections %}
+          <tr>
+            <td>
+              <span class="section-chip">{{ sec.label }}</span><br>
+              <small style="color:#bbb;font-family:Consolas,monospace;font-size:.72rem">{{ sec.id }}</small>
+            </td>
+            <td>
+              <input type="text" name="pattern_{{ sec.id }}"
+                     value="{{ sec.rhythm.pattern if sec.rhythm else '' }}"
+                     placeholder="D DU UDU" class="input-rhythm">
+            </td>
+            <td>
+              <input type="text" name="feel_{{ sec.id }}"
+                     value="{{ sec.rhythm.feel if sec.rhythm else '' }}"
+                     placeholder="straight" class="input-rhythm">
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+  </div>
+  {% endif %}
+
+  <!-- ================================================================ -->
+  <!-- CRÉER NOUVELLE SECTION                                            -->
+  <!-- ================================================================ -->
+  <div class="editor-card" id="editor-add-section">
+    <h2>Éditeur — Nouvelle section</h2>
+    <form action="/song/{{ slug }}/add-section" method="post">
+      <div class="form-row">
+        <div>
+          <label class="field-label">Label *</label>
+          <input type="text" name="label" placeholder="ex: Interlude, Pont" class="input-label-ed" style="width:180px" required>
+        </div>
+        <div>
+          <label class="field-label">Type *</label>
+          <select name="type" class="type-select">
+            {% for st in section_types %}
+            <option value="{{ st }}">{{ st }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Grille d'accords (optionnel)</label>
+        <input type="text" name="chord_grid" placeholder="ex: | Am | C | G | F |" class="input-full">
+      </div>
+      <p style="font-size:.8rem;color:#999;margin-top:8px">Ajoutée en fin de séquence.</p>
+      <button type="submit" class="btn btn-primary" style="margin-top:12px">Créer la section</button>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="card">
+    <h2>Actions</h2>
+    <div class="btn-row" style="margin-bottom:14px">
+      {% if docx_exists %}
+      <a class="btn btn-outline" href="/output/song_{{ slug }}.docx">Télécharger DOCX</a>
+      {% endif %}
+      {% if pdf_exists %}
+      <a class="btn btn-outline" href="/output/song_{{ slug }}.pdf" target="_blank">Voir PDF complet</a>
+      {% endif %}
+      <a class="btn btn-outline" href="/song/{{ slug }}/download-json" title="Télécharger le JSON source">Télécharger JSON</a>
+    </div>
+
+    <form action="/song/{{ slug }}/export-split" method="post">
+      <div style="margin-bottom:10px;font-size:.9rem;color:#444">
+        Valider et exporter les 2 fiches PDF :
+        <ul style="margin:6px 0 0 18px;font-size:.83rem;color:#555">
+          <li>Artiste - Titre - Paroles &amp; Accords.pdf</li>
+          <li>Artiste - Titre - Mémo Guitare.pdf</li>
+        </ul>
+        <div class="export-path">→ {{ export_dir }}</div>
+      </div>
+      {% if pdf_chords_exists or pdf_memo_exists %}
+      <div style="margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap">
+        {% if pdf_chords_exists %}
+        <a class="btn btn-outline" style="font-size:.84rem;padding:6px 12px" href="{{ pdf_chords_url }}" target="_blank">Paroles &amp; Accords PDF</a>
+        {% endif %}
+        {% if pdf_memo_exists %}
+        <a class="btn btn-outline" style="font-size:.84rem;padding:6px 12px" href="{{ pdf_memo_url }}" target="_blank">Mémo Guitare PDF</a>
+        {% endif %}
+      </div>
+      {% endif %}
+      <button type="submit" class="btn btn-success">Valider et exporter 2 PDFs</button>
+    </form>
+
+    <hr style="margin:20px 0;border:none;border-top:1px solid #eee">
+
+    <details>
+      <summary style="cursor:pointer;font-size:.9rem;color:#1F4E79;font-weight:bold">Régénérer DOCX / PDF</summary>
+      <form action="/song/{{ slug }}/regenerate" method="post" enctype="multipart/form-data" style="margin-top:12px">
+        <div class="upload-zone">
+          <input type="file" name="json_file" id="regen_file" accept=".json">
+          <label for="regen_file">Choisir un JSON corrigé (optionnel)</label>
+          <div class="hint">Laisser vide pour régénérer depuis le JSON actuel</div>
+          <div class="fname" id="regen-name"></div>
+        </div>
+        <button type="submit" class="btn btn-warning" style="width:100%;margin-top:8px">Régénérer DOCX / PDF</button>
+      </form>
+    </details>
+
+    <details style="margin-top:14px">
+      <summary style="cursor:pointer;font-size:.9rem;color:#888">Aperçu PDF (si généré)</summary>
+      <div style="margin-top:12px">
+        {% if pdf_exists %}
+        <iframe src="/output/song_{{ slug }}.pdf" title="Aperçu PDF"></iframe>
+        {% else %}
+        <p style="color:#aaa;font-size:.88rem">Aucun PDF disponible. Utiliser « Régénérer » ci-dessus.</p>
+        {% endif %}
+      </div>
+    </details>
+
+    <details style="margin-top:14px">
+      <summary style="cursor:pointer;font-size:.9rem;color:#888">
+        Historique / Backups
+        {% if backups %}<span style="font-size:.78rem;color:#bbb;margin-left:6px">({{ backups|length }})</span>{% endif %}
+      </summary>
+      <div style="margin-top:12px">
+        {% if backups %}
+        <p style="font-size:.78rem;color:#aaa;margin-bottom:10px">
+          Chaque sauvegarde crée automatiquement un backup. Restaurer remplace le JSON actuel
+          (la version actuelle est elle-même sauvegardée avant écrasement).
+        </p>
+        <table class="backup-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th style="text-align:right">Taille</th>
+              <th style="text-align:right"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in backups %}
+            <tr>
+              <td class="backup-ts">{{ b.timestamp }}</td>
+              <td style="text-align:right;color:#bbb">{{ b.size_kb }} Ko</td>
+              <td style="text-align:right">
+                <form action="/song/{{ slug }}/restore/{{ b.filename }}" method="post"
+                      style="margin:0;display:inline"
+                      onsubmit="return confirm('Restaurer cette version ?\n(La version actuelle sera sauvegardée en backup avant écrasement.)')">
+                  <button type="submit"
+                          style="padding:3px 10px;font-size:.78rem;background:#e8f0e8;color:#1a5c16;border:1px solid #b8d8b4;border-radius:3px;cursor:pointer">
+                    Restaurer
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p style="color:#aaa;font-size:.85rem">Aucun backup disponible — les backups sont créés à chaque sauvegarde.</p>
+        {% endif %}
+      </div>
+    </details>
+  </div>
+
+</main>
+
+<script>
+  /* ---- Config ---- */
+  const _slug = {{ slug | tojson }};
+  const sectionsData = {{ sections_data_json | safe }};
+  const sectionTypes = {{ section_types | tojson }};
+
+  /* ---- Structure editor ---- */
+
+  function serializeSeq() {
+    const rows = document.querySelectorAll('#seq-list .seq-row');
+    const ids = Array.from(rows).map(r => r.dataset.id);
+    document.getElementById('seq-hidden').value = JSON.stringify(ids);
+  }
+
+  function moveUp(btn) {
+    const row = btn.closest('.seq-row');
+    const prev = row.previousElementSibling;
+    if (prev) row.parentNode.insertBefore(row, prev);
+  }
+
+  function moveDown(btn) {
+    const row = btn.closest('.seq-row');
+    const next = row.nextElementSibling;
+    if (next) row.parentNode.insertBefore(next, row);
+  }
+
+  function removeRow(btn) {
+    if (!confirm('Retirer cette section de la séquence ?')) return;
+    btn.closest('.seq-row').remove();
+  }
+
+  function addToSequence() {
+    const sel = document.getElementById('add-existing');
+    const sid = sel.value;
+    if (!sid) return;
+    const sec = sectionsData[sid] || {label: sid, type: 'verse', repeats: 1};
+
+    const row = document.createElement('div');
+    row.className = 'seq-row';
+    row.dataset.id = sid;
+
+    const btnWrap = document.createElement('div');
+    btnWrap.style.cssText = 'display:flex;gap:3px';
+    const btnUp = document.createElement('button');
+    btnUp.type = 'button'; btnUp.className = 'btn-move'; btnUp.textContent = '↑';
+    btnUp.onclick = function() { moveUp(this); };
+    const btnDown = document.createElement('button');
+    btnDown.type = 'button'; btnDown.className = 'btn-move'; btnDown.textContent = '↓';
+    btnDown.onclick = function() { moveDown(this); };
+    btnWrap.appendChild(btnUp); btnWrap.appendChild(btnDown);
+
+    const tag = document.createElement('span');
+    tag.className = 'sec-id-tag'; tag.textContent = sid;
+
+    const lblInput = document.createElement('input');
+    lblInput.type = 'text'; lblInput.name = 'label_' + sid;
+    lblInput.value = sec.label || sid; lblInput.className = 'input-label-ed';
+
+    const typeSelect = document.createElement('select');
+    typeSelect.name = 'type_' + sid; typeSelect.className = 'type-select';
+    sectionTypes.forEach(function(t) {
+      const opt = document.createElement('option');
+      opt.value = t; opt.textContent = t;
+      if (t === sec.type) opt.selected = true;
+      typeSelect.appendChild(opt);
+    });
+
+    const rptLabel = document.createElement('label');
+    rptLabel.className = 'repeats-label';
+    rptLabel.appendChild(document.createTextNode('×'));
+    const rptInput = document.createElement('input');
+    rptInput.type = 'number'; rptInput.name = 'repeats_' + sid;
+    rptInput.value = sec.repeats || 1; rptInput.min = 1; rptInput.max = 20;
+    rptInput.className = 'input-repeats';
+    rptLabel.appendChild(rptInput);
+
+    const btnRem = document.createElement('button');
+    btnRem.type = 'button'; btnRem.className = 'btn-remove'; btnRem.textContent = '✕';
+    btnRem.onclick = function() { removeRow(this); };
+
+    row.appendChild(btnWrap); row.appendChild(tag); row.appendChild(lblInput);
+    row.appendChild(typeSelect); row.appendChild(rptLabel); row.appendChild(btnRem);
+    document.getElementById('seq-list').appendChild(row);
+  }
+
+  /* ---- Upload file display ---- */
+  document.getElementById('regen_file').addEventListener('change', function() {
+    document.getElementById('regen-name').textContent = this.files[0] ? this.files[0].name : '';
+  });
+
+  /* ================================================================ */
+  /* Aperçu interactif — popup chord edit                             */
+  /* ================================================================ */
+
+  let _editTarget = null;        // span.prev-chord ou .instr-chord ciblé
+  let _insertTarget = null;     // span.insert-pt ciblé (sections paroles)
+  let _insertInstrTarget = null; // span.insert-instr-pt ciblé (sections instrumentales)
+
+  function openEditChord(el) {
+    closePopups();
+    _editTarget = el;
+    const popup = document.getElementById('edit-popup');
+    document.getElementById('edit-chord-input').value = el.dataset.chord;
+    document.getElementById('edit-popup-err').style.display = 'none';
+    positionPopup(popup, el);
+    popup.style.display = 'block';
+    document.getElementById('edit-chord-input').focus();
+    document.getElementById('edit-chord-input').select();
+  }
+
+  function openInsertChord(el) {
+    closePopups();
+    _insertTarget = el;
+    const popup = document.getElementById('insert-popup');
+    document.getElementById('insert-chord-input').value = '';
+    document.getElementById('insert-popup-err').style.display = 'none';
+    positionPopup(popup, el);
+    popup.style.display = 'block';
+    document.getElementById('insert-chord-input').focus();
+  }
+
+  function positionPopup(popup, anchor) {
+    // position:fixed → coordonnées relatives au viewport, pas au document
+    const rect = anchor.getBoundingClientRect();
+    const popupH = 130;
+    let top = rect.bottom + 6;
+    // Si le popup déborde en bas, le faire apparaître au-dessus de l'ancre
+    if (top + popupH > window.innerHeight - 10) {
+      top = Math.max(8, rect.top - popupH - 6);
+    }
+    const left = Math.max(8, Math.min(rect.left, window.innerWidth - 230));
+    popup.style.top = top + 'px';
+    popup.style.left = left + 'px';
+  }
+
+  function closePopups() {
+    document.getElementById('edit-popup').style.display = 'none';
+    document.getElementById('insert-popup').style.display = 'none';
+    document.getElementById('insert-instr-popup').style.display = 'none';
+    _editTarget = null;
+    _insertTarget = null;
+    _insertInstrTarget = null;
+  }
+
+  /* Close on outside click */
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.chord-popup') &&
+        !e.target.closest('.prev-chord') &&
+        !e.target.closest('.instr-chord') &&
+        !e.target.closest('.insert-pt') &&
+        !e.target.closest('.insert-instr-pt') &&
+        !e.target.closest('.prev-lyrics-text')) {
+      closePopups();
+    }
+  });
+
+  /* Enter / Escape shortcuts */
+  document.getElementById('edit-chord-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') confirmEditChord();
+    if (e.key === 'Escape') closePopups();
+  });
+  document.getElementById('insert-chord-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') confirmInsertChord();
+    if (e.key === 'Escape') closePopups();
+  });
+
+  /* ---- AJAX actions ---- */
+
+  function confirmEditChord() {
+    if (!_editTarget) return;
+    const newChord = document.getElementById('edit-chord-input').value.trim();
+    if (!newChord) return;
+    const instrType = _editTarget.dataset.instrType;
+    if (instrType) {
+      chordAjax('/instr-chord/update', {
+        section_id:  _editTarget.dataset.section,
+        instr_type:  instrType,
+        chord_index: _editTarget.dataset.ci,
+        new_chord:   newChord,
+        ppi: _editTarget.dataset.ppi || 0,
+        li:  _editTarget.dataset.li  || 0,
+      }, 'edit-popup-err');
+    } else {
+      const line = _editTarget.closest('.prev-line');
+      chordAjax('/chord-at/update', {
+        section_id: line.dataset.section,
+        line_index:  line.dataset.li,
+        chord_index: _editTarget.dataset.ci,
+        new_chord:   newChord,
+      }, 'edit-popup-err');
+    }
+  }
+
+  function confirmDeleteChord() {
+    if (!_editTarget) return;
+    if (!confirm('Supprimer cet accord ?')) return;
+    const instrType = _editTarget.dataset.instrType;
+    if (instrType) {
+      chordAjax('/instr-chord/delete', {
+        section_id:  _editTarget.dataset.section,
+        instr_type:  instrType,
+        chord_index: _editTarget.dataset.ci,
+        ppi: _editTarget.dataset.ppi || 0,
+        li:  _editTarget.dataset.li  || 0,
+      }, 'edit-popup-err');
+    } else {
+      const line = _editTarget.closest('.prev-line');
+      chordAjax('/chord-at/delete', {
+        section_id:  line.dataset.section,
+        line_index:  line.dataset.li,
+        chord_index: _editTarget.dataset.ci,
+      }, 'edit-popup-err');
+    }
+  }
+
+  function confirmInsertChord() {
+    if (!_insertTarget) return;
+    const chord = document.getElementById('insert-chord-input').value.trim();
+    if (!chord) return;
+    const line = _insertTarget.closest('.prev-line');
+    chordAjax('/chord-at/insert', {
+      section_id: line.dataset.section,
+      line_index:  line.dataset.li,
+      chord:       chord,
+      position:    _insertTarget.dataset.pos,
+    }, 'insert-popup-err');
+  }
+
+  /* ================================================================ */
+  /* Insert accord dans section instrumentale                         */
+  /* ================================================================ */
+
+  function openInsertInstrChord(el) {
+    closePopups();
+    _insertInstrTarget = el;
+    const popup = document.getElementById('insert-instr-popup');
+    document.getElementById('insert-instr-chord-input').value = '';
+    document.getElementById('insert-instr-popup-err').style.display = 'none';
+    positionPopup(popup, el);
+    popup.style.display = 'block';
+    document.getElementById('insert-instr-chord-input').focus();
+  }
+
+  function confirmInsertInstrChord() {
+    if (!_insertInstrTarget) return;
+    const chord = document.getElementById('insert-instr-chord-input').value.trim();
+    if (!chord) return;
+    const el = _insertInstrTarget;
+    chordAjax('/instr-chord/insert', {
+      section_id: el.dataset.section,
+      instr_type: el.dataset.instrType,
+      insert_at:  el.dataset.insertAt,
+      chord:      chord,
+      ppi: el.dataset.ppi || 0,
+      li:  el.dataset.li  || 0,
+    }, 'insert-instr-popup-err');
+  }
+
+  document.getElementById('insert-instr-chord-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') confirmInsertInstrChord();
+    if (e.key === 'Escape') closePopups();
+  });
+
+  /* ================================================================ */
+  /* Édition paroles inline                                            */
+  /* ================================================================ */
+
+  function openEditLyrics(el) {
+    closePopups();
+    const line = el.closest('.prev-line');
+    if (!line) return;
+    const sectionId = line.dataset.section;
+    const li = line.dataset.li;
+    // Récupérer le texte (ignorer le zero-width space utilisé pour les lignes vides)
+    const currentText = el.textContent.replace(/​/g, '');
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'lyrics-edit-input';
+    input.value = currentText;
+    el.style.display = 'none';
+    el.after(input);
+    input.focus();
+    input.select();
+
+    let done = false;
+
+    function save() {
+      if (done) return;
+      done = true;
+      const newText = input.value;
+      const fd = new FormData();
+      fd.append('section_id', sectionId);
+      fd.append('line_index', li);
+      fd.append('new_lyrics', newText);
+
+      const content = document.getElementById('preview-content');
+      content.style.opacity = '0.5';
+
+      fetch('/song/' + _slug + '/lyrics-at/update', {method: 'POST', body: fd})
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.ok) {
+            refreshPreview();
+          } else {
+            content.style.opacity = '1';
+            input.remove();
+            el.style.display = '';
+            showPreviewError(d.error || 'Erreur sauvegarde paroles');
+          }
+        })
+        .catch(function() {
+          content.style.opacity = '1';
+          input.remove();
+          el.style.display = '';
+        });
+    }
+
+    function cancel() {
+      done = true;
+      input.remove();
+      el.style.display = '';
+    }
+
+    input.addEventListener('blur', save);
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+      if (e.key === 'Escape') { cancel(); }
+    });
+  }
+
+  function chordAjax(endpoint, params, errElId) {
+    const fd = new FormData();
+    for (const [k, v] of Object.entries(params)) fd.append(k, String(v));
+
+    closePopups();
+    const content = document.getElementById('preview-content');
+    content.style.opacity = '0.4';
+
+    fetch('/song/' + _slug + endpoint, {method: 'POST', body: fd})
+      .then(function(r) { return r.json().then(function(d) { return {ok: r.ok, data: d}; }); })
+      .then(function(res) {
+        if (res.ok) {
+          refreshPreview();
+        } else {
+          content.style.opacity = '1';
+          showPreviewError(res.data.error || 'Erreur inconnue');
+        }
+      })
+      .catch(function() {
+        content.style.opacity = '1';
+        showPreviewError('Erreur réseau');
+      });
+  }
+
+  function refreshPreview() {
+    fetch('/song/' + _slug + '/preview-html')
+      .then(function(r) { return r.text(); })
+      .then(function(html) {
+        const content = document.getElementById('preview-content');
+        content.innerHTML = html;
+        content.style.opacity = '1';
+      })
+      .catch(function() {
+        document.getElementById('preview-content').style.opacity = '1';
+        showPreviewError('Impossible de rafraîchir l\'aperçu');
+      });
+  }
+
+  function showPreviewError(msg) {
+    const el = document.getElementById('preview-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(function() { el.style.display = 'none'; }, 5000);
+  }
+
+  /* ================================================================ */
+  /* Raccourcis clavier                                               */
+  /* ================================================================ */
+  function _toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(function() {});
+    } else {
+      document.exitFullscreen().catch(function() {});
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    var tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    if (e.ctrlKey || e.metaKey) return;
+    switch (e.key) {
+      case 'Escape': closePopups(); break;
+      case 's': case 'S': e.preventDefault(); saveAll(); break;
+      case 'e': case 'E':
+        e.preventDefault();
+        var f = document.querySelector('form[action$="/export-split"]');
+        if (f) f.submit();
+        break;
+      case 'l': case 'L': window.location.href = '/library'; break;
+      case 'f': case 'F': e.preventDefault(); _toggleFullscreen(); break;
+    }
+  });
+
+  /* ================================================================ */
+  /* Transposition                                                    */
+  /* ================================================================ */
+
+  function doTranspose(semitones) {
+    const sign = semitones > 0 ? '+' : '';
+    const label = sign + semitones + ' demi-ton' + (Math.abs(semitones) > 1 ? 's' : '');
+    if (!confirm('Transposer ' + label + ' ?\n(Un backup est créé automatiquement.)')) return;
+    _applyTranspose(semitones);
+  }
+
+  function doTransposeCustom() {
+    const v = parseInt(document.getElementById('transpose-custom').value, 10);
+    if (isNaN(v) || v === 0) return;
+    const sign = v > 0 ? '+' : '';
+    const label = sign + v + ' demi-ton' + (Math.abs(v) > 1 ? 's' : '');
+    if (!confirm('Transposer ' + label + ' ?\n(Un backup est créé automatiquement.)')) return;
+    _applyTranspose(v);
+  }
+
+  function _applyTranspose(semitones) {
+    const status = document.getElementById('transpose-status');
+    status.textContent = '…';
+    status.style.color = '#888';
+    const fd = new FormData();
+    fd.append('semitones', semitones);
+    fetch('/song/' + _slug + '/transpose', {method: 'POST', body: fd})
+      .then(function(r) { return r.json().then(function(d) { return {ok: r.ok, data: d}; }); })
+      .then(function(res) {
+        if (res.ok && res.data.ok) {
+          status.textContent = '✓' + (res.data.key ? ' → ' + res.data.key : '');
+          status.style.color = '#1a7a3c';
+          setTimeout(function() { location.reload(); }, 900);
+        } else {
+          status.textContent = '✗ ' + (res.data.error || 'Erreur');
+          status.style.color = '#c0392b';
+        }
+      })
+      .catch(function() {
+        status.textContent = '✗ Erreur réseau';
+        status.style.color = '#c0392b';
+      });
+  }
+
+  /* ---- Sauvegarde globale (structure + rythme) ---- */
+  function saveAll() {
+    serializeSeq();
+    const btn = document.getElementById('btn-save-all');
+    const status = document.getElementById('save-all-status');
+    btn.disabled = true;
+    status.textContent = '…';
+    status.style.color = '#888';
+
+    const fd = new FormData(document.getElementById('form-structure'));
+    const rhythmForm = document.getElementById('form-rhythm');
+    if (rhythmForm) {
+      new FormData(rhythmForm).forEach(function(v, k) { fd.append(k, v); });
+    }
+
+    fetch('/song/' + _slug + '/save-all', {method: 'POST', body: fd})
+      .then(function(r) { return r.json().then(function(d) { return {ok: r.ok, data: d}; }); })
+      .then(function(res) {
+        if (res.ok && res.data.ok) {
+          status.textContent = '✓ Sauvegardé';
+          status.style.color = '#1a7a3c';
+          refreshPreview();
+        } else {
+          status.textContent = '✗ ' + (res.data.error || 'Erreur');
+          status.style.color = '#c0392b';
+        }
+        btn.disabled = false;
+      })
+      .catch(function() {
+        status.textContent = '✗ Erreur réseau';
+        status.style.color = '#c0392b';
+        btn.disabled = false;
+      });
+  }
+</script>
+</body>
+</html>

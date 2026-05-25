@@ -1,166 +1,145 @@
 {
-  "_comment": "Schéma de référence pour un fichier chords. Chaque chanson traitée produit un fichier data/song_<slug>.json conforme à ce schéma.",
-
-  "meta": {
-    "title": "Nom de la chanson",
-    "artist": "Nom de l'artiste",
-    "key": "F",
-    "key_mode": "major",
-    "capo": 0,
-    "tempo": null,
-    "time_signature": "4/4",
-    "tuning": "standard",
-    "version": "studio",
-    "slug": "artiste-titre",
-    "generated_at": "2026-05-21T10:00:00"
-  },
-
-  "chords_used": [
-    "_comment: liste unique de tous les accords du morceau",
-    "Am", "F", "C", "G"
-  ],
-
-  "sources": [
-    {
-      "name": "Ultimate Guitar",
-      "url": "https://...",
-      "key": "Am",
-      "capo": 0,
-      "chord_set": ["Am", "F", "C", "G"],
-      "collected_at": "2026-05-21T09:55:00",
-      "notes": "Version 5 étoiles, 847 votes"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "song_schema",
+  "title": "Song",
+  "description": "Format officiel d'entrée du projet Chords (v2). Le projet consomme un JSON conforme à ce format ; il ne le génère pas. Référence : song_template_with_rhythm.json.",
+  "type": "object",
+  "required": ["meta", "sections", "structure_sequence"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["title", "artist", "slug"],
+      "properties": {
+        "title":          { "type": "string" },
+        "artist":         { "type": "string" },
+        "slug":           { "type": "string" },
+        "album":          { "type": ["string", "null"] },
+        "version":        { "type": ["string", "null"] },
+        "key":            { "type": ["string", "null"] },
+        "key_mode":       { "type": ["string", "null"] },
+        "capo":           { "type": "integer", "minimum": 0 },
+        "tempo":          { "type": ["integer", "null"] },
+        "time_signature": { "type": "string" },
+        "tuning":         { "type": "string" }
+      }
     },
-    {
-      "name": "La Boîte à Musique",
-      "url": "https://...",
-      "key": "Am",
-      "capo": 0,
-      "chord_set": ["Am", "F", "C", "G"],
-      "collected_at": "2026-05-21T09:56:00",
-      "notes": ""
-    }
-  ],
-
-  "sections": [
-    {
-      "id": "intro_1",
-      "type": "intro",
-      "_types_possibles": ["intro", "verse", "pre_chorus", "chorus", "bridge", "interlude", "solo", "breakdown", "outro"],
-      "label": "Intro",
-      "is_instrumental": true,
-      "chord_grid": "| Am | F | C | G |",
-      "repeats": 2,
-      "bars": 4,
-      "lines": [],
-      "confidence": 0.90,
-      "source_agreement": 1.0
-    },
-    {
-      "id": "verse_1",
-      "type": "verse",
-      "label": "Couplet 1",
-      "is_instrumental": false,
-      "chord_grid": null,
-      "repeats": 1,
-      "bars": null,
-      "lines": [
-        {
-          "chords": [
-            {"chord": "Am", "position": 0},
-            {"chord": "F", "position": 20}
-          ],
-          "lyrics": "Exemple de parole avec changements d'accords"
-        },
-        {
-          "chords": [
-            {"chord": "C", "position": 0},
-            {"chord": "G", "position": 18}
-          ],
-          "lyrics": "Deuxième ligne de paroles"
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name":  { "type": "string" },
+          "type":  { "type": "string" },
+          "url":   { "type": ["string", "null"] },
+          "key":   { "type": ["string", "null"] },
+          "capo":  { "type": "integer" },
+          "notes": { "type": ["string", "null"] }
         }
-      ],
-      "confidence": 0.85,
-      "source_agreement": 0.90
+      }
     },
-    {
-      "id": "chorus_1",
-      "type": "chorus",
-      "label": "Refrain",
-      "is_instrumental": false,
-      "chord_grid": null,
-      "repeats": 1,
-      "bars": null,
-      "lines": [],
-      "confidence": 0.88,
-      "source_agreement": 0.95
+    "chords_used": {
+      "type": "array",
+      "items": { "type": "string" }
     },
-    {
-      "id": "solo_1",
-      "type": "solo",
-      "label": "Solo",
-      "is_instrumental": true,
-      "chord_grid": "| Am | F | Am | F | C | G | C | G |",
-      "repeats": 1,
-      "bars": 8,
-      "lines": [],
-      "confidence": 0.70,
-      "source_agreement": 0.75
+    "structure_sequence": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "IDs de sections dans l'ordre de jeu. Peut référencer le même ID plusieurs fois. Les _comment sont ignorés."
     },
-    {
-      "id": "outro_1",
-      "type": "outro",
-      "label": "Outro",
-      "is_instrumental": false,
-      "chord_grid": "| Am | F | C | G |",
-      "repeats": 1,
-      "bars": 4,
-      "lines": [],
-      "confidence": 0.80,
-      "source_agreement": 0.85
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type"],
+        "properties": {
+          "id":            { "type": "string" },
+          "type":          { "type": "string" },
+          "label":         { "type": "string" },
+          "is_instrumental": { "type": "boolean" },
+          "chord_grid":    { "type": ["string", "null"] },
+          "repeats":       { "type": "integer", "minimum": 1 },
+          "summary_progression": { "type": ["string", "null"] },
+          "performance_progression": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["chords"],
+              "properties": {
+                "chords": { "type": "string" },
+                "repeat": { "type": "integer", "minimum": 1 }
+              }
+            }
+          },
+          "rhythm": {
+            "type": ["object", "null"],
+            "properties": {
+              "pattern": { "type": "string" },
+              "feel":    { "type": "string" }
+            }
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "lyrics": { "type": "string" },
+                "chords": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["chord", "position"],
+                    "properties": {
+                      "chord":    { "type": "string" },
+                      "position": { "type": "integer", "minimum": 0 }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "message":  { "type": "string" },
+          "severity": { "type": "string" }
+        }
+      }
+    },
+    "simplification": {
+      "type": "object",
+      "properties": {
+        "has_simplified_version": { "type": "boolean" },
+        "chord_substitutions":    { "type": "object" },
+        "simplification_notes":   { "type": "array" },
+        "mode": { "type": "string" }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "properties": {
+        "overall":               { "type": "number" },
+        "structure":             { "type": "number" },
+        "chords":                { "type": "number" },
+        "capo":                  { "type": "number" },
+        "instrumental_sections": { "type": "number" },
+        "lyric_alignment":       { "type": "number" }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "status":           { "type": "string" },
+        "validated_at":     { "type": ["string", "null"] },
+        "user_corrections": { "type": "array" }
+      }
     }
-  ],
-
-  "structure_sequence": [
-    "_comment: ordre réel de jeu du morceau — peut référencer plusieurs fois le même id de section",
-    "intro_1",
-    "verse_1",
-    "chorus_1",
-    "verse_1",
-    "chorus_1",
-    "solo_1",
-    "chorus_1",
-    "outro_1"
-  ],
-
-  "confidence": {
-    "overall": 0.85,
-    "structure": 0.90,
-    "chords": 0.85,
-    "capo": 1.0,
-    "instrumental_sections": 0.75,
-    "lyric_alignment": 0.70
-  },
-
-  "warnings": [
-    {
-      "severity": "low",
-      "_severities": ["low", "medium", "high"],
-      "section": "solo_1",
-      "message": "Durée du solo incertaine : 6 ou 8 mesures selon les sources"
-    }
-  ],
-
-  "variants": [
-    {
-      "name": "Version acoustique",
-      "differences": "Capo 2, tempo plus lent, refrain x2 au lieu de x3"
-    }
-  ],
-
-  "validation": {
-    "status": "pending",
-    "_statuses": ["pending", "user_validated", "rejected"],
-    "validated_at": null,
-    "user_corrections": []
   }
 }

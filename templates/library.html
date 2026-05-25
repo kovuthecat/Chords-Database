@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bibliothèque — Chords</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Calibri, Arial, sans-serif; background: #f5f5f5; color: #222; }
+    header { background: #1F4E79; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
+    header h1 { font-size: 1.4rem; font-weight: bold; letter-spacing: 0.04em; }
+    header a { color: #aac4e0; font-size: 0.88rem; text-decoration: none; margin-left: auto; }
+    header a:hover { color: #fff; }
+    main { max-width: 1100px; margin: 28px auto; padding: 0 16px 60px; }
+
+    .card { background: #fff; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.12); padding: 24px; margin-bottom: 24px; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+    .card-header h2 { font-size: 1.05rem; color: #1F4E79; }
+    .export-dir { font-size: 0.78rem; color: #888; font-family: Consolas, monospace; }
+
+    .song-grid { display: flex; flex-direction: column; gap: 16px; }
+
+    .song-card {
+      background: #fff; border: 1px solid #e4e9f0;
+      border-radius: 8px; padding: 16px 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.07);
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 12px; align-items: start;
+    }
+    .song-card:hover { border-color: #aac4e0; box-shadow: 0 2px 8px rgba(31,78,121,.1); }
+
+    .song-info { }
+    .song-title { font-size: 1.08rem; font-weight: bold; color: #1F4E79; }
+    .song-artist { font-size: 0.93rem; color: #444; margin-top: 2px; }
+    .song-album { font-size: 0.82rem; color: #777; font-style: italic; margin-top: 1px; }
+    .song-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; align-items: center; }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.73rem; font-weight: bold; }
+    .badge-validated  { background: #d4edda; color: #155724; }
+    .badge-pending    { background: #fff3cd; color: #856404; }
+    .badge-draft      { background: #f0f0f0; color: #555; }
+    .badge-ok         { background: #d4edda; color: #155724; }
+    .badge-to-review  { background: #fff3cd; color: #856404; }
+    .badge-draft-rev  { background: #f0f0f0; color: #666; }
+    .badge-pdf-ok     { background: #e8f5e9; color: #2e7d32; }
+    .badge-pdf-miss   { background: #fde8e8; color: #b71c1c; }
+
+    .meta-chip { font-size: 0.78rem; color: #555; background: #f0f4f8; border-radius: 3px; padding: 2px 7px; }
+    .score-bar { display: inline-block; width: 50px; height: 7px; background: #ddd; border-radius: 3px; vertical-align: middle; position: relative; }
+    .score-fill { height: 100%; border-radius: 3px; background: #1F4E79; }
+
+    /* Actions droite */
+    .song-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; min-width: 180px; }
+    .btn-group { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+    .btn { display: inline-block; padding: 6px 12px; border-radius: 4px; font-size: 0.84rem; cursor: pointer; border: none; text-decoration: none; white-space: nowrap; }
+    .btn-primary  { background: #1F4E79; color: #fff; }
+    .btn-primary:hover  { background: #163a5c; }
+    .btn-outline  { background: #fff; color: #1F4E79; border: 1px solid #1F4E79; }
+    .btn-outline:hover  { background: #eef3f8; }
+    .btn-success  { background: #1a7a3c; color: #fff; }
+    .btn-success:hover  { background: #125d2c; }
+    .btn-warning  { background: #856404; color: #fff; }
+    .btn-warning:hover  { background: #6b5003; }
+    .btn-disabled { background: #eee; color: #aaa; border: 1px solid #ddd; cursor: default; }
+    .btn-danger   { background: #c0392b; color: #fff; }
+    .btn-danger:hover   { background: #a93226; }
+    .btn-rehearse { background: #1a5c16; color: #fff; }
+    .btn-rehearse:hover { background: #125010; }
+    .btn-sm { padding: 4px 9px; font-size: 0.78rem; }
+
+    .pdf-links { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+    .pdf-link { font-size: 0.78rem; }
+    .regen-form { margin: 0; }
+    .section-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: #888; margin-bottom: 4px; }
+
+    /* Filtre statut révision */
+    .review-select {
+      border: 1px solid #ddd; border-radius: 3px;
+      padding: 3px 6px; font-size: .75rem; background: #fff;
+      color: #555; cursor: pointer; font-family: Calibri, Arial, sans-serif;
+    }
+    .review-select:focus { outline: none; border-color: #1F4E79; }
+
+    /* Filtre bar */
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+    .filter-bar input[type=text] {
+      padding: 7px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: .9rem;
+      outline: none; max-width: 300px; flex: 1 1 180px;
+    }
+    .filter-bar input[type=text]:focus { border-color: #1F4E79; }
+    .filter-select {
+      padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: .84rem;
+      background: #fff; color: #444; cursor: pointer; outline: none;
+    }
+    .filter-select:focus { border-color: #1F4E79; }
+    .filter-count { font-size: .8rem; color: #aaa; }
+    .filter-reset { background: none; border: 1px solid #ddd; border-radius: 4px; padding: 6px 10px; font-size: .8rem; color: #888; cursor: pointer; }
+    .filter-reset:hover { border-color: #1F4E79; color: #1F4E79; }
+
+    .empty { color: #888; font-style: italic; text-align: center; padding: 40px 0; }
+    .mdate { font-size: 0.73rem; color: #bbb; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Bibliothèque</h1>
+  <span style="color:#aac4e0;font-size:.88rem">{{ songs|length }} morceau{% if songs|length != 1 %}x{% endif %}</span>
+  <a href="/">← Accueil</a>
+</header>
+<main>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Morceaux disponibles</h2>
+      <span class="export-dir">PDFs exportés → {{ export_dir }}</span>
+    </div>
+
+    {% if songs %}
+    <!-- Barre de filtres -->
+    <div class="filter-bar">
+      <input type="text" id="search-input"
+             placeholder="Rechercher titre, artiste, album…"
+             oninput="applyFilters()"
+             onfocus="this.style.borderColor='#1F4E79'" onblur="this.style.borderColor='#ddd'">
+
+      <select id="filter-key" class="filter-select" onchange="applyFilters()">
+        <option value="">Toutes tonalités</option>
+        {% for k in keys %}
+        <option value="{{ k | lower }}">{{ k }}</option>
+        {% endfor %}
+      </select>
+
+      <select id="filter-capo" class="filter-select" onchange="applyFilters()">
+        <option value="">Capo : tous</option>
+        <option value="sans">Sans capo</option>
+        <option value="avec">Avec capo</option>
+      </select>
+
+      <select id="filter-review" class="filter-select" onchange="applyFilters()">
+        <option value="">Statut : tous</option>
+        <option value="ok">✓ Prêt</option>
+        <option value="to_review">⚠ À revoir</option>
+        <option value="draft">Brouillon</option>
+      </select>
+
+      <button class="filter-reset" onclick="resetFilters()">Réinitialiser</button>
+      <span class="filter-count" id="search-count"></span>
+    </div>
+
+    <div class="song-grid" id="song-grid">
+      {% for s in songs %}
+      <div class="song-card"
+           data-title="{{ s.title | lower }}"
+           data-artist="{{ s.artist | lower }}"
+           data-album="{{ s.album | lower }}"
+           data-key="{{ s.key | lower }}"
+           data-capo="{{ s.capo | default(0) }}"
+           data-review="{{ s.review_status }}">
+
+        <!-- Infos chanson -->
+        <div class="song-info">
+          <div class="song-title">{{ s.title }}</div>
+          <div class="song-artist">{{ s.artist }}</div>
+          {% if s.album %}
+          <div class="song-album">{{ s.album }}</div>
+          {% endif %}
+
+          <div class="song-meta">
+            {# Badge statut workflow #}
+            {% if s.status == 'user_validated' %}
+              <span class="badge badge-validated">Validé</span>
+            {% elif s.status == 'pending' %}
+              <span class="badge badge-pending">En attente</span>
+            {% else %}
+              <span class="badge badge-draft">{{ s.status }}</span>
+            {% endif %}
+
+            {# Badge statut révision #}
+            {% if s.review_status == 'ok' %}
+              <span class="badge badge-ok">✓ Prêt</span>
+            {% elif s.review_status == 'to_review' %}
+              <span class="badge badge-to-review">⚠ À revoir</span>
+            {% elif s.review_status == 'draft' %}
+              <span class="badge badge-draft-rev">Brouillon</span>
+            {% endif %}
+
+            {# Badge PDF #}
+            {% if s.pdf_chords and s.pdf_memo %}
+              <span class="badge badge-pdf-ok">PDF ✓</span>
+            {% else %}
+              <span class="badge badge-pdf-miss">PDF ✗</span>
+            {% endif %}
+
+            {# Chips méta #}
+            {% if s.key %}
+            <span class="meta-chip">{{ s.key }} {% if s.key_mode == 'major' %}maj{% else %}min{% endif %}</span>
+            {% endif %}
+            {% if s.capo %}
+            <span class="meta-chip">Capo {{ s.capo }}</span>
+            {% endif %}
+            {% if s.tempo %}
+            <span class="meta-chip">♩ {{ s.tempo }} bpm</span>
+            {% endif %}
+            {% if s.score %}
+            <span style="display:flex;align-items:center;gap:5px">
+              <span class="score-bar"><span class="score-fill" style="width:{{ (s.score * 100)|int }}%"></span></span>
+              <span style="font-size:.75rem;color:#888">{{ (s.score * 100)|int }}%</span>
+            </span>
+            {% endif %}
+            <span class="mdate">{{ s.mdate }}</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="song-actions">
+
+          {# Mode répétition #}
+          <div>
+            <div class="section-label">Mode répétition</div>
+            <div class="btn-group">
+              <a class="btn btn-rehearse btn-sm" href="/song/{{ s.slug }}/rehearsal/chords" target="_blank">Paroles</a>
+              <a class="btn btn-rehearse btn-sm" href="/song/{{ s.slug }}/rehearsal/memo" target="_blank">Mémo</a>
+            </div>
+          </div>
+
+          {# Fiches PDF exportées #}
+          <div>
+            <div class="section-label">Fiches PDF</div>
+            <div class="pdf-links">
+              {% if s.pdf_chords and s.pdf_chords_url %}
+              <a class="btn btn-outline btn-sm pdf-link" href="{{ s.pdf_chords_url }}" target="_blank">Paroles &amp; Accords</a>
+              {% else %}
+              <span class="btn btn-disabled btn-sm pdf-link">Paroles &amp; Accords</span>
+              {% endif %}
+              {% if s.pdf_memo and s.pdf_memo_url %}
+              <a class="btn btn-outline btn-sm pdf-link" href="{{ s.pdf_memo_url }}" target="_blank">Mémo Guitare</a>
+              {% else %}
+              <span class="btn btn-disabled btn-sm pdf-link">Mémo Guitare</span>
+              {% endif %}
+            </div>
+          </div>
+
+          {# Actions principales #}
+          <div class="btn-group">
+            <a class="btn btn-primary btn-sm" href="/song/{{ s.slug }}">Éditer</a>
+
+            <form class="regen-form" action="/song/{{ s.slug }}/export-split" method="post">
+              <button type="submit" class="btn btn-success btn-sm">PDFs</button>
+            </form>
+
+            <a class="btn btn-outline btn-sm" href="/song/{{ s.slug }}/download-json" title="Télécharger JSON">JSON</a>
+
+            <form class="regen-form" action="/song/{{ s.slug }}/delete" method="post"
+                  onsubmit="return confirm('Supprimer « {{ s.title }} » et tous les fichiers liés ?')">
+              <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+            </form>
+          </div>
+
+          {# Statut révision inline #}
+          <form style="margin:0" onsubmit="changeReviewStatus(event, '{{ s.slug }}', this)">
+            <select name="status" class="review-select" onchange="this.form.dispatchEvent(new Event('submit'))">
+              <option value="" {% if not s.review_status %}selected{% endif %}>— statut révision —</option>
+              <option value="ok"        {% if s.review_status == 'ok'        %}selected{% endif %}>✓ Prêt</option>
+              <option value="to_review" {% if s.review_status == 'to_review' %}selected{% endif %}>⚠ À revoir</option>
+              <option value="draft"     {% if s.review_status == 'draft'     %}selected{% endif %}>Brouillon</option>
+            </select>
+          </form>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div><!-- /song-grid -->
+
+    {% else %}
+    <div class="empty">
+      Aucun morceau disponible. <a href="/">Importer un JSON</a> pour commencer.
+    </div>
+    {% endif %}
+  </div>
+
+</main>
+<script>
+  /* ---- Filtres ---- */
+  function applyFilters() {
+    var q         = ((document.getElementById('search-input') || {}).value || '').toLowerCase().trim();
+    var filterKey = (document.getElementById('filter-key') || {}).value || '';
+    var filterCap = (document.getElementById('filter-capo') || {}).value || '';
+    var filterRev = (document.getElementById('filter-review') || {}).value || '';
+
+    var cards = document.querySelectorAll('#song-grid .song-card');
+    var visible = 0;
+    cards.forEach(function(card) {
+      var matchText = !q
+        || (card.dataset.title  || '').includes(q)
+        || (card.dataset.artist || '').includes(q)
+        || (card.dataset.album  || '').includes(q);
+      var matchKey = !filterKey || (card.dataset.key || '') === filterKey;
+      var capo = parseInt(card.dataset.capo || '0', 10);
+      var matchCap = !filterCap
+        || (filterCap === 'sans' && capo === 0)
+        || (filterCap === 'avec' && capo > 0);
+      var matchRev = !filterRev || (card.dataset.review || '') === filterRev;
+      var show = matchText && matchKey && matchCap && matchRev;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    var hasFilter = q || filterKey || filterCap || filterRev;
+    var countEl = document.getElementById('search-count');
+    if (countEl) countEl.textContent = hasFilter ? (visible + ' résultat' + (visible !== 1 ? 's' : '')) : '';
+  }
+
+  function filterSongs(q) { applyFilters(); }
+
+  function resetFilters() {
+    var si = document.getElementById('search-input'); if (si) si.value = '';
+    var fk = document.getElementById('filter-key');   if (fk) fk.value = '';
+    var fc = document.getElementById('filter-capo');  if (fc) fc.value = '';
+    var fr = document.getElementById('filter-review');if (fr) fr.value = '';
+    applyFilters();
+  }
+
+  /* ---- Mise à jour statut révision (AJAX) ---- */
+  function changeReviewStatus(e, slug, form) {
+    e.preventDefault();
+    var status = form.querySelector('[name=status]').value;
+    var fd = new FormData();
+    fd.append('status', status);
+    fetch('/song/' + slug + '/review-status', {method: 'POST', body: fd})
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.ok) {
+          var card = form.closest('.song-card');
+          if (card) card.dataset.review = status;
+        }
+      });
+  }
+</script>
+</body>
+</html>

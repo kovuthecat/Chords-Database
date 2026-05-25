@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chords — fiches guitare/chant</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Calibri, Arial, sans-serif; background: #f5f5f5; color: #222; }
+    header { background: #1F4E79; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    header h1 { font-size: 1.4rem; font-weight: bold; letter-spacing: 0.05em; }
+    header p  { font-size: 0.85rem; opacity: 0.75; margin-top: 0; }
+    header a:hover { color: #fff; }
+    main { max-width: 800px; margin: 32px auto; padding: 0 16px; }
+
+    .card { background: #fff; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.12); padding: 24px; margin-bottom: 24px; }
+    .card h2 { font-size: 1.1rem; color: #1F4E79; margin-bottom: 16px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px; }
+
+    .upload-zone { border: 2px dashed #aac4e0; border-radius: 6px; padding: 28px; text-align: center; cursor: pointer; }
+    .upload-zone input[type=file] { display: none; }
+    .upload-zone label { cursor: pointer; color: #1F4E79; font-weight: bold; }
+    .upload-zone .hint { font-size: 0.82rem; color: #888; margin-top: 6px; }
+    .upload-zone .filename { margin-top: 8px; font-size: 0.9rem; color: #333; }
+
+    button[type=submit] {
+      display: block; width: 100%; margin-top: 14px;
+      background: #1F4E79; color: #fff; border: none;
+      padding: 10px; border-radius: 4px; font-size: 1rem; cursor: pointer;
+    }
+    button[type=submit]:hover { background: #163a5c; }
+
+    .error-box { background: #fff0f0; border-left: 4px solid #c0392b; padding: 12px 16px; border-radius: 4px; margin-bottom: 16px; }
+    .error-box ul { margin-top: 6px; padding-left: 18px; }
+    .error-box li { font-size: 0.9rem; color: #c0392b; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th { text-align: left; padding: 6px 10px; background: #eef3f8; color: #1F4E79; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    tr:hover td { background: #f7fafd; }
+    a { color: #1F4E79; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 0.75rem; font-weight: bold; }
+    .badge-validated { background: #d4edda; color: #155724; }
+    .badge-pending   { background: #fff3cd; color: #856404; }
+    .badge-draft     { background: #f0f0f0; color: #555; }
+
+    .score-bar { display: inline-block; width: 60px; height: 8px; background: #ddd; border-radius: 4px; vertical-align: middle; position: relative; }
+    .score-fill { height: 100%; border-radius: 4px; background: #1F4E79; }
+
+    .empty { color: #888; font-style: italic; padding: 12px 10px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Chords</h1>
+  <p>Fiches guitare/chant — interface locale</p>
+  <a href="/library" style="margin-left:auto;color:#aac4e0;font-size:.88rem;text-decoration:none">Bibliothèque →</a>
+</header>
+<main>
+
+  {% if errors %}
+  <div class="error-box">
+    <strong>Validation échouée :</strong>
+    <ul>
+      {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if error %}
+  <div class="error-box"><strong>Erreur :</strong> {{ error }}</div>
+  {% endif %}
+
+  <div class="card">
+    <h2>Importer un JSON chanson</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <div class="upload-zone" id="drop-zone">
+        <input type="file" name="json_file" id="json_file" accept=".json">
+        <label for="json_file">Choisir un fichier JSON</label>
+        <div class="hint">Format : song_template_with_rhythm.json</div>
+        <div class="filename" id="file-name"></div>
+      </div>
+      <button type="submit">Valider et générer</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Chansons disponibles</h2>
+    {% if songs %}
+    <table>
+      <thead>
+        <tr>
+          <th>Titre / Artiste</th>
+          <th>Statut</th>
+          <th>Confiance</th>
+          <th>Fichiers</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in songs %}
+        <tr>
+          <td>
+            <a href="/song/{{ s.slug }}"><strong>{{ s.title }}</strong></a><br>
+            <small style="color:#666">{{ s.artist }}</small>
+          </td>
+          <td>
+            {% if s.status == 'user_validated' %}
+              <span class="badge badge-validated">Validé</span>
+            {% elif s.status == 'pending' %}
+              <span class="badge badge-pending">En attente</span>
+            {% else %}
+              <span class="badge badge-draft">{{ s.status }}</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if s.score %}
+              <span class="score-bar"><span class="score-fill" style="width:{{ (s.score * 100)|int }}%"></span></span>
+              <small style="margin-left:6px">{{ (s.score * 100)|int }}%</small>
+            {% else %}—{% endif %}
+          </td>
+          <td>
+            {% if s.docx %}<a href="/output/song_{{ s.slug }}.docx">DOCX</a>{% endif %}
+            {% if s.pdf %} · <a href="/output/song_{{ s.slug }}.pdf" target="_blank">PDF</a>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty">Aucune chanson — importez un JSON ci-dessus.</div>
+    {% endif %}
+  </div>
+
+</main>
+<script>
+  document.getElementById('json_file').addEventListener('change', function() {
+    document.getElementById('file-name').textContent = this.files[0]?.name || '';
+  });
+</script>
+</body>
+</html>

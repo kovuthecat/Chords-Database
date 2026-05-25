@@ -1,115 +1,143 @@
 # STATUS.md
 
-> Dernière mise à jour : 2026-05-22 (module audio A1+A2)
+> Dernière mise à jour : 2026-05-25 (P9 — backup auto, restauration, édition paroles, insertion instrumentale, recherche bibliothèque, validation renforcée, tests Flask)
 
 ## Phase actuelle
 
-Phase 2 — pipeline complet opérationnel, 6 chansons générées, format DOCX affiné.
+**Phase 9 — Sécurité + confort d'édition + robustesse**
+
+L'éditeur local de songbook guitare/chant est maintenant complet sur le plan de l'édition :
+backup automatique à chaque sauvegarde, restauration en un clic, édition des paroles inline,
+insertion d'accords dans les sections instrumentales, recherche dans la bibliothèque,
+export JSON depuis la bibliothèque, PDF_EXPORT_DIR configurable, validation JSON renforcée,
+confirmations avant suppressions destructives, et 15 tests Flask minimaux.
 
 ## Ce qui fonctionne
 
-### Pipeline complet (T1→T7)
+### Backup automatique (Phase 9 — 2026-05-25)
 
-- `schema/song_schema.json` : schéma JSON de référence annoté.
-- `scripts/collect.py` : init JSON, parser texte chord multi-lignes, ingestion sources, statut.
-- `scripts/reconstruct.py` : unification multi-sources, source_agreement, divergences.
-- `scripts/validate_harmony.py` : détection tonalité, check diatonique, scoring, capo.
-- `scripts/display_validation.py` : brouillon terminal formaté + boucle OK/corrections.
-- `scripts/generate_docx.py` : génération DOCX depuis JSON validé (Consolas, Calibri, keep_with_next).
+- `_save_song()` crée un backup timestampé avant chaque écrasement
+- Structure : `data/backups/<slug>/2026-05-25_14-32-10.json`
+- Rotation automatique : 20 backups max par chanson
+- Section "Historique / Backups" dans la fiche chanson avec bouton Restaurer
+- Restauration : `POST /song/<slug>/restore/<filename>` → valide + régénère + redirige
+- `scripts/backup.py` : `create_backup`, `list_backups`, `restore_backup`, `cleanup_old_backups`
 
-### Fonctionnalités parser
+### Confirmations avant suppressions (Phase 9 — 2026-05-25)
 
-- Grilles d'accords multi-lignes (concaténation `\n`).
-- Accords slash numériques : `Am7/4`, `C/G`, `F/A`.
-- Accords altérés : `Bm7b5`, `Asus4`, `b5`, `#11`, etc.
-- Sections françaises et anglaises reconnues.
-- Reprises détectées (`x2`, `×3`).
-- Métadonnées capo/key/tonalité filtrées (pas créées comme section).
-- Outro non-instrumental par défaut.
+- Suppression d'accord (paroles ou instrumental) : `confirm('Supprimer cet accord ?')`
+- Retrait d'une section de la séquence : `confirm('Retirer cette section de la séquence ?')`
+- Restauration d'un backup : `confirm(...)` dans le formulaire
 
-### Fonctionnalités DOCX
+### Insertion d'accords dans les sections instrumentales (Phase 9 — 2026-05-25)
 
-- Police Consolas (accords + paroles) / Calibri (titres, méta).
-- Accords : 13 pt, bold, bleu marine — paroles : 12 pt.
-- `keep_with_next` : accords jamais séparés des paroles par saut de page.
-- Grilles multi-lignes rendues sur plusieurs paragraphes.
-- Sections toujours rendues complètes (pas de "→ reprise").
-- Marges 2.5 cm gauche / 2 cm autres.
+- Points d'insertion `+` visibles au survol de chaque `prev-grid-line`
+- Support `performance_progression` (pp), `chord_grid` (cg), `summary_progression` (sp)
+- Popup "Insérer un accord" dédié (`insert-instr-popup`)
+- Route AJAX : `POST /song/<slug>/instr-chord/insert`
+- Fonction `insert_instr_chord` dans `editor.py` (13 fonctions au total)
 
-### Chansons produites
+### Édition paroles inline (Phase 9 — 2026-05-25)
 
-| Fichier | Statut |
-|---|---|
-| `output/song_moriarty-jimmy.docx` | Généré et relu — v2 avec corrections utilisateur |
-| `output/song_moriarty-jimmy-v2.docx` | Version reformatée (Consolas) |
-| `output/song_pink-floyd-wish-you-were-here.docx` | Généré — 3 sources croisées |
-| `output/song_neil-young-heart-of-gold.docx` | Généré — 2 sources, refrain extrait |
-| `output/song_zaho-de-sagazan-la-symphonie-des-eclairs.docx` | Généré — source PDF unique |
-| `output/song_muse-endlessly.docx` | Généré — source PDF unique |
+- Clic sur une ligne de paroles → input de texte inline
+- Sauvegarde AJAX : `POST /song/<slug>/lyrics-at/update`
+- Rafraîchissement partiel de l'aperçu
+- Accords non déplacés : seul le texte change
+- Fonction `update_lyrics_at` dans `editor.py`
 
-## Bugs corrigés
+### Recherche dans la bibliothèque (Phase 9 — 2026-05-25)
 
-- Regex `tonali...` ne capturait pas le `m` de "Am" → corrigé.
-- `key_mode` non déduit depuis la clé brute "Am" → normalisé.
-- Grilles multi-lignes écrasées (overwrite) → concaténation `\n`.
-- Outro auto-marqué instrumental → corrigé (type-driven uniquement pour intro/interlude/solo).
-- Faux positif capo pour tonalités relatives maj/min → tolérance ±3 demi-tons.
-- Regex chord étendu : `Am7/4`, `Bm7b5`, `Asus4`, `F/A` maintenant reconnus.
+- Champ "Rechercher..." dans `/library`
+- Filtrage live (JavaScript local) sur titre, artiste, album
+- Compteur de résultats visible
 
-## Conventions retenues (issues des corrections utilisateur)
+### Export JSON depuis la bibliothèque (Phase 9 — 2026-05-25)
 
-- **Source de référence** : La Boîte à Chansons > Ultimate Guitar > Songsterr.
-- **Accords simplifiés** : préférer G à G7, A à Am7/4 si l'utilisateur le demande.
-- **Reprises** : toujours réécrire complètement les paroles + accords (pas de shorthand).
-- **Accords empruntés** (Cm, Fm, Bb) : avertissement low uniquement, pas bloquant.
+- Bouton "JSON" sur chaque card de `/library`
+- Route `GET /song/<slug>/download-json`
+- Headers corrects (`Content-Disposition: attachment`)
 
-## Module audio (en cours — Phase A)
+### PDF_EXPORT_DIR configurable (Phase 9 — 2026-05-25)
 
-Étude de faisabilité réalisée le 2026-05-22. Architecture MVP définie :
-- `audio/` ignoré par Git (fichiers locaux uniquement)
-- `scripts/audio_compare.py` → rapport orientatif dans `output/audio_report_<slug>.md`
-- Dépendance unique : `librosa` + `soundfile`
+- `scripts/config.py` lit `.env.local` à la racine du projet
+- Priorité : `.env.local` > variable d'environnement > valeur par défaut
+- Pas de python-dotenv requis — parsing manuel minimal
+- Comportement existant inchangé si `.env.local` absent
 
-| Tâche | Statut |
-|-------|--------|
-| A1 — `audio/` + `.gitkeep` + `.gitignore` | Fait |
-| A2 — squelette `audio_compare.py` (argparse, chargement, rapport vide) | Fait |
-| A3 — tempo + tonalité (librosa) | Fait — testé sur Jimmy (127.8 BPM, relatif conforme) |
-| A4 — structure (matrice de récurrence) | Fait — novelty chroma+MFCC, frontières, repeat count |
-| A5 — chromagramme + templates accords | Fait (expérimental) — capo-aware, 4/6 accords retrouvés |
-| A6 — divergences JSON/audio | Fait — table unifiée, sévérités, score global, verdict |
-| A7 — génération rapport Markdown | Fait — résumé exécutif, table A6, scores complets |
-| A8 — tests sur 5 chansons + calibrage | À faire |
+### Validation JSON renforcée (Phase 9 — 2026-05-25)
 
-## Prochaines étapes suggérées
+- `meta.slug` : regex `^[a-z0-9_-]+$` — espaces, `/`, `\`, majuscules refusés
+- `section.id` : regex `^[a-zA-Z0-9_-]+$` — pas d'espaces ni de `/`
+- Positions d'accords : ordre croissant vérifié, collisions exactes refusées
+- Messages d'erreur précis affichés dans l'interface
 
-1. A3 — Tempo + tonalité dans `audio_compare.py` (1h).
-2. `main.py` — orchestration complète en une commande (`titre + artiste → DOCX`).
-3. Affiner le placement accords/paroles sur les syllabes exactes (review manuelle).
-4. Ajouter un champ `album` visible dans le DOCX (actuellement en meta JSON uniquement).
+### Tests Flask minimaux (Phase 9 — 2026-05-25)
+
+- `tests/test_app.py` : 15 tests Flask (`app.test_client()`)
+- Couvre : upload valide/invalide, bibliothèque, export JSON, backup, restore, export split, suppression accord, insertion instrumentale
+- Nettoyage isolé avant/après chaque test
+
+### Édition accords instrumentaux (Phase 8.3 — 2026-05-25)
+
+- Sections `performance_progression`, `chord_grid`, `summary_progression` : accords cliquables
+- Popup modifier / supprimer identique aux sections paroles
+- Routes AJAX : `/song/<slug>/instr-chord/update`, `/song/<slug>/instr-chord/delete`
+
+### Bouton global de sauvegarde (Phase 8.3 — 2026-05-25)
+
+- "Sauvegarder et rafraîchir l'aperçu" → structure + rythme en un seul appel AJAX
+
+### Bibliothèque web (Phase 8.2 — 2026-05-25)
+
+- Route `/library` : tous les morceaux, infos complètes, liens PDF
+- Actions : Éditer, Régénérer PDFs, Télécharger JSON, Supprimer
+
+### Éditeur accords inline (Phase 8.1 — 2026-05-25)
+
+- Clic sur accord → popup modifier/supprimer
+- Survol ligne → points `+` pour insérer
+- Sauvegarde AJAX → rafraîchissement partiel
+
+## Chansons produites (6 morceaux, 12 PDFs dans Guitartabs/Chords)
+
+- Moriarty — Jimmy
+- Pink Floyd — Wish You Were Here
+- Neil Young — Heart of Gold
+- Zaho de Sagazan — La Symphonie des Éclairs
+- Muse — Endlessly
+- Cocoon — On My Way
 
 ## Architecture actuelle
 
 ```
 Chords/
-├── schema/
-│   └── song_schema.json         ← schéma de référence annoté
+├── app.py                          ← interface web Flask
+├── main.py                         ← CLI simplifié
+├── requirements.txt
+├── song_template_with_rhythm.json  ← template de référence
+├── schema/song_schema.json         ← schéma JSON formel
+├── templates/
+│   ├── index.html                  ← accueil + upload
+│   ├── song.html                   ← fiche chanson + éditeurs + aperçu HTML
+│   ├── _preview.html               ← fragment aperçu interactif (inclus + AJAX)
+│   └── library.html                ← bibliothèque des morceaux
 ├── data/
-│   ├── song_moriarty-jimmy.json
-│   ├── song_pink-floyd-wish-you-were-here.json
-│   ├── song_neil-young-heart-of-gold.json
-│   ├── song_zaho-de-sagazan-la-symphonie-des-eclairs.json
-│   └── song_muse-endlessly.json
-├── audio/                       ← ignoré Git — y placer mp3/wav/ogg
-├── output/
-│   ├── *.docx                   ← documents générés
-│   └── audio_report_*.md        ← rapports comparaison audio (à venir)
+│   ├── song_*.json                 ← JSON importés
+│   └── backups/<slug>/             ← backups timestampés (P9)
+├── output/                         ← DOCX + PDF + JSON générés
 ├── scripts/
-│   ├── collect.py               ← T2 — init + parser + ingestion
-│   ├── reconstruct.py           ← T3 — unification multi-sources
-│   ├── validate_harmony.py      ← T4 — scoring harmonique
-│   ├── display_validation.py    ← T5 — validation utilisateur terminal
-│   ├── generate_docx.py         ← T7 — génération DOCX finale
-│   └── audio_compare.py         ← A2 — comparaison audio (squelette)
-└── [fichiers contexte projet]
+│   ├── config.py                   ← chemins (+ .env.local pour PDF_EXPORT_DIR)
+│   ├── validate_song_json.py       ← validation JSON (slug/IDs/positions)
+│   ├── editor.py                   ← 13 fonctions d'édition JSON song
+│   ├── backup.py                   ← backup/restore automatique (P9)
+│   ├── generate_docx.py            ← génération DOCX + 2 PDFs
+│   └── memo.py
+├── tests/
+│   ├── test_app.py                 ← 15 tests Flask (P9)
+│   ├── test_editor.py              ← 47 tests
+│   ├── test_validate_json.py       ← 14 tests
+│   └── test_memo.py                ← 53 tests
+└── _archive/                       ← anciens scripts
 ```
+
+**129 tests — 0 échec.**

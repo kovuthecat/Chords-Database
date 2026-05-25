@@ -1,3 +1,8 @@
+# Secrets — ne jamais versionner
+.env
+.env.local
+.env.*.local
+
 # Python
 __pycache__/
 *.pyc
@@ -19,6 +24,17 @@ audio/*.flac
 audio/*.m4a
 audio/*.aac
 
+# Données chansons (paroles protégées — stockées dans Supabase)
+data/song_*.json
+data/backups/
+data/*.txt
+
+# Fichiers générés (DOCX / PDF)
+output/*.docx
+output/*.pdf
+output/song_*.json
+output/_split_tmp/
+
 # Lock files LibreOffice/Word
 output/.~lock.*
 
@@ -29,3 +45,6 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Archives locales
+_archive/
