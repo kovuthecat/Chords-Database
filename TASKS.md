@@ -87,6 +87,13 @@ python -m pytest tests/ -v
 
 129 tests — 0 échec.
 
+## À faire (prochaine session — 2026-05-26)
+
+- [ ] Améliorer la lisibilité de la fiche Mémo Guitare (PDF/DOCX)
+- [ ] Améliorer l'interface webapp (UX/UI)
+
+---
+
 ## Chansons dans le repo
 
 | Fichier | Statut |
