@@ -41,7 +41,7 @@
       <div class="prev-lyrics-wrap">
         <div class="prev-lyrics-text"
              onclick="onLyricsClick(event, this)"
-             title="Clic : modifier paroles · Maj+clic ou appui long : ajouter un accord">{{ line.lyrics if line.lyrics else '​' }}</div>
+             title="Clic : modifier paroles · Maj+clic ou bouton + Accord : ajouter">{{ line.lyrics if line.lyrics else '​' }}</div>
         <div class="prev-inserts" aria-hidden="true">
           {% for wp in (line.lyrics or '') | word_positions %}
           <span class="insert-pt"

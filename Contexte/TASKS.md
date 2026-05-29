@@ -8,7 +8,9 @@
 4. Vérifier et éditer l'aperçu HTML interactif :
    - **Sections avec paroles** :
      - Clic sur accord → popup modifier/supprimer (confirmation avant suppression)
-     - Survol ligne → points `+` pour insérer un accord
+     - Bouton **+ Accord** (en-tête aperçu) → mode ajout : tap/clic simple sur ligne = placer l'accord
+     - Maj+clic sur paroles → insérer un accord à la position cliquée (desktop)
+     - Survol ligne → points `+` pour insérer un accord (desktop)
      - Clic sur paroles → édition inline du texte (sauvegarde AJAX)
    - **Sections instrumentales** :
      - Clic sur accord (pp / chord_grid / summary) → modifier/supprimer

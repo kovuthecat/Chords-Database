@@ -108,6 +108,12 @@
     .rhythm-table td { padding: 7px 8px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
     .input-rhythm { border: 1px solid #ddd; border-radius: 3px; padding: 5px 8px; font-size: 0.85rem; width: 100%; font-family: Consolas, monospace; }
     .input-rhythm:focus { outline: none; border-color: #1F4E79; }
+    .rhythm-btn-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; background: #f8f9fa; padding: 8px 10px; border-radius: 4px; border: 1px solid #e8e8e8; }
+    .rhythm-insert-btn { background: #eef3f8; border: 1px solid #c0d4e8; border-radius: 3px; padding: 4px 10px; font-family: Consolas, monospace; font-size: 1rem; color: #1F4E79; cursor: pointer; min-width: 34px; line-height: 1.3; }
+    .rhythm-insert-btn:hover { background: #d8e8f4; }
+    .rhythm-erase-btn { background: #fff0f0; border-color: #f5c6cb; color: #c0392b; font-family: inherit; font-size: .82rem; }
+    .rhythm-erase-btn:hover { background: #ffe0e0; }
+    .rhythm-preview { font-size: .75rem; color: #1a7a3c; font-family: Consolas, monospace; margin-top: 3px; min-height: 1em; }
     .input-full { border: 1px solid #ddd; border-radius: 3px; padding: 7px 10px; font-size: 0.88rem; width: 100%; font-family: Consolas, monospace; }
     .input-full:focus { outline: none; border-color: #1F4E79; }
     .field-group { margin-top: 10px; }
@@ -179,6 +185,14 @@
     .instr-chord:hover { background: #eef3f8; outline: 1px solid #1F4E79; }
     .prev-empty { color: #aaa; font-size: .82rem; font-style: italic; }
     .prev-hint { font-size: .78rem; color: #aaa; margin-top: 10px; }
+
+    /* Mode ajout accord */
+    .btn-add-chord { background: #fff; color: #1F4E79; border: 1px solid #1F4E79; border-radius: 4px; padding: 4px 11px; font-size: .82rem; cursor: pointer; }
+    .btn-add-chord:hover { background: #eef3f8; }
+    .btn-add-chord-active { background: #1F4E79; color: #fff; }
+    .btn-add-chord-active:hover { background: #163a5c; }
+    #add-chord-hint { display: none; font-size: .78rem; color: #1F4E79; background: #eef3f8; border-radius: 3px; padding: 4px 10px; margin-bottom: 8px; }
+    .preview-editing-add-mode .prev-lyrics-text { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
 
     /* Points d'insertion accords instrumentaux */
     .insert-instr-pt {
@@ -444,11 +458,13 @@
   <!-- APERÇU INTERACTIF                                                 -->
   <!-- ================================================================ -->
   <div class="card" id="song-preview">
-    <h2>Aperçu — Paroles &amp; Accords
-      <span style="font-size:.75rem;font-weight:normal;color:#888;margin-left:8px">
-        Cliquer sur un accord pour le modifier · survol d'une ligne pour ajouter
+    <h2 style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="flex:1;min-width:0">Aperçu — Paroles &amp; Accords
+        <span style="font-size:.75rem;font-weight:normal;color:#888;margin-left:8px">Cliquer sur un accord pour le modifier</span>
       </span>
+      <button id="btn-add-chord" class="btn-add-chord" onclick="toggleAddChordMode()" type="button">+ Accord</button>
     </h2>
+    <div id="add-chord-hint">Touchez une ligne de paroles pour placer l'accord.</div>
     <div id="preview-wrap">
       <div id="preview-error"></div>
       <div id="preview-content">
@@ -537,10 +553,19 @@
   {% if unique_sections %}
   <div class="editor-card" id="editor-rhythm">
     <h2>Éditeur — Rythme par section</h2>
-    <p style="font-size:.78rem;color:#aaa;margin-bottom:10px">
-      Raccourcis dans le champ Pattern : <strong>d</strong>→↓ · <strong>u</strong>→↑
-      · Présets : sélectionner ci-dessous pour pré-remplir une ligne.
+    <p style="font-size:.78rem;color:#aaa;margin-bottom:8px">
+      Saisie : <strong>d</strong>→↓ · <strong>u</strong>→↑ · <strong>/</strong> séparateur mesure · <strong>x</strong> hit · <strong>.</strong> silence
     </p>
+    <div class="rhythm-btn-toolbar">
+      <span style="font-size:.78rem;color:#888;flex-shrink:0">Insérer :</span>
+      <button type="button" class="rhythm-insert-btn" onclick="insertRhythmChar('↓')" title="Frappe bas (d)">↓</button>
+      <button type="button" class="rhythm-insert-btn" onclick="insertRhythmChar('↑')" title="Frappe haut (u)">↑</button>
+      <button type="button" class="rhythm-insert-btn" onclick="insertRhythmChar('x')" title="Hit étouffé">x</button>
+      <button type="button" class="rhythm-insert-btn" onclick="insertRhythmChar('.')" title="Silence">.</button>
+      <button type="button" class="rhythm-insert-btn" onclick="insertRhythmChar(' / ')" title="Séparateur de mesure"> / </button>
+      <button type="button" class="rhythm-insert-btn" onclick="insertRhythmChar(' ')" title="Espace">⎵</button>
+      <button type="button" class="rhythm-insert-btn rhythm-erase-btn" onclick="eraseRhythmChar()" title="Effacer">⌫</button>
+    </div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
       <label style="font-size:.82rem;color:#666">Préset :</label>
       <select id="rhythm-preset-select" style="border:1px solid #ddd;border-radius:3px;padding:5px 8px;font-size:.84rem;background:#fff">
@@ -575,6 +600,7 @@
                      value="{{ sec.rhythm.pattern if sec.rhythm else '' }}"
                      placeholder="↓ ↑↑↓↑" class="input-rhythm rhythm-pattern-input"
                      data-section="{{ sec.id }}">
+              <div class="rhythm-preview" id="rhythm-preview-{{ sec.id }}"></div>
             </td>
             <td>
               <input type="text" name="feel_{{ sec.id }}"
@@ -859,8 +885,8 @@
   let _editTarget = null;           // span.prev-chord ou .instr-chord ciblé
   let _insertTarget = null;        // span.insert-pt ciblé (sections paroles)
   let _insertInstrTarget = null;   // span.insert-instr-pt ciblé (sections instrumentales)
-  let _insertAtLine = null;        // .prev-line pour insertion depuis clic/long-press paroles
-  let _suppressLyricsClick = false; // vrai juste après un long-press (supprime le clic suivant)
+  let _insertAtLine = null;        // .prev-line pour insertion depuis clic paroles
+  let _addChordMode = false;       // mode ajout accord actif
   let _charWidth = null;           // cache largeur d'un caractère Consolas
 
   function openEditChord(el) {
@@ -907,8 +933,7 @@
   }
 
   function onLyricsClick(event, el) {
-    if (_suppressLyricsClick) { _suppressLyricsClick = false; return; }
-    if (event.shiftKey) {
+    if (event.shiftKey || _addChordMode) {
       const rect = el.getBoundingClientRect();
       const pos = Math.max(0, Math.round((event.clientX - rect.left) / getCharWidth()));
       openInsertChordAtPos(el.closest('.prev-line'), pos, el);
@@ -952,6 +977,16 @@
     _insertTarget = null;
     _insertInstrTarget = null;
     _insertAtLine = null;
+  }
+
+  function toggleAddChordMode() {
+    _addChordMode = !_addChordMode;
+    const btn = document.getElementById('btn-add-chord');
+    const hint = document.getElementById('add-chord-hint');
+    const wrap = document.getElementById('preview-wrap');
+    btn.classList.toggle('btn-add-chord-active', _addChordMode);
+    hint.style.display = _addChordMode ? 'block' : 'none';
+    wrap.classList.toggle('preview-editing-add-mode', _addChordMode);
   }
 
   /* Close on outside click */
@@ -1037,6 +1072,7 @@
     } else {
       return;
     }
+    if (_addChordMode) toggleAddChordMode();
     chordAjax('/chord-at/insert', {
       section_id: line.dataset.section,
       line_index:  line.dataset.li,
@@ -1328,11 +1364,59 @@
   }
 
   /* ================================================================ */
-  /* Rythme — raccourcis clavier + présets                          */
+  /* Rythme — raccourcis clavier + boutons + aperçu + présets       */
   /* ================================================================ */
 
-  /* d→↓  u→↑ dans les inputs de pattern rythme */
+  var _activeRhythmInput = null;
+
+  /* Normalise d→↓  u→↑ (miroir de normalize_rhythm_input Python) */
+  function normalizeRhythmInput(val) {
+    return val.replace(/d/g, '↓').replace(/u/g, '↑');
+  }
+
+  function updateRhythmPreview(inp) {
+    var sid = inp.dataset.section;
+    var prev = document.getElementById('rhythm-preview-' + sid);
+    if (!prev) return;
+    var normalized = normalizeRhythmInput(inp.value);
+    prev.textContent = normalized ? 'Aperçu : ' + normalized : '';
+  }
+
+  function insertRhythmChar(char) {
+    var inp = _activeRhythmInput;
+    if (!inp) return;
+    var start = inp.selectionStart;
+    var end = inp.selectionEnd;
+    inp.value = inp.value.slice(0, start) + char + inp.value.slice(end);
+    inp.selectionStart = inp.selectionEnd = start + char.length;
+    inp.dispatchEvent(new Event('input'));
+    inp.focus();
+  }
+
+  function eraseRhythmChar() {
+    var inp = _activeRhythmInput;
+    if (!inp) return;
+    var start = inp.selectionStart;
+    var end = inp.selectionEnd;
+    if (start !== end) {
+      inp.value = inp.value.slice(0, start) + inp.value.slice(end);
+      inp.selectionStart = inp.selectionEnd = start;
+    } else if (start > 0) {
+      var before = Array.from(inp.value.slice(0, start));
+      before.pop();
+      inp.value = before.join('') + inp.value.slice(start);
+      inp.selectionStart = inp.selectionEnd = before.join('').length;
+    }
+    inp.dispatchEvent(new Event('input'));
+    inp.focus();
+  }
+
+  /* d→↓  u→↑ dans les inputs de pattern rythme + focus + paste + aperçu */
   document.querySelectorAll('.rhythm-pattern-input').forEach(function(inp) {
+    inp.addEventListener('focus', function() {
+      _activeRhythmInput = this;
+    });
+
     inp.addEventListener('keydown', function(e) {
       if (e.key === 'd' || e.key === 'u') {
         e.preventDefault();
@@ -1345,6 +1429,23 @@
         this.dispatchEvent(new Event('input'));
       }
     });
+
+    inp.addEventListener('paste', function(e) {
+      e.preventDefault();
+      var text = (e.clipboardData || window.clipboardData).getData('text');
+      var normalized = normalizeRhythmInput(text);
+      var start = this.selectionStart;
+      var end = this.selectionEnd;
+      this.value = this.value.slice(0, start) + normalized + this.value.slice(end);
+      this.selectionStart = this.selectionEnd = start + normalized.length;
+      this.dispatchEvent(new Event('input'));
+    });
+
+    inp.addEventListener('input', function() {
+      updateRhythmPreview(this);
+    });
+
+    if (inp.value) updateRhythmPreview(inp);
   });
 
   /* Chargement des présets depuis static/rhythm_patterns.json */
@@ -1412,34 +1513,6 @@
       });
   }
 
-  /* Long-press sur paroles → insérer un accord (mobile / touch) */
-  (function() {
-    var LONG_MS = 600;
-    var _lpTimer = null, _lpEl = null, _lpTouch = null;
-    var container = document.getElementById('preview-content');
-
-    container.addEventListener('touchstart', function(e) {
-      var t = e.target.closest('.prev-lyrics-text');
-      if (!t) return;
-      _lpEl = t;
-      _lpTouch = e.touches[0];
-      _lpTimer = setTimeout(function() {
-        _lpTimer = null;
-        _suppressLyricsClick = true;
-        var rect = _lpEl.getBoundingClientRect();
-        var pos = Math.max(0, Math.round((_lpTouch.clientX - rect.left) / getCharWidth()));
-        openInsertChordAtPos(_lpEl.closest('.prev-line'), pos, _lpEl);
-      }, LONG_MS);
-    }, {passive: true});
-
-    container.addEventListener('touchmove', function() {
-      if (_lpTimer) { clearTimeout(_lpTimer); _lpTimer = null; }
-    }, {passive: true});
-
-    container.addEventListener('touchend', function() {
-      if (_lpTimer) { clearTimeout(_lpTimer); _lpTimer = null; }
-    }, {passive: true});
-  })();
 </script>
 </body>
 </html>

@@ -4,6 +4,41 @@ Journal des décisions produit et techniques.
 
 ---
 
+## 2026-05-29 — P14 : Ajout accord mobile — mode explicite
+
+### Décision
+
+L'appui long (long-press) comme déclencheur d'insertion d'accord sur mobile est supprimé.
+Il déclenchait la sélection native du texte au lieu d'ouvrir le popup d'ajout.
+
+**Remplacement** : bouton "+ Accord" visible dans l'en-tête de la card aperçu.
+- Quand actif : simple tap/clic sur une ligne de paroles ouvre le popup d'insertion.
+- La zone paroles passe en `user-select: none` uniquement pendant ce mode (classe `.preview-editing-add-mode`).
+- Après insertion : le mode se désactive automatiquement.
+- Shift+clic desktop conservé (fonctionne en parallèle avec le mode bouton).
+
+### Architecture
+
+- Suppression de l'IIFE long-press (`touchstart` + `setTimeout` 600ms) dans `song.html`.
+- Suppression de `_suppressLyricsClick` (variable utilisée uniquement par le long-press).
+- Ajout de `_addChordMode` (bool) + `toggleAddChordMode()` dans `song.html`.
+- `onLyricsClick` : condition `event.shiftKey || _addChordMode` (était `event.shiftKey` seul).
+- `confirmInsertChord` : appelle `toggleAddChordMode()` avant `chordAjax` si mode actif.
+- CSS : `.btn-add-chord`, `.btn-add-chord-active`, `#add-chord-hint`, `.preview-editing-add-mode .prev-lyrics-text`.
+- `_preview.html` : `title` mis à jour (suppression de la mention "appui long").
+
+### Pourquoi
+
+L'appui long est non fiable sur iOS/Android : le navigateur déclenche la sélection native du texte avant que le timer JS ne s'exécute. Un mode explicite (bouton) est plus prévisible et ne nécessite aucun `preventDefault` global ni manipulation d'événements touch complexe.
+
+### Conséquences
+
+- Aucune modification du modèle JSON.
+- Aucune modification backend ni des routes AJAX.
+- Les tests existants ne sont pas affectés (logique JS non testée unitairement).
+
+---
+
 ## 2026-05-29 — P12 : Édition accords + rythme
 
 ### Décisions
