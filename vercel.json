@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "name": "chordsDB",
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "30mb"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app.py"
+    }
+  ],
+  "env": {
+    "STORAGE_BACKEND": "supabase"
+  }
+}
