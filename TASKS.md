@@ -2,7 +2,7 @@
 
 ## Workflow par chanson
 
-1. Créer un JSON conforme au template (`song_template_with_rhythm.json`) via Claude AI ou manuellement.
+1. Créer un JSON conforme au template (`schema/song_schema.json`) via Claude AI ou manuellement.
 2. Lancer l'interface web : `python app.py` → http://localhost:5000
 3. Uploader le JSON.
 4. Vérifier et éditer l'aperçu HTML interactif :
@@ -16,8 +16,11 @@
    - **Éditeur structure** : réordonner, renommer, changer type/répétitions
    - **Éditeur rythme** : pattern + feel par section
    - **Bouton "Sauvegarder et rafraîchir l'aperçu"** : sauvegarde structure + rythme en un clic
-5. Cliquer "Valider et exporter 2 PDFs" (Paroles & Accords + Mémo Guitare).
-6. Retrouver les morceaux validés dans la Bibliothèque : http://localhost:5000/library
+   - **Transposition** : boutons ±1/±2 ou valeur custom pour transposer tous les accords
+5. Définir le statut de révision (`review_status`) : ok / to_review / draft.
+6. Cliquer "Valider et exporter 2 PDFs" (Paroles & Accords + Mémo Guitare).
+7. Retrouver les morceaux validés dans la Bibliothèque : http://localhost:5000/library
+8. En répétition : boutons "Paroles" ou "Mémo" sur chaque card → vue plein écran avec auto-scroll.
 
 **En CLI :**
 ```bash
@@ -68,6 +71,18 @@ PDF_EXPORT_DIR=C:\Users\kovu\SynologyDrive\Thibault\Guitartabs\Chords
 - Dans la Bibliothèque (`/library`) → bouton "JSON" sur la card.
 - Ou directement : `GET /song/<slug>/download-json`
 
+### Transposer une chanson
+
+1. Ouvrir la fiche chanson.
+2. Section "Transposition" : cliquer ±1/±2 ou entrer une valeur custom.
+3. Confirmer — un backup est créé automatiquement avant transposition.
+
+### Utiliser le mode répétition
+
+- Dans la Bibliothèque (`/library`) → boutons "Paroles" ou "Mémo" sur chaque card.
+- Ou depuis la fiche chanson → lien "Mode répétition".
+- Raccourcis : `Espace` = pause scroll · `+/-` = police · `F` = plein écran · `D` = thème.
+
 ### Ajouter/modifier la logique métier
 
 - Fiche mémo → `scripts/memo.py`
@@ -76,8 +91,11 @@ PDF_EXPORT_DIR=C:\Users\kovu\SynologyDrive\Thibault\Guitartabs\Chords
 - Backup/restauration → `scripts/backup.py`
 - Validation JSON → `scripts/validate_song_json.py`
 - Chemins + .env.local → `scripts/config.py`
+- Transposition → `scripts/transpose.py`
+- Stockage → `scripts/storage.py`
 - Bibliothèque → route `/library` dans `app.py` + `templates/library.html`
 - Aperçu interactif → `templates/_preview.html`
+- Mode répétition → `templates/rehearsal_chords.html` + `templates/rehearsal_memo.html`
 
 ### Lancer les tests
 
@@ -85,12 +103,11 @@ PDF_EXPORT_DIR=C:\Users\kovu\SynologyDrive\Thibault\Guitartabs\Chords
 python -m pytest tests/ -v
 ```
 
-129 tests — 0 échec.
+178 tests — 0 échec.
 
-## À faire (prochaine session — 2026-05-26)
+## À faire
 
-- [ ] Améliorer la lisibilité de la fiche Mémo Guitare (PDF/DOCX)
-- [ ] Améliorer l'interface webapp (UX/UI)
+- À définir lors de la prochaine session.
 
 ---
 
@@ -100,7 +117,10 @@ python -m pytest tests/ -v
 |---|---|
 | `song_moriarty-jimmy.json` | user_validated |
 | `song_pink-floyd-wish-you-were-here.json` | user_validated |
-| `song_neil-young-heart-of-gold.json` | user_validated |
+| `song_neil-young-heart-of-gold-midi.json` | user_validated |
 | `song_zaho-de-sagazan-la-symphonie-des-eclairs.json` | user_validated |
 | `song_muse-endlessly.json` | user_validated |
 | `song_cocoon-on-my-way.json` | user_validated |
+| `song_eagles-hotel-california.json` | user_validated |
+| `song_gary-jules-mad-world.json` | user_validated |
+| `song_yodelice-sunday-with-a-flu.json` | user_validated |

@@ -43,14 +43,22 @@
 - [x] **Validation renforcée** : slug regex, IDs sections, ordre/collision positions.
 - [x] **Tests Flask** : 15 tests `app.test_client()` — 129 tests au total, 0 échec.
 
-## P10 — Pistes possibles
+## Version 4 — P10 : Mode répétition + ergonomie + bibliothèque (terminé) ✓
 
-- [ ] Transposition automatique (tous les accords × demi-tons).
+- [x] **Mode répétition** : 2 vues plein écran sans éléments d'édition (`rehearsal_chords.html`, `rehearsal_memo.html`).
+- [x] **Auto-scroll** : vitesse réglable, start/stop Espace, persistance localStorage.
+- [x] **Transposition automatique** : tous les accords × demi-tons, UI ±1/±2 + custom, `scripts/transpose.py`.
+- [x] **Statut de révision** (`review_status`) : ok / to_review / draft, badges bibliothèque, select AJAX inline.
+- [x] **Filtres bibliothèque** : tonalité, capo, statut révision — filtrage JS local.
+- [x] **Raccourcis clavier** song.html : S/E/L/F (non déclenchés depuis inputs).
+- [x] **Export JSON depuis la fiche chanson** : bouton "Télécharger JSON" dans la section Actions.
+- [x] **178 tests au total — 0 régression.**
+
+## P11 — Pistes possibles
+
 - [ ] Diagrammes d'accords en ASCII dans le mémo.
 - [ ] LibreOffice headless comme moteur PDF principal (si installé).
-- [ ] Export JSON depuis la fiche chanson (pas seulement la bibliothèque).
-- [ ] Mode plein écran pour l'aperçu (usage en répétition).
-- [ ] Raccourcis clavier dans l'éditeur.
+- [ ] Améliorer la lisibilité de la fiche Mémo Guitare (PDF/DOCX).
 
 ## À éviter (définitif)
 

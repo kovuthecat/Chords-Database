@@ -1,12 +1,13 @@
 # PROJECT_MAP.md
 
-Carte synthétique du projet (v9 — éditeur local de songbook guitare/chant).
+Carte synthétique du projet (v10 — éditeur local de songbook guitare/chant).
 
 ## Vue d'ensemble
 
 **Éditeur local de songbook guitare/chant** — génère 2 PDFs séparés à partir d'un JSON externe.
 Interface web Flask locale. Édition interactive dans l'aperçu HTML.
-Backup automatique à chaque sauvegarde. Bibliothèque avec recherche et export.
+Backup automatique à chaque sauvegarde. Mode répétition plein écran avec auto-scroll.
+Transposition automatique. Bibliothèque avec recherche, filtres et statuts de révision.
 
 Le projet **ne génère pas les données chanson**. Il consomme un JSON déjà finalisé.
 
@@ -40,6 +41,8 @@ JSON externe (conforme à song_template_with_rhythm.json)
 | `scripts/memo.py` | Logique fiche mémo structure guitare |
 | `scripts/editor.py` | 13 fonctions d'édition JSON ciblée |
 | `scripts/backup.py` | Backup / restauration automatique |
+| `scripts/transpose.py` | Transposition automatique (tous accords × demi-tons) |
+| `scripts/storage.py` | Couche de stockage abstraite (local / supabase) |
 
 ## Templates HTML
 

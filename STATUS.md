@@ -1,18 +1,55 @@
 # STATUS.md
 
-> Dernière mise à jour : 2026-05-25 (P9 — backup auto, restauration, édition paroles, insertion instrumentale, recherche bibliothèque, validation renforcée, tests Flask)
+> Dernière mise à jour : 2026-05-25 (P10 — mode répétition, transposition, filtres bibliothèque, review_status, raccourcis clavier, export JSON fiche chanson)
 
 ## Phase actuelle
 
-**Phase 9 — Sécurité + confort d'édition + robustesse**
+**Phase 10 — Mode répétition + ergonomie + bibliothèque**
 
-L'éditeur local de songbook guitare/chant est maintenant complet sur le plan de l'édition :
-backup automatique à chaque sauvegarde, restauration en un clic, édition des paroles inline,
-insertion d'accords dans les sections instrumentales, recherche dans la bibliothèque,
-export JSON depuis la bibliothèque, PDF_EXPORT_DIR configurable, validation JSON renforcée,
-confirmations avant suppressions destructives, et 15 tests Flask minimaux.
+L'éditeur local de songbook guitare/chant est maintenant utilisable en conditions de répétition/live :
+2 vues plein écran sans éléments d'édition (paroles+accords et conducteur guitare), auto-scroll mains libres,
+police ajustable, thème sombre, persistance localStorage. Transposition automatique (tous accords × demi-tons),
+statuts de révision par chanson, filtres bibliothèque (tonalité, capo, statut), raccourcis clavier dans l'éditeur.
 
 ## Ce qui fonctionne
+
+### Mode répétition — 2 vues plein écran (Phase 10 — 2026-05-25)
+
+- `GET /song/<slug>/rehearsal/chords` → `rehearsal_chords.html` : paroles + accords, sans éditeurs
+- `GET /song/<slug>/rehearsal/memo` → `rehearsal_memo.html` : conducteur guitare depuis `build_memo_lines`
+- Contrôles : police ajustable (A−/A+), thème sombre, plein écran, auto-scroll
+- Auto-scroll : `requestAnimationFrame`, vitesse réglable, start/stop (barre dédiée + Espace)
+- Persistance localStorage : taille police, thème, vitesse scroll
+- Raccourcis : `Espace` = pause · `+/-` = police · `F` = plein écran · `D` = thème · `L` = biblio
+
+### Transposition automatique (Phase 10 — 2026-05-25)
+
+- `scripts/transpose.py` : `transpose_chord()` + `transpose_song()`, gamme pratique
+- Route `POST /song/<slug>/transpose`, borne −11..+11, backup automatique
+- UI dans `song.html` : boutons ±1/±2, champ custom, backup avant transposition
+
+### Statut de révision (Phase 10 — 2026-05-25)
+
+- Champ optionnel JSON `review_status` : `"ok" | "to_review" | "draft"`
+- Route `POST /song/<slug>/review-status` : mise à jour + backup automatique
+- Badges visuels dans la bibliothèque + select inline AJAX par card
+
+### Filtres bibliothèque (Phase 10 — 2026-05-25)
+
+- Filtres JS locaux : tonalité (select), capo (sans/avec), statut révision
+- `applyFilters()` combine texte + 3 filtres ; `resetFilters()` vide tout
+- Badges : Validé/En attente, ✓ Prêt/⚠ À revoir/Brouillon, PDF ✓/PDF ✗
+- Boutons "Paroles" et "Mémo" (mode répétition) ajoutés par card
+
+### Raccourcis clavier song.html (Phase 10 — 2026-05-25)
+
+- `S` = Sauvegarder et rafraîchir · `E` = Exporter PDFs · `L` = Bibliothèque · `F` = Plein écran
+- Non déclenchés depuis INPUT/TEXTAREA/SELECT
+
+### Export JSON depuis la fiche chanson (Phase 10 — 2026-05-25)
+
+- Bouton "Télécharger JSON" dans la section Actions de `song.html`
+- Réutilise la route existante `GET /song/<slug>/download-json`
 
 ### Backup automatique (Phase 9 — 2026-05-25)
 
@@ -98,14 +135,17 @@ confirmations avant suppressions destructives, et 15 tests Flask minimaux.
 - Survol ligne → points `+` pour insérer
 - Sauvegarde AJAX → rafraîchissement partiel
 
-## Chansons produites (6 morceaux, 12 PDFs dans Guitartabs/Chords)
+## Chansons produites (9 morceaux, 18 PDFs dans Guitartabs/Chords)
 
 - Moriarty — Jimmy
 - Pink Floyd — Wish You Were Here
-- Neil Young — Heart of Gold
+- Neil Young — Heart of Gold (midi)
 - Zaho de Sagazan — La Symphonie des Éclairs
 - Muse — Endlessly
 - Cocoon — On My Way
+- Eagles — Hotel California
+- Gary Jules — Mad World
+- Yodelice — Sunday with a Flu
 
 ## Architecture actuelle
 
@@ -114,30 +154,35 @@ Chords/
 ├── app.py                          ← interface web Flask
 ├── main.py                         ← CLI simplifié
 ├── requirements.txt
-├── song_template_with_rhythm.json  ← template de référence
 ├── schema/song_schema.json         ← schéma JSON formel
 ├── templates/
 │   ├── index.html                  ← accueil + upload
 │   ├── song.html                   ← fiche chanson + éditeurs + aperçu HTML
 │   ├── _preview.html               ← fragment aperçu interactif (inclus + AJAX)
-│   └── library.html                ← bibliothèque des morceaux
+│   ├── library.html                ← bibliothèque des morceaux
+│   ├── rehearsal_chords.html       ← mode répétition : paroles + accords (P10)
+│   └── rehearsal_memo.html         ← mode répétition : conducteur guitare (P10)
 ├── data/
 │   ├── song_*.json                 ← JSON importés
-│   └── backups/<slug>/             ← backups timestampés (P9)
+│   └── backups/<slug>/             ← backups timestampés
 ├── output/                         ← DOCX + PDF + JSON générés
 ├── scripts/
 │   ├── config.py                   ← chemins (+ .env.local pour PDF_EXPORT_DIR)
 │   ├── validate_song_json.py       ← validation JSON (slug/IDs/positions)
 │   ├── editor.py                   ← 13 fonctions d'édition JSON song
-│   ├── backup.py                   ← backup/restore automatique (P9)
+│   ├── backup.py                   ← backup/restore automatique
 │   ├── generate_docx.py            ← génération DOCX + 2 PDFs
-│   └── memo.py
+│   ├── memo.py                     ← logique fiche mémo guitare
+│   ├── storage.py                  ← couche de stockage abstraite (local/supabase)
+│   └── transpose.py                ← transposition automatique (P10)
 ├── tests/
-│   ├── test_app.py                 ← 15 tests Flask (P9)
+│   ├── test_app.py                 ← 29 tests Flask (P9+P10)
 │   ├── test_editor.py              ← 47 tests
 │   ├── test_validate_json.py       ← 14 tests
-│   └── test_memo.py                ← 53 tests
-└── _archive/                       ← anciens scripts
+│   ├── test_memo.py                ← 53 tests
+│   ├── test_storage.py             ← tests storage
+│   └── test_transpose.py           ← tests transposition
+└── _archive/                       ← anciens scripts (collect, gemini, analyse, supabase, deploy)
 ```
 
-**129 tests — 0 échec.**
+**178 tests — 0 échec.**
