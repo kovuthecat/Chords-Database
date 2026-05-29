@@ -439,6 +439,56 @@ def insert_instr_chord(
 
 
 # ---------------------------------------------------------------------------
+# Déplacement de position d'accord (dans lines[].chords[])
+# ---------------------------------------------------------------------------
+
+def move_chord_at(
+    song: dict,
+    section_id: str,
+    line_index: int,
+    chord_index: int,
+    delta: int,
+) -> dict:
+    """Déplace un accord de |delta| caractères vers la gauche (delta<0) ou la droite (delta>0).
+    La position est ramenée à 0 minimum. Les accords sont re-triés par position après déplacement."""
+    song = copy.deepcopy(song)
+    for s in song.get("sections", []):
+        if s.get("id") != section_id:
+            continue
+        lines = s.get("lines", [])
+        if 0 <= line_index < len(lines):
+            chords = lines[line_index].get("chords", [])
+            if 0 <= chord_index < len(chords):
+                chords[chord_index]["position"] = max(0, chords[chord_index]["position"] + delta)
+                lines[line_index]["chords"] = sorted(chords, key=lambda c: c.get("position", 0))
+        break
+    return song
+
+
+def set_chord_position(
+    song: dict,
+    section_id: str,
+    line_index: int,
+    chord_index: int,
+    position: int,
+) -> dict:
+    """Fixe la position d'un accord à un offset exact (en caractères, minimum 0).
+    Les accords sont re-triés par position après modification."""
+    song = copy.deepcopy(song)
+    for s in song.get("sections", []):
+        if s.get("id") != section_id:
+            continue
+        lines = s.get("lines", [])
+        if 0 <= line_index < len(lines):
+            chords = lines[line_index].get("chords", [])
+            if 0 <= chord_index < len(chords):
+                chords[chord_index]["position"] = max(0, position)
+                lines[line_index]["chords"] = sorted(chords, key=lambda c: c.get("position", 0))
+        break
+    return song
+
+
+# ---------------------------------------------------------------------------
 # Édition inline des paroles
 # ---------------------------------------------------------------------------
 

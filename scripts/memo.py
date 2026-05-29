@@ -140,10 +140,15 @@ def _extract_performance_lines(section: dict) -> list:
 
 
 def _build_rhythm_hint(section: dict) -> str:
-    """Construit rhythm_hint depuis section["rhythm"] ou section["rhythm_hint"]."""
+    """Construit rhythm_hint depuis section["rhythm"] ou section["rhythm_hint"].
+    Supporte pattern_lines (multi-mesures) et preset_id."""
     rhythm = section.get("rhythm")
     if rhythm:
-        pattern = (rhythm.get("pattern") or "").strip()
+        pattern_lines = rhythm.get("pattern_lines")
+        if pattern_lines and isinstance(pattern_lines, list):
+            pattern = " | ".join(str(p) for p in pattern_lines if p)
+        else:
+            pattern = (rhythm.get("pattern") or "").strip()
         feel = (rhythm.get("feel") or "").strip()
         if pattern and feel:
             return f"{pattern} · {feel}"

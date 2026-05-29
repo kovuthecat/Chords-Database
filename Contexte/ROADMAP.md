@@ -63,11 +63,23 @@
 - [x] **Transposition améliorée** : tonalité actuelle + capo + estimation temps réel + confirmation enrichie.
 - [x] **Remplacement d'accord** déplacé dans "Options avancées" de song.html.
 
-## P12 — Pistes possibles
+## Version 6 — P12 : Édition accords + rythme (terminé) ✓
+
+- [x] **Déplacement d'accord** : boutons ← / → dans le popup + champ position exacte (Définir).
+- [x] **Routes move/set-position** : `POST /chord-at/move` et `POST /chord-at/set-position`.
+- [x] **Raccourcis rythme** : `d`→↓ · `u`→↑ dans les inputs de pattern (keydown intercepté).
+- [x] **Bibliothèque de présets** : `static/rhythm_patterns.json` (8 présets : DU, folk, pop, valse, swing, bossa, fingerpick…).
+- [x] **Dropdown préset** : sélection + section cible + bouton Appliquer dans l'éditeur rythme.
+- [x] **Multi-mesures** : `pattern_lines` dans le modèle rhythm, rendu `|`-séparé dans la fiche mémo.
+- [x] **`scripts/rhythm_utils.py`** : `normalize_rhythm_input`, `load_presets`, `get_preset_by_id`.
+- [x] **234 tests — 227 passent (7 échecs pré-existants Supabase).**
+
+## P13 — Pistes possibles
 
 - [ ] Diagrammes d'accords en ASCII dans le mémo.
 - [ ] LibreOffice headless comme moteur PDF principal (si installé).
 - [ ] Améliorer la lisibilité de la fiche Mémo Guitare (PDF/DOCX).
+- [ ] Drag-and-drop de position d'accord dans l'aperçu.
 
 ## À éviter (définitif)
 

@@ -244,7 +244,7 @@
 </head>
 <body>
 
-<!-- Popup : modifier / supprimer un accord existant -->
+<!-- Popup : modifier / supprimer / déplacer un accord existant -->
 <div class="chord-popup" id="edit-popup">
   <div class="popup-title">Modifier l'accord</div>
   <input class="popup-input" type="text" id="edit-chord-input" autocomplete="off" autocorrect="off" spellcheck="false">
@@ -252,6 +252,17 @@
     <button class="popup-btn popup-btn-ok" onclick="confirmEditChord()">OK</button>
     <button class="popup-btn popup-btn-del" onclick="confirmDeleteChord()">Supprimer</button>
     <button class="popup-btn popup-btn-cancel" onclick="closePopups()">Annuler</button>
+  </div>
+  <div style="margin-top:10px;border-top:1px solid #eee;padding-top:8px">
+    <div class="popup-title" style="margin-bottom:6px">Position</div>
+    <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+      <button class="popup-btn" style="background:#f0f0f0;color:#555;padding:4px 9px;font-size:.95rem" onclick="doMoveChord(-1)" title="Reculer d'un caractère">←</button>
+      <button class="popup-btn" style="background:#f0f0f0;color:#555;padding:4px 9px;font-size:.95rem" onclick="doMoveChord(+1)" title="Avancer d'un caractère">→</button>
+      <input type="number" id="edit-pos-input" min="0" max="200"
+             style="width:54px;border:1px solid #ddd;border-radius:3px;padding:4px 6px;font-size:.85rem;text-align:center"
+             title="Position exacte (en caractères)">
+      <button class="popup-btn" style="background:#f5f5f5;color:#555;font-size:.82rem;padding:4px 8px" onclick="doSetPosition()">Définir</button>
+    </div>
   </div>
   <div class="popup-err" id="edit-popup-err"></div>
 </div>
@@ -520,13 +531,29 @@
   {% if unique_sections %}
   <div class="editor-card" id="editor-rhythm">
     <h2>Éditeur — Rythme par section</h2>
+    <p style="font-size:.78rem;color:#aaa;margin-bottom:10px">
+      Raccourcis dans le champ Pattern : <strong>d</strong>→↓ · <strong>u</strong>→↑
+      · Présets : sélectionner ci-dessous pour pré-remplir une ligne.
+    </p>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <label style="font-size:.82rem;color:#666">Préset :</label>
+      <select id="rhythm-preset-select" style="border:1px solid #ddd;border-radius:3px;padding:5px 8px;font-size:.84rem;background:#fff">
+        <option value="">— choisir un préset —</option>
+      </select>
+      <select id="rhythm-preset-target" style="border:1px solid #ddd;border-radius:3px;padding:5px 8px;font-size:.84rem;background:#fff">
+        {% for sec in unique_sections %}
+        <option value="{{ sec.id }}">{{ sec.label }}</option>
+        {% endfor %}
+      </select>
+      <button type="button" class="btn btn-outline" style="padding:5px 12px;font-size:.82rem" onclick="applyRhythmPreset()">Appliquer</button>
+    </div>
     <form action="/song/{{ slug }}/edit-rhythm" method="post" id="form-rhythm" onsubmit="return false">
       <table class="rhythm-table">
         <thead>
           <tr>
-            <th style="width:28%">Section</th>
-            <th style="width:36%">Pattern (ex: D DU UDU)</th>
-            <th style="width:36%">Feel (ex: straight, swing)</th>
+            <th style="width:26%">Section</th>
+            <th style="width:37%">Pattern <span style="font-weight:normal;color:#bbb">(↓↑ ou d/u)</span></th>
+            <th style="width:37%">Feel <span style="font-weight:normal;color:#bbb">(ex: straight, swing)</span></th>
           </tr>
         </thead>
         <tbody>
@@ -538,11 +565,14 @@
             </td>
             <td>
               <input type="text" name="pattern_{{ sec.id }}"
+                     id="pattern-{{ sec.id }}"
                      value="{{ sec.rhythm.pattern if sec.rhythm else '' }}"
-                     placeholder="D DU UDU" class="input-rhythm">
+                     placeholder="↓ ↑↑↓↑" class="input-rhythm rhythm-pattern-input"
+                     data-section="{{ sec.id }}">
             </td>
             <td>
               <input type="text" name="feel_{{ sec.id }}"
+                     id="feel-{{ sec.id }}"
                      value="{{ sec.rhythm.feel if sec.rhythm else '' }}"
                      placeholder="straight" class="input-rhythm">
             </td>
@@ -830,6 +860,13 @@
     const popup = document.getElementById('edit-popup');
     document.getElementById('edit-chord-input').value = el.dataset.chord;
     document.getElementById('edit-popup-err').style.display = 'none';
+    // Pré-remplir la position courante (pour les accords de paroles)
+    if (!el.dataset.instrType) {
+      const posStyle = parseFloat(el.style.left) || 0;
+      document.getElementById('edit-pos-input').value = Math.round(posStyle);
+    } else {
+      document.getElementById('edit-pos-input').value = '';
+    }
     positionPopup(popup, el);
     popup.style.display = 'block';
     document.getElementById('edit-chord-input').focus();
@@ -952,6 +989,30 @@
       chord:       chord,
       position:    _insertTarget.dataset.pos,
     }, 'insert-popup-err');
+  }
+
+  function doMoveChord(delta) {
+    if (!_editTarget || _editTarget.dataset.instrType) return;
+    const line = _editTarget.closest('.prev-line');
+    chordAjax('/chord-at/move', {
+      section_id:  line.dataset.section,
+      line_index:  line.dataset.li,
+      chord_index: _editTarget.dataset.ci,
+      delta:       delta,
+    }, 'edit-popup-err');
+  }
+
+  function doSetPosition() {
+    if (!_editTarget || _editTarget.dataset.instrType) return;
+    const pos = parseInt(document.getElementById('edit-pos-input').value, 10);
+    if (isNaN(pos) || pos < 0) return;
+    const line = _editTarget.closest('.prev-line');
+    chordAjax('/chord-at/set-position', {
+      section_id:  line.dataset.section,
+      line_index:  line.dataset.li,
+      chord_index: _editTarget.dataset.ci,
+      position:    pos,
+    }, 'edit-popup-err');
   }
 
   /* ================================================================ */
@@ -1210,6 +1271,56 @@
         status.textContent = '✗ Erreur réseau';
         status.style.color = '#c0392b';
       });
+  }
+
+  /* ================================================================ */
+  /* Rythme — raccourcis clavier + présets                          */
+  /* ================================================================ */
+
+  /* d→↓  u→↑ dans les inputs de pattern rythme */
+  document.querySelectorAll('.rhythm-pattern-input').forEach(function(inp) {
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'd' || e.key === 'u') {
+        e.preventDefault();
+        var char = e.key === 'd' ? '↓' : '↑';
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+        var val = this.value;
+        this.value = val.slice(0, start) + char + val.slice(end);
+        this.selectionStart = this.selectionEnd = start + char.length;
+        this.dispatchEvent(new Event('input'));
+      }
+    });
+  });
+
+  /* Chargement des présets depuis static/rhythm_patterns.json */
+  (function() {
+    fetch('/static/rhythm_patterns.json')
+      .then(function(r) { return r.json(); })
+      .then(function(presets) {
+        var sel = document.getElementById('rhythm-preset-select');
+        if (!sel) return;
+        presets.forEach(function(p) {
+          var opt = document.createElement('option');
+          opt.value = JSON.stringify({pattern: p.pattern, feel: p.feel});
+          opt.textContent = p.label + (p.feel ? ' — ' + p.feel : '');
+          sel.appendChild(opt);
+        });
+      })
+      .catch(function() {});
+  })();
+
+  function applyRhythmPreset() {
+    var sel = document.getElementById('rhythm-preset-select');
+    var targetSel = document.getElementById('rhythm-preset-target');
+    if (!sel || !targetSel || !sel.value) return;
+    var preset;
+    try { preset = JSON.parse(sel.value); } catch(e) { return; }
+    var sid = targetSel.value;
+    var patternInp = document.getElementById('pattern-' + sid);
+    var feelInp    = document.getElementById('feel-' + sid);
+    if (patternInp) patternInp.value = preset.pattern || '';
+    if (feelInp)    feelInp.value    = preset.feel    || '';
   }
 
   /* ---- Sauvegarde globale (structure + rythme) ---- */

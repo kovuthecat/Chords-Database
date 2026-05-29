@@ -32,6 +32,8 @@ from editor import (                                                        # no
     delete_chord_at,
     update_chord_at,
     insert_chord_at,
+    move_chord_at,
+    set_chord_position,
     update_instr_chord,
     delete_instr_chord,
     insert_instr_chord,
@@ -570,6 +572,48 @@ def chord_at_insert(slug: str):
     if not chord:
         return jsonify(error="Accord manquant"), 400
     song = insert_chord_at(song, section_id, line_index, chord, position)
+    errors = validate_song_json(song)
+    if errors:
+        return jsonify(error=errors[0]), 400
+    _save_song(slug, song)
+    return jsonify(ok=True)
+
+
+@app.route("/song/<slug>/chord-at/move", methods=["POST"])
+def chord_at_move(slug: str):
+    song = _load_song(slug)
+    if song is None:
+        return jsonify(error="Chanson introuvable"), 404
+    try:
+        section_id  = request.form["section_id"]
+        line_index  = int(request.form["line_index"])
+        chord_index = int(request.form["chord_index"])
+        delta       = int(request.form["delta"])
+    except (KeyError, ValueError):
+        return jsonify(error="Paramètres invalides"), 400
+    song = move_chord_at(song, section_id, line_index, chord_index, delta)
+    errors = validate_song_json(song)
+    if errors:
+        return jsonify(error=errors[0]), 400
+    _save_song(slug, song)
+    return jsonify(ok=True)
+
+
+@app.route("/song/<slug>/chord-at/set-position", methods=["POST"])
+def chord_at_set_position(slug: str):
+    song = _load_song(slug)
+    if song is None:
+        return jsonify(error="Chanson introuvable"), 404
+    try:
+        section_id  = request.form["section_id"]
+        line_index  = int(request.form["line_index"])
+        chord_index = int(request.form["chord_index"])
+        position    = int(request.form["position"])
+    except (KeyError, ValueError):
+        return jsonify(error="Paramètres invalides"), 400
+    if position < 0:
+        return jsonify(error="Position invalide"), 400
+    song = set_chord_position(song, section_id, line_index, chord_index, position)
     errors = validate_song_json(song)
     if errors:
         return jsonify(error=errors[0]), 400

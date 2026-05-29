@@ -4,6 +4,47 @@ Journal des décisions produit et techniques.
 
 ---
 
+## 2026-05-29 — P12 : Édition accords + rythme
+
+### Décisions
+
+**Déplacement d'accord (← / →)**
+- Popup édition accord : ajout d'un bloc "Position" avec boutons ← (delta -1) et → (delta +1).
+- Champ numérique "Définir" pour fixer une position exacte.
+- Deux nouvelles routes AJAX : `POST /chord-at/move` (delta) et `POST /chord-at/set-position` (position absolue).
+- Deux nouvelles fonctions dans `editor.py` : `move_chord_at` et `set_chord_position`.
+- Après déplacement, les accords sont re-triés par position (logique identique à `insert_chord_at`).
+- Le popup se ferme après chaque action (approche simple — pas de ré-ancrage sur l'accord déplacé).
+
+**Raccourcis clavier rythme**
+- Touche `d` → `↓` et `u` → `↑` interceptées sur les inputs `.rhythm-pattern-input` (keydown → preventDefault + insertion).
+- Implémentation purement JS dans `song.html`, aucune dépendance ajoutée.
+- Seuls `d` et `u` sont interceptés (les caractères `x` et `.` sont déjà directement saisissables).
+
+**Bibliothèque de présets**
+- `static/rhythm_patterns.json` : 8 présets (DU straight, folk DUUDU, pop DDUUDU, valse, swing, bossa, Travis, arpège).
+- Chargé via `fetch('/static/rhythm_patterns.json')` au chargement de `song.html` pour peupler le dropdown.
+- Dropdown "préset + section cible + Appliquer" pré-remplit pattern/feel sans sauvegarder.
+- `scripts/rhythm_utils.py` : `normalize_rhythm_input`, `load_presets`, `get_preset_by_id` (Python).
+
+**Multi-mesures (modèle de données)**
+- Champ optionnel `pattern_lines: list[str]` ajouté au modèle rhythm (backward compatible).
+- `memo.py/_build_rhythm_hint` : si `pattern_lines` présent → join avec ` | `, sinon `pattern` comme avant.
+- Pas d'UI d'édition multi-mesures dans P12 (saisie JSON directe ou future session).
+- Validation JSON : champs optionnels non vérifiés (pas de schéma strict sur rhythm).
+
+**Tests**
+- 11 nouveaux tests dans `test_editor.py` (TestMoveChordAt × 6, TestSetChordPosition × 5).
+- 20 nouveaux tests dans `test_rhythm.py` (normalize, presets, _build_rhythm_hint, intégration).
+- Total : 234 tests, 227 passent (7 échecs Supabase inchangés).
+
+### Conséquences
+- `editor.py` passe de 13 à 15 fonctions.
+- `app.py` : 2 nouvelles routes AJAX (cohérentes avec le pattern existant).
+- Les JSON existants ne sont pas affectés (nouveaux champs optionnels).
+
+---
+
 ## 2026-05-29 — P11 : Simplification interface
 
 ### Décisions

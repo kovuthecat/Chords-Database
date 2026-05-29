@@ -104,7 +104,7 @@ PDF_EXPORT_DIR=C:\Users\kovu\SynologyDrive\Thibault\Guitartabs\Chords
 python -m pytest tests/ -v
 ```
 
-178 tests — 0 échec.
+234 tests — 227 passent (7 échecs pré-existants Supabase).
 
 ## À faire
 

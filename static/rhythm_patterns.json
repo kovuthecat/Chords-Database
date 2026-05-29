@@ -1,0 +1,66 @@
+[
+  {
+    "id": "straight-du",
+    "label": "Straight DU",
+    "pattern": "↓ ↑",
+    "feel": "straight",
+    "bars": 1,
+    "aliases": ["d u"]
+  },
+  {
+    "id": "folk-duudu",
+    "label": "Folk DUUDU",
+    "pattern": "↓ ↑↑↓↑",
+    "feel": "folk / balancé",
+    "bars": 1,
+    "aliases": ["d uudu"]
+  },
+  {
+    "id": "pop-dduudu",
+    "label": "Pop DDUUDU",
+    "pattern": "↓↓↑↑↓↑",
+    "feel": "pop / straight",
+    "bars": 1,
+    "aliases": ["dduudu"]
+  },
+  {
+    "id": "waltz-duu",
+    "label": "Valse DUU",
+    "pattern": "↓ ↑ ↑",
+    "feel": "valse / 3/4",
+    "bars": 1,
+    "aliases": ["d u u"]
+  },
+  {
+    "id": "swing-du",
+    "label": "Swing DU",
+    "pattern": "↓ ↑",
+    "feel": "swing",
+    "bars": 1,
+    "aliases": []
+  },
+  {
+    "id": "bossa-nova",
+    "label": "Bossa Nova",
+    "pattern": "↓ . ↓↑ . ↑↓ . ↑",
+    "feel": "bossa",
+    "bars": 1,
+    "aliases": []
+  },
+  {
+    "id": "arpeggio-pimami",
+    "label": "Arpège p-i-m-a-m-i",
+    "pattern": "p i m a m i",
+    "feel": "fingerpicking",
+    "bars": 1,
+    "aliases": []
+  },
+  {
+    "id": "fingerpick-travis",
+    "label": "Fingerpick Travis",
+    "pattern": "p i p m",
+    "feel": "fingerpicking / country",
+    "bars": 1,
+    "aliases": []
+  }
+]

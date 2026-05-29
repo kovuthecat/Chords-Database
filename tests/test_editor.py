@@ -19,6 +19,8 @@ from editor import (
     delete_chord_at,
     update_chord_at,
     insert_chord_at,
+    move_chord_at,
+    set_chord_position,
 )
 
 
@@ -400,3 +402,78 @@ class TestInsertChordAt:
         orig = _make_song()
         insert_chord_at(orig, "verse_1", 0, "F", 5)
         assert len(orig["sections"][1]["lines"][0]["chords"]) == 2
+
+
+# ---------------------------------------------------------------------------
+# move_chord_at
+# ---------------------------------------------------------------------------
+
+class TestMoveChordAt:
+    def test_move_right(self):
+        song = move_chord_at(_make_song(), "verse_1", 0, 0, 3)
+        chords = song["sections"][1]["lines"][0]["chords"]
+        assert chords[0]["chord"] == "Am"
+        assert chords[0]["position"] == 3
+
+    def test_move_left(self):
+        song = move_chord_at(_make_song(), "verse_1", 0, 1, -3)
+        chords = song["sections"][1]["lines"][0]["chords"]
+        am = next(c for c in chords if c["chord"] == "C")
+        assert am["position"] == 7
+
+    def test_clamps_to_zero(self):
+        song = move_chord_at(_make_song(), "verse_1", 0, 0, -999)
+        chords = song["sections"][1]["lines"][0]["chords"]
+        assert chords[0]["position"] == 0
+
+    def test_resorts_after_move(self):
+        """Déplacer chord[0] de pos 0 à pos 15 doit le placer après chord[1] à pos 10."""
+        song = move_chord_at(_make_song(), "verse_1", 0, 0, 15)
+        chords = song["sections"][1]["lines"][0]["chords"]
+        positions = [c["position"] for c in chords]
+        assert positions == sorted(positions)
+
+    def test_wrong_section_noop(self):
+        orig = _make_song()
+        song = move_chord_at(orig, "INEXISTANT", 0, 0, 5)
+        assert song["sections"][1]["lines"][0]["chords"][0]["position"] == 0
+
+    def test_original_not_mutated(self):
+        orig = _make_song()
+        move_chord_at(orig, "verse_1", 0, 0, 5)
+        assert orig["sections"][1]["lines"][0]["chords"][0]["position"] == 0
+
+
+# ---------------------------------------------------------------------------
+# set_chord_position
+# ---------------------------------------------------------------------------
+
+class TestSetChordPosition:
+    def test_sets_position(self):
+        song = set_chord_position(_make_song(), "verse_1", 0, 0, 8)
+        chords = song["sections"][1]["lines"][0]["chords"]
+        am = next(c for c in chords if c["chord"] == "Am")
+        assert am["position"] == 8
+
+    def test_clamps_to_zero(self):
+        song = set_chord_position(_make_song(), "verse_1", 0, 0, -5)
+        chords = song["sections"][1]["lines"][0]["chords"]
+        am = next(c for c in chords if c["chord"] == "Am")
+        assert am["position"] == 0
+
+    def test_resorts(self):
+        """Fixer chord[0] à une position après chord[1] doit re-trier."""
+        song = set_chord_position(_make_song(), "verse_1", 0, 0, 20)
+        chords = song["sections"][1]["lines"][0]["chords"]
+        positions = [c["position"] for c in chords]
+        assert positions == sorted(positions)
+
+    def test_wrong_section_noop(self):
+        orig = _make_song()
+        song = set_chord_position(orig, "INEXISTANT", 0, 0, 5)
+        assert song["sections"][1]["lines"][0]["chords"][0]["position"] == 0
+
+    def test_original_not_mutated(self):
+        orig = _make_song()
+        set_chord_position(orig, "verse_1", 0, 0, 12)
+        assert orig["sections"][1]["lines"][0]["chords"][0]["position"] == 0

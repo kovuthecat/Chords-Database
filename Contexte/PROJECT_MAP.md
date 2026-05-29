@@ -40,10 +40,12 @@ JSON externe (conforme à song_template_with_rhythm.json)
 | `scripts/validate_song_json.py` | Validation JSON (slug regex, IDs, positions) |
 | `scripts/generate_docx.py` | Génération DOCX + PDF split |
 | `scripts/memo.py` | Logique fiche mémo structure guitare |
-| `scripts/editor.py` | 13 fonctions d'édition JSON ciblée |
+| `scripts/editor.py` | 15 fonctions d'édition JSON ciblée (+ move_chord_at, set_chord_position) |
+| `scripts/rhythm_utils.py` | Normalisation saisie rythme, chargement présets |
 | `scripts/backup.py` | Backup / restauration automatique |
 | `scripts/transpose.py` | Transposition automatique (tous accords × demi-tons) |
 | `scripts/storage.py` | Couche de stockage abstraite (local / supabase) |
+| `static/rhythm_patterns.json` | Bibliothèque de 8 présets rythmiques |
 
 ## Templates HTML
 
@@ -75,6 +77,8 @@ JSON externe (conforme à song_template_with_rhythm.json)
 | `/song/<slug>/chord-at/update` | POST | Modifier un accord (paroles) |
 | `/song/<slug>/chord-at/delete` | POST | Supprimer un accord (paroles) |
 | `/song/<slug>/chord-at/insert` | POST | Insérer un accord (paroles) |
+| `/song/<slug>/chord-at/move` | POST | Déplacer un accord (±delta caractères) |
+| `/song/<slug>/chord-at/set-position` | POST | Fixer la position d'un accord (offset exact) |
 | `/song/<slug>/instr-chord/update` | POST | Modifier un accord instrumental |
 | `/song/<slug>/instr-chord/delete` | POST | Supprimer un accord instrumental |
 | `/song/<slug>/instr-chord/insert` | POST | Insérer un accord instrumental |
@@ -102,13 +106,14 @@ JSON externe (conforme à song_template_with_rhythm.json)
 | Fichier | Tests | Portée |
 |---|---|---|
 | `tests/test_app.py` | 29 | Routes Flask, upload, backup, restauration, répétition, review_status, transposition |
-| `tests/test_editor.py` | 47 | Fonctions editor.py |
+| `tests/test_editor.py` | 58 | Fonctions editor.py (+ move_chord_at, set_chord_position) |
 | `tests/test_memo.py` | 53 | Logique mémo |
 | `tests/test_validate_json.py` | 14 | Validation JSON |
+| `tests/test_rhythm.py` | 20 | rhythm_utils + rendu mémo rythme |
 | `tests/test_storage.py` | — | Couche storage |
 | `tests/test_transpose.py` | — | Transposition |
 
-**Total : 203 tests — 196 passent (7 échecs pré-existants liés au backend Supabase).**
+**Total : 234 tests — 227 passent (7 échecs pré-existants liés au backend Supabase).**
 
 ## Chansons produites
 
