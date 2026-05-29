@@ -8,6 +8,7 @@ import re
 from typing import Optional
 
 from memo import _extract_chord_tokens
+from rhythm_utils import normalize_rhythm_input
 
 
 # ---------------------------------------------------------------------------
@@ -200,7 +201,7 @@ def update_section_rhythm(
             continue
         if pattern or feel:
             s.setdefault("rhythm", {})
-            s["rhythm"]["pattern"] = pattern
+            s["rhythm"]["pattern"] = normalize_rhythm_input(pattern)
             s["rhythm"]["feel"] = feel
         else:
             s.pop("rhythm", None)

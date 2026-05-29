@@ -1,5 +1,45 @@
 [
   {
+    "id": "folk-standard",
+    "label": "Folk standard",
+    "pattern": "↓ ↓↑ ↑↓↑",
+    "feel": "folk",
+    "bars": 1,
+    "aliases": ["d du udu"]
+  },
+  {
+    "id": "pop-simple",
+    "label": "Pop simple",
+    "pattern": "↓ ↓ ↓↑",
+    "feel": "pop",
+    "bars": 1,
+    "aliases": ["d d du"]
+  },
+  {
+    "id": "rock-binaire",
+    "label": "Rock binaire",
+    "pattern": "↓ ↓ ↑↑",
+    "feel": "rock",
+    "bars": 1,
+    "aliases": ["d d uu"]
+  },
+  {
+    "id": "ballade",
+    "label": "Ballade",
+    "pattern": "↓ ↓↑ ↓ ↑",
+    "feel": "ballade",
+    "bars": 1,
+    "aliases": ["d du d u"]
+  },
+  {
+    "id": "waltz-basic",
+    "label": "Valse de base",
+    "pattern": "↓ ↓ ↓",
+    "feel": "valse / 3/4",
+    "bars": 1,
+    "aliases": ["d d d"]
+  },
+  {
     "id": "straight-du",
     "label": "Straight DU",
     "pattern": "↓ ↑",

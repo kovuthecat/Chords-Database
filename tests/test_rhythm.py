@@ -36,6 +36,18 @@ class TestNormalizeRhythmInput:
     def test_empty_string(self):
         assert normalize_rhythm_input("") == ""
 
+    def test_normalize_preserves_slash(self):
+        assert normalize_rhythm_input("d / du") == "↓ / ↓↑"
+
+    def test_normalize_preserves_dot(self):
+        assert normalize_rhythm_input("d . u") == "↓ . ↑"
+
+    def test_normalize_preserves_x(self):
+        assert normalize_rhythm_input("d x u") == "↓ x ↑"
+
+    def test_normalize_multi_measure_pattern(self):
+        assert normalize_rhythm_input("d du udu / d d du") == "↓ ↓↑ ↑↓↑ / ↓ ↓ ↓↑"
+
 
 # ---------------------------------------------------------------------------
 # load_presets / get_preset_by_id
@@ -62,6 +74,31 @@ class TestPresets:
     def test_get_preset_by_id_not_found(self):
         p = get_preset_by_id("inexistant-preset-xyz")
         assert p is None
+
+    def test_folk_standard_preset_exists(self):
+        p = get_preset_by_id("folk-standard")
+        assert p is not None
+        assert p["pattern"] == "↓ ↓↑ ↑↓↑"
+
+    def test_pop_simple_preset_exists(self):
+        p = get_preset_by_id("pop-simple")
+        assert p is not None
+        assert p["pattern"] == "↓ ↓ ↓↑"
+
+    def test_rock_binaire_preset_exists(self):
+        p = get_preset_by_id("rock-binaire")
+        assert p is not None
+        assert p["pattern"] == "↓ ↓ ↑↑"
+
+    def test_ballade_preset_exists(self):
+        p = get_preset_by_id("ballade")
+        assert p is not None
+        assert p["pattern"] == "↓ ↓↑ ↓ ↑"
+
+    def test_waltz_basic_preset_exists(self):
+        p = get_preset_by_id("waltz-basic")
+        assert p is not None
+        assert p["pattern"] == "↓ ↓ ↓"
 
 
 # ---------------------------------------------------------------------------
@@ -143,3 +180,48 @@ class TestBuildRhythmHint:
         moved = move_chord_at(song, "v1", 0, 0, 3)
         errors = validate_song_json(moved)
         assert errors == []
+
+
+# ---------------------------------------------------------------------------
+# Normalisation à la sauvegarde (apply_all_rhythm_edits)
+# ---------------------------------------------------------------------------
+
+class TestNormalizeOnSave:
+    def _make_song(self):
+        return {
+            "meta": {"title": "T", "artist": "A", "slug": "t-a"},
+            "sections": [{"id": "v1", "type": "verse", "label": "V"}],
+            "structure_sequence": ["v1"],
+        }
+
+    def test_apply_all_rhythm_edits_normalizes_du(self):
+        """apply_all_rhythm_edits convertit d/u minuscules en flèches Unicode."""
+        from editor import apply_all_rhythm_edits
+        result = apply_all_rhythm_edits(
+            self._make_song(), {"v1": {"pattern": "d du udu", "feel": "folk"}}
+        )
+        assert result["sections"][0]["rhythm"]["pattern"] == "↓ ↓↑ ↑↓↑"
+
+    def test_apply_all_rhythm_edits_preserves_arrows(self):
+        """Les flèches déjà présentes restent inchangées."""
+        from editor import apply_all_rhythm_edits
+        result = apply_all_rhythm_edits(
+            self._make_song(), {"v1": {"pattern": "↓ ↓↑ ↑↓↑", "feel": "folk"}}
+        )
+        assert result["sections"][0]["rhythm"]["pattern"] == "↓ ↓↑ ↑↓↑"
+
+    def test_apply_all_rhythm_edits_preserves_slash(self):
+        """Le séparateur / est conservé après normalisation."""
+        from editor import apply_all_rhythm_edits
+        result = apply_all_rhythm_edits(
+            self._make_song(), {"v1": {"pattern": "d du / d d", "feel": ""}}
+        )
+        assert result["sections"][0]["rhythm"]["pattern"] == "↓ ↓↑ / ↓ ↓"
+
+    def test_apply_all_rhythm_edits_mixed_input(self):
+        """Mélange flèches + raccourcis : résultat entièrement normalisé."""
+        from editor import apply_all_rhythm_edits
+        result = apply_all_rhythm_edits(
+            self._make_song(), {"v1": {"pattern": "↓ d↑", "feel": ""}}
+        )
+        assert result["sections"][0]["rhythm"]["pattern"] == "↓ ↓↑"
