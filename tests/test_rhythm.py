@@ -114,52 +114,41 @@ def _sec(rhythm=None):
 
 
 class TestBuildRhythmHint:
-    def test_pattern_and_feel(self):
-        hint = _build_rhythm_hint(_sec({"pattern": "↓ ↑↑↓↑", "feel": "folk"}))
-        assert hint == "↓ ↑↑↓↑ · folk"
+    def test_pattern_and_subdivision(self):
+        hint = _build_rhythm_hint(_sec({"pattern": "D-DU-UDU", "subdivision": "8th"}))
+        assert hint == "D-DU-UDU [8th]"
 
     def test_pattern_only(self):
         hint = _build_rhythm_hint(_sec({"pattern": "↓ ↑"}))
         assert hint == "↓ ↑"
 
-    def test_feel_only(self):
-        hint = _build_rhythm_hint(_sec({"feel": "swing"}))
-        assert hint == "swing"
+    def test_subdivision_only(self):
+        hint = _build_rhythm_hint(_sec({"subdivision": "8th"}))
+        assert hint == "[8th]"
 
     def test_no_rhythm(self):
         hint = _build_rhythm_hint(_sec())
         assert hint == ""
 
-    def test_pattern_lines_joined(self):
-        hint = _build_rhythm_hint(_sec({
-            "pattern": "↓ ↑",
-            "pattern_lines": ["↓ ↑", "↓↑ ↓↑"],
-            "feel": "straight"
-        }))
-        assert "↓ ↑ | ↓↑ ↓↑" in hint
-        assert "straight" in hint
-
-    def test_pattern_lines_overrides_pattern(self):
-        """Si pattern_lines est présent, il est utilisé à la place de pattern."""
-        hint = _build_rhythm_hint(_sec({
-            "pattern": "OLD",
-            "pattern_lines": ["↓ ↑", "↓↑"],
-        }))
-        assert "OLD" not in hint
-        assert "↓ ↑ | ↓↑" in hint
-
-    def test_empty_pattern_lines_falls_back_to_pattern(self):
-        hint = _build_rhythm_hint(_sec({
-            "pattern": "↓ ↑",
-            "pattern_lines": [],
-        }))
+    def test_feel_field_ignored(self):
+        """Ancien champ feel présent dans les JSON existants : ignoré silencieusement."""
+        hint = _build_rhythm_hint(_sec({"pattern": "↓ ↑", "feel": "folk"}))
         assert hint == "↓ ↑"
+        assert "folk" not in hint
+
+    def test_empty_rhythm_object(self):
+        hint = _build_rhythm_hint(_sec({}))
+        assert hint == ""
 
     def test_rhythm_hint_fallback(self):
-        """Sans clé rhythm, utilise rhythm_hint si présent."""
+        """Sans clé rhythm, utilise rhythm_hint si présent (backward compat)."""
         sec = {"id": "x", "type": "verse", "rhythm_hint": "↓ ↑ · folk"}
         hint = _build_rhythm_hint(sec)
         assert hint == "↓ ↑ · folk"
+
+    def test_rhythm_absent_no_hint(self):
+        sec = {"id": "x", "type": "verse"}
+        assert _build_rhythm_hint(sec) == ""
 
     def test_validation_after_move_positions_valid(self):
         """Après move_chord_at, les positions restent ordonnées (smoke test intégration)."""

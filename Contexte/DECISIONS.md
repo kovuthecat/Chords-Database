@@ -4,6 +4,41 @@ Journal des décisions produit et techniques.
 
 ---
 
+## 2026-05-29 — P16 : Nouveau format rhythm (pattern + subdivision, sans feel)
+
+### Décisions
+
+**Nouveau template JSON**
+- `examples/song_template.json` remplace `song_template_with_rhythm.json` (qui n'existait que comme référence documentaire).
+- Le champ `rhythm` ne contient plus `feel` (commentaire textuel non exploitable) ni `pattern_lines`.
+- Format officiel : `{"pattern": "D-DU-UDU", "subdivision": "8th"}`.
+
+**`_build_rhythm_hint` dans `memo.py`**
+- Pattern + subdivision → `"D-DU-UDU [8th]"`.
+- Pattern seul → `"D-DU-UDU"`.
+- Subdivision seule → `"[8th]"`.
+- Ni l'un ni l'autre → `""`.
+- Backward compat : si `rhythm` absent, retombe sur `section["rhythm_hint"]` si présent.
+- Les anciens JSON avec `feel` : champ ignoré silencieusement (pas de régression d'affichage).
+
+**Tests**
+- `TestBuildRhythmHint` dans `test_rhythm.py` mis à jour : 8 tests (était 8, mêmes cas couverts avec le nouveau format).
+- 80 tests passent sur 80 (test_rhythm.py + test_memo.py).
+
+### Pourquoi
+
+Le champ `feel` était un commentaire textuel libre non standardisé, inutilisable programmatiquement.
+`subdivision` est exploitable : il décrit précisément la grille rythmique (4th, 8th, 16th, triplet).
+
+### Conséquences
+
+- `memo.py` : `_build_rhythm_hint` simplifiée (suppression `pattern_lines` + `feel`).
+- `examples/song_template.json` : nouveau fichier de référence.
+- Les JSON existants (`song_moriarty-jimmy.json`, etc.) conservent leur champ `feel` ignoré — pas de migration requise.
+- `CLAUDE.md` et `TASKS.md` mis à jour (référence `song_template_with_rhythm.json` → `examples/song_template.json`).
+
+---
+
 ## 2026-05-29 — P15 : Éditeur rythme amélioré
 
 ### Décisions

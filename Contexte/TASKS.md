@@ -34,7 +34,7 @@ python main.py data/song_<slug>.json --split-pdf
 
 ### Ajouter une chanson
 
-1. Préparer le JSON en suivant `song_template_with_rhythm.json`.
+1. Préparer le JSON en suivant `examples/song_template.json`.
 2. Uploader via l'interface web.
 3. Si des erreurs de validation → corriger le JSON et reuploader.
 

@@ -1,17 +1,28 @@
 # STATUS.md
 
-> Dernière mise à jour : 2026-05-29 (P15 — éditeur rythme : boutons insertion, aperçu live, presets, normalisation)
+> Dernière mise à jour : 2026-05-29 (P16 — nouveau format rhythm : pattern + subdivision, sans feel)
 
 ## Phase actuelle
 
-**Phase 15 — Éditeur rythme amélioré**
+**Phase 16 — Nouveau format rhythm**
 
-L'éditeur de rythme est désormais pleinement utilisable sans copier-coller de flèches.
-Barre de boutons rapides (↓ ↑ x . / ⎵ ⌫), aperçu live normalisé sous chaque champ,
-5 nouveaux présets (Folk standard, Pop simple, Rock binaire, Ballade, Valse de base),
-et normalisation d→↓ u→↑ automatique lors de la sauvegarde (backend + paste JS).
+Le champ `rhythm` des sections JSON ne contient plus `feel` ni `pattern_lines`.
+Format : `{"pattern": "D-DU-UDU", "subdivision": "8th"}`.
+`_build_rhythm_hint` adapté → affiche `"D-DU-UDU [8th]"`.
+Backward compat : anciens JSON avec `feel` → champ ignoré. `rhythm_hint` string → toujours supporté.
+Nouveau template de référence : `examples/song_template.json`.
+80 tests passent — 0 régression.
 
 ## Ce qui fonctionne
+
+### Nouveau format rhythm (Phase 16 — 2026-05-29)
+
+- `rhythm` : `{"pattern": "D-DU-UDU", "subdivision": "8th"}` — plus de `feel` ni `pattern_lines`.
+- `_build_rhythm_hint` : affiche `"D-DU-UDU [8th]"` / `"D-DU-UDU"` / `"[8th]"` selon les champs présents.
+- Backward compat : champ `feel` ignoré silencieusement (JSON existants non migrés).
+- Backward compat : `rhythm_hint` string niveau section → toujours supporté.
+- `examples/song_template.json` : nouveau template de référence (remplace `song_template_with_rhythm.json`).
+- 80 tests — 0 régression.
 
 ### Éditeur rythme amélioré (Phase 15 — 2026-05-29)
 

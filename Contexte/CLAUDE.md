@@ -32,7 +32,7 @@ JSON externe (fourni par l'utilisateur)
 
 ## Format d'entrée officiel
 
-Le format d'entrée est défini par `song_template_with_rhythm.json` et documenté dans `schema/song_schema.json`.
+Le format d'entrée est défini par `examples/song_template.json` et documenté dans `schema/song_schema.json`.
 
 Champs obligatoires :
 - `meta.title`, `meta.artist`, `meta.slug`
@@ -46,7 +46,7 @@ Champs fortement recommandés :
 - `sections[*].lines` (pour les sections avec paroles)
 - `sections[*].chord_grid` ou `summary_progression` (pour les sections instrumentales)
 - `sections[*].performance_progression` (conducteur guitare précis)
-- `sections[*].rhythm.pattern` et `rhythm.feel`
+- `sections[*].rhythm.pattern` et `rhythm.subdivision`
 
 ## Workflow obligatoire
 
@@ -115,7 +115,7 @@ Artiste - Titre - Mémo Guitare.pdf
 - Ne pas ajouter de dépendances externes sans discussion.
 - Ne jamais réintroduire de scraping web, web fetch automatique, ou analyse audio.
 - Préserver la compatibilité des JSON existants dans `data/`.
-- Le format JSON d'entrée est défini dans `song_template_with_rhythm.json` — ne pas le changer sans mettre à jour `schema/song_schema.json` et `validate_song_json.py`.
+- Le format JSON d'entrée est défini dans `examples/song_template.json` — ne pas le changer sans mettre à jour `schema/song_schema.json` et `validate_song_json.py`.
 
 ## Scripts conservés
 
