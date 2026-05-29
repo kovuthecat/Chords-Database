@@ -1,18 +1,27 @@
 # STATUS.md
 
-> Dernière mise à jour : 2026-05-29 (P11 — simplification interface, bibliothèque page d'accueil, navigation icônes, transposition améliorée, actions avancées)
+> Dernière mise à jour : 2026-05-29 (P15 — éditeur rythme : boutons insertion, aperçu live, presets, normalisation)
 
 ## Phase actuelle
 
-**Phase 11 — Simplification interface**
+**Phase 15 — Éditeur rythme amélioré**
 
-L'interface a été recentrée sur la bibliothèque : `/` redirige vers `/library`, qui devient la page d'accueil.
-Les cards de bibliothèque sont simplifiées (actions primaires visibles, secondaires dans "Options avancées").
-Navigation par icônes ajoutée dans les headers. L'outil de transposition affiche la tonalité actuelle,
-le capo et une estimation de la nouvelle tonalité avant confirmation. L'éditeur de remplacement d'accord
-global est déplacé dans "Options avancées" de la fiche chanson.
+L'éditeur de rythme est désormais pleinement utilisable sans copier-coller de flèches.
+Barre de boutons rapides (↓ ↑ x . / ⎵ ⌫), aperçu live normalisé sous chaque champ,
+5 nouveaux présets (Folk standard, Pop simple, Rock binaire, Ballade, Valse de base),
+et normalisation d→↓ u→↑ automatique lors de la sauvegarde (backend + paste JS).
 
 ## Ce qui fonctionne
+
+### Éditeur rythme amélioré (Phase 15 — 2026-05-29)
+
+- Barre de boutons rapides au-dessus de la table rythme : ↓ ↑ x . / ⎵ ⌫
+- Clic sur un bouton → insertion au curseur du dernier champ pattern focusé
+- Aperçu live sous chaque champ : "Aperçu : ↓ ↓↑ ↑↓↑" mis à jour en temps réel
+- Paste normalisé : coller "d du udu" insère directement "↓ ↓↑ ↑↓↑"
+- Sauvegarde normalise d/u en ↓↑ côté backend (via `normalize_rhythm_input`)
+- 13 présets total (5 nouveaux : Folk standard, Pop simple, Rock binaire, Ballade, Valse de base)
+- 33 tests `test_rhythm.py` — 193 tests unitaires — 0 régression
 
 ### Simplification interface (Phase 11 — 2026-05-29)
 

@@ -4,6 +4,47 @@ Journal des décisions produit et techniques.
 
 ---
 
+## 2026-05-29 — P15 : Éditeur rythme amélioré
+
+### Décisions
+
+**Boutons d'insertion rapide**
+- Barre de boutons cliquables dans l'éditeur rythme : ↓ ↑ x . / ⎵ ⌫
+- Insérent au curseur du champ pattern actif (`_activeRhythmInput` traqué via `focus`).
+- Partagée entre toutes les sections — pas de duplication par ligne.
+
+**Aperçu live**
+- Chaque ligne de pattern affiche un `<div class="rhythm-preview">` sous le champ.
+- Mise à jour via événement `input` : affiche "Aperçu : {valeur normalisée}".
+- Initialisé au chargement si le champ a déjà une valeur.
+
+**Normalisation à la sauvegarde (backend)**
+- `update_section_rhythm` dans `editor.py` appelle `normalize_rhythm_input(pattern)` avant de sauvegarder.
+- Garantit que même un collé avec d/u est converti en ↓↑ dans le JSON.
+- Les patterns avec majuscules (D/U) restent inchangés (pas dans `_CHAR_MAP`).
+
+**Gestion du collé (paste)**
+- Événement `paste` intercepté sur `.rhythm-pattern-input`.
+- Le texte collé est normalisé (d→↓, u→↑) avant insertion au curseur.
+
+**Nouveaux présets (rhythm_patterns.json)**
+- Ajout de 5 présets : Folk standard (`↓ ↓↑ ↑↓↑`), Pop simple (`↓ ↓ ↓↑`),
+  Rock binaire (`↓ ↓ ↑↑`), Ballade (`↓ ↓↑ ↓ ↑`), Valse de base (`↓ ↓ ↓`).
+- 8 présets existants conservés — total 13 présets.
+
+**Tests**
+- 13 nouveaux tests dans `test_rhythm.py` : normalize preserve /·x·. ; 5 nouveaux presets ; normalisation backend (4 cas).
+- Total : 33 tests dans `test_rhythm.py` (était 20) — 193 tests unitaires, 0 régression.
+
+### Conséquences
+
+- `editor.py` : import `normalize_rhythm_input` + appel dans `update_section_rhythm`.
+- `song.html` : CSS 8 lignes, HTML barre boutons + divs preview, JS ~60 lignes.
+- `static/rhythm_patterns.json` : 5 nouveaux objets ajoutés en tête.
+- JSON existants non affectés.
+
+---
+
 ## 2026-05-29 — P14 : Ajout accord mobile — mode explicite
 
 ### Décision
