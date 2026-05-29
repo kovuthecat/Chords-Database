@@ -271,6 +271,12 @@
 <div class="chord-popup" id="insert-popup">
   <div class="popup-title">Ajouter un accord</div>
   <input class="popup-input" type="text" id="insert-chord-input" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="ex: Am">
+  <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
+    <label style="font-size:.8rem;color:#888;white-space:nowrap">Position :</label>
+    <input type="number" id="insert-pos-input" min="0" max="300" value="0"
+           style="width:54px;border:1px solid #ddd;border-radius:3px;padding:3px 6px;font-size:.85rem;text-align:center"
+           title="Position en caractères">
+  </div>
   <div class="popup-actions">
     <button class="popup-btn popup-btn-ok" onclick="confirmInsertChord()">Ajouter</button>
     <button class="popup-btn popup-btn-cancel" onclick="closePopups()">Annuler</button>
@@ -850,9 +856,12 @@
   /* Aperçu interactif — popup chord edit                             */
   /* ================================================================ */
 
-  let _editTarget = null;        // span.prev-chord ou .instr-chord ciblé
-  let _insertTarget = null;     // span.insert-pt ciblé (sections paroles)
-  let _insertInstrTarget = null; // span.insert-instr-pt ciblé (sections instrumentales)
+  let _editTarget = null;           // span.prev-chord ou .instr-chord ciblé
+  let _insertTarget = null;        // span.insert-pt ciblé (sections paroles)
+  let _insertInstrTarget = null;   // span.insert-instr-pt ciblé (sections instrumentales)
+  let _insertAtLine = null;        // .prev-line pour insertion depuis clic/long-press paroles
+  let _suppressLyricsClick = false; // vrai juste après un long-press (supprime le clic suivant)
+  let _charWidth = null;           // cache largeur d'un caractère Consolas
 
   function openEditChord(el) {
     closePopups();
@@ -876,10 +885,47 @@
   function openInsertChord(el) {
     closePopups();
     _insertTarget = el;
+    _insertAtLine = null;
     const popup = document.getElementById('insert-popup');
     document.getElementById('insert-chord-input').value = '';
+    document.getElementById('insert-pos-input').value = el.dataset.pos || '0';
     document.getElementById('insert-popup-err').style.display = 'none';
     positionPopup(popup, el);
+    popup.style.display = 'block';
+    document.getElementById('insert-chord-input').focus();
+  }
+
+  function getCharWidth() {
+    if (_charWidth) return _charWidth;
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font-family:Consolas,monospace;font-size:.92rem';
+    probe.textContent = 'X';
+    document.body.appendChild(probe);
+    _charWidth = probe.getBoundingClientRect().width || 9.6;
+    document.body.removeChild(probe);
+    return _charWidth;
+  }
+
+  function onLyricsClick(event, el) {
+    if (_suppressLyricsClick) { _suppressLyricsClick = false; return; }
+    if (event.shiftKey) {
+      const rect = el.getBoundingClientRect();
+      const pos = Math.max(0, Math.round((event.clientX - rect.left) / getCharWidth()));
+      openInsertChordAtPos(el.closest('.prev-line'), pos, el);
+    } else {
+      openEditLyrics(el);
+    }
+  }
+
+  function openInsertChordAtPos(line, pos, anchorEl) {
+    closePopups();
+    _insertAtLine = line;
+    _insertTarget = null;
+    const popup = document.getElementById('insert-popup');
+    document.getElementById('insert-chord-input').value = '';
+    document.getElementById('insert-pos-input').value = pos;
+    document.getElementById('insert-popup-err').style.display = 'none';
+    positionPopup(popup, anchorEl);
     popup.style.display = 'block';
     document.getElementById('insert-chord-input').focus();
   }
@@ -905,6 +951,7 @@
     _editTarget = null;
     _insertTarget = null;
     _insertInstrTarget = null;
+    _insertAtLine = null;
   }
 
   /* Close on outside click */
@@ -979,15 +1026,22 @@
   }
 
   function confirmInsertChord() {
-    if (!_insertTarget) return;
     const chord = document.getElementById('insert-chord-input').value.trim();
     if (!chord) return;
-    const line = _insertTarget.closest('.prev-line');
+    const pos = parseInt(document.getElementById('insert-pos-input').value, 10) || 0;
+    let line;
+    if (_insertTarget) {
+      line = _insertTarget.closest('.prev-line');
+    } else if (_insertAtLine) {
+      line = _insertAtLine;
+    } else {
+      return;
+    }
     chordAjax('/chord-at/insert', {
       section_id: line.dataset.section,
       line_index:  line.dataset.li,
       chord:       chord,
-      position:    _insertTarget.dataset.pos,
+      position:    pos,
     }, 'insert-popup-err');
   }
 
@@ -1357,6 +1411,35 @@
         btn.disabled = false;
       });
   }
+
+  /* Long-press sur paroles → insérer un accord (mobile / touch) */
+  (function() {
+    var LONG_MS = 600;
+    var _lpTimer = null, _lpEl = null, _lpTouch = null;
+    var container = document.getElementById('preview-content');
+
+    container.addEventListener('touchstart', function(e) {
+      var t = e.target.closest('.prev-lyrics-text');
+      if (!t) return;
+      _lpEl = t;
+      _lpTouch = e.touches[0];
+      _lpTimer = setTimeout(function() {
+        _lpTimer = null;
+        _suppressLyricsClick = true;
+        var rect = _lpEl.getBoundingClientRect();
+        var pos = Math.max(0, Math.round((_lpTouch.clientX - rect.left) / getCharWidth()));
+        openInsertChordAtPos(_lpEl.closest('.prev-line'), pos, _lpEl);
+      }, LONG_MS);
+    }, {passive: true});
+
+    container.addEventListener('touchmove', function() {
+      if (_lpTimer) { clearTimeout(_lpTimer); _lpTimer = null; }
+    }, {passive: true});
+
+    container.addEventListener('touchend', function() {
+      if (_lpTimer) { clearTimeout(_lpTimer); _lpTimer = null; }
+    }, {passive: true});
+  })();
 </script>
 </body>
 </html>
