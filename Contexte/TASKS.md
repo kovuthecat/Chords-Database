@@ -3,8 +3,8 @@
 ## Workflow par chanson
 
 1. Créer un JSON conforme au template (`schema/song_schema.json`) via Claude AI ou manuellement.
-2. Lancer l'interface web : `python app.py` → http://localhost:5000
-3. Uploader le JSON.
+2. Lancer l'interface web : `python app.py` → http://localhost:5000 (redirige vers `/library`)
+3. Cliquer "➕ Ajouter" et uploader le JSON.
 4. Vérifier et éditer l'aperçu HTML interactif :
    - **Sections avec paroles** :
      - Clic sur accord → popup modifier/supprimer (confirmation avant suppression)
@@ -19,8 +19,9 @@
    - **Transposition** : boutons ±1/±2 ou valeur custom pour transposer tous les accords
 5. Définir le statut de révision (`review_status`) : ok / to_review / draft.
 6. Cliquer "Valider et exporter 2 PDFs" (Paroles & Accords + Mémo Guitare).
-7. Retrouver les morceaux validés dans la Bibliothèque : http://localhost:5000/library
-8. En répétition : boutons "Paroles" ou "Mémo" sur chaque card → vue plein écran avec auto-scroll.
+7. Retrouver les morceaux dans la Bibliothèque (page d'accueil : http://localhost:5000)
+8. En répétition : bouton "🎵 Paroles" sur chaque card → vue plein écran avec auto-scroll.
+   Ou depuis la fiche chanson → icône 🎵 ou 🎸 dans le header.
 
 **En CLI :**
 ```bash
@@ -62,7 +63,7 @@ PDF_EXPORT_DIR=C:\Users\kovu\SynologyDrive\Thibault\Guitartabs\Chords
 
 ### Supprimer une chanson
 
-- Dans la Bibliothèque (`/library`) → bouton "Supprimer" (confirmation requise).
+- Dans la Bibliothèque (`/library`) → card → "Options avancées" → "🗑 Supprimer" (confirmation requise).
 - Supprime : `data/song_<slug>.json`, `output/song_<slug>.*`, PDFs exportés dans `PDF_EXPORT_DIR`.
 - Note : les backups dans `data/backups/<slug>/` ne sont PAS supprimés (conservation intentionnelle).
 

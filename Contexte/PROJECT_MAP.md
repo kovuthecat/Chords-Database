@@ -1,13 +1,14 @@
 # PROJECT_MAP.md
 
-Carte synthétique du projet (v10 — éditeur local de songbook guitare/chant).
+Carte synthétique du projet (v11 — éditeur local de songbook guitare/chant).
 
 ## Vue d'ensemble
 
 **Éditeur local de songbook guitare/chant** — génère 2 PDFs séparés à partir d'un JSON externe.
-Interface web Flask locale. Édition interactive dans l'aperçu HTML.
-Backup automatique à chaque sauvegarde. Mode répétition plein écran avec auto-scroll.
-Transposition automatique. Bibliothèque avec recherche, filtres et statuts de révision.
+Interface web Flask locale. La bibliothèque (`/library`) est la page d'accueil.
+Édition interactive dans l'aperçu HTML. Backup automatique à chaque sauvegarde.
+Mode répétition plein écran avec auto-scroll. Transposition avec estimation de tonalité.
+Bibliothèque avec recherche, filtres, statuts de révision et actions avancées masquées.
 
 Le projet **ne génère pas les données chanson**. Il consomme un JSON déjà finalisé.
 
@@ -48,16 +49,19 @@ JSON externe (conforme à song_template_with_rhythm.json)
 
 | Template | Rôle |
 |---|---|
-| `templates/index.html` | Accueil — upload JSON |
+| `templates/index.html` | Formulaire d'upload JSON (accessible via /add) |
 | `templates/library.html` | Bibliothèque — liste, recherche, actions |
-| `templates/song.html` | Fiche chanson — aperçu + éditeurs + backups |
+| `templates/song.html` | Fiche chanson — aperçu + éditeurs + backups + transposition |
 | `templates/_preview.html` | Fragment aperçu interactif (inclus + AJAX) |
+| `templates/rehearsal_chords.html` | Mode répétition — paroles + accords plein écran |
+| `templates/rehearsal_memo.html` | Mode répétition — conducteur guitare plein écran |
 
 ## Routes principales (app.py)
 
 | Route | Méthode | Rôle |
 |---|---|---|
-| `/` | GET | Accueil + upload |
+| `/` | GET | → redirect `/library` |
+| `/add` | GET | Formulaire d'upload JSON |
 | `/upload` | POST | Traitement upload JSON |
 | `/library` | GET | Bibliothèque des morceaux |
 | `/song/<slug>` | GET | Fiche chanson + éditeurs + backup |
@@ -75,6 +79,10 @@ JSON externe (conforme à song_template_with_rhythm.json)
 | `/song/<slug>/instr-chord/delete` | POST | Supprimer un accord instrumental |
 | `/song/<slug>/instr-chord/insert` | POST | Insérer un accord instrumental |
 | `/song/<slug>/lyrics-at/update` | POST | Modifier le texte de paroles |
+| `/song/<slug>/transpose` | POST | Transposer tous les accords (±demi-tons) |
+| `/song/<slug>/review-status` | POST | Mettre à jour le statut de révision |
+| `/song/<slug>/rehearsal/chords` | GET | Mode répétition — paroles + accords |
+| `/song/<slug>/rehearsal/memo` | GET | Mode répétition — conducteur guitare |
 | `/export/<filename>` | GET | Servir un PDF exporté |
 | `/output/<filename>` | GET | Servir un fichier output/ |
 
@@ -87,18 +95,20 @@ JSON externe (conforme à song_template_with_rhythm.json)
 | `output/` | DOCX + PDF générés (non versionnés) |
 | `templates/` | Templates HTML Flask |
 | `tests/` | 129 tests unitaires + Flask |
-| `_archive/` | Anciens scripts (workflow Gemini/collect, analysis.py) |
+| `_archive/` | Anciens scripts (collect, gemini, analysis, supabase, deploy Vercel) |
 
 ## Tests
 
 | Fichier | Tests | Portée |
 |---|---|---|
-| `tests/test_app.py` | 15 | Routes Flask, upload, backup, restauration |
+| `tests/test_app.py` | 29 | Routes Flask, upload, backup, restauration, répétition, review_status, transposition |
 | `tests/test_editor.py` | 47 | Fonctions editor.py |
 | `tests/test_memo.py` | 53 | Logique mémo |
 | `tests/test_validate_json.py` | 14 | Validation JSON |
+| `tests/test_storage.py` | — | Couche storage |
+| `tests/test_transpose.py` | — | Transposition |
 
-**Total : 129 tests — 0 échec.**
+**Total : 203 tests — 196 passent (7 échecs pré-existants liés au backend Supabase).**
 
 ## Chansons produites
 

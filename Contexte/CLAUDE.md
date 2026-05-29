@@ -129,6 +129,8 @@ Artiste - Titre - Mémo Guitare.pdf
 | `scripts/editor.py` | Édition JSON ciblée (13 fonctions : paroles + instrumentaux + paroles inline) |
 | `scripts/backup.py` | Backup/restauration automatique |
 | `scripts/config.py` | Chemins centralisés (+ lecture `.env.local`) |
+| `scripts/transpose.py` | Transposition automatique (tous accords × demi-tons) |
+| `scripts/storage.py` | Couche de stockage abstraite (local par défaut, backend Supabase optionnel) |
 
 ## Scripts archivés
 

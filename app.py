@@ -229,6 +229,11 @@ def _save_and_redirect(slug: str, song: dict, ok_msg: str):
 
 @app.route("/")
 def index():
+    return redirect(url_for("library"))
+
+
+@app.route("/add")
+def add_song():
     return render_template("index.html", songs=_list_songs())
 
 

@@ -4,6 +4,64 @@ Journal des décisions produit et techniques.
 
 ---
 
+## 2026-05-29 — P11 : Simplification interface
+
+### Décisions
+
+**Page d'accueil → bibliothèque**
+- `GET /` redirige vers `/library` (redirect Flask).
+- `GET /add` → `index.html` (formulaire d'upload, ancienne page d'accueil).
+- La bibliothèque est maintenant le point d'entrée naturel de l'application.
+
+**Navigation par icônes**
+- Headers de `library.html` et `song.html` : emojis comme icônes légères (pas de dépendance externe).
+- `library.html` : "📚 Bibliothèque" + bouton "➕ Ajouter" à droite.
+- `song.html` : "📚 Biblio · ➕ · 🎵 · 🎸 · 📄 (si PDF dispo)" — liens contextuels à la chanson courante.
+- Bloc "Mode répétition" standalone retiré de `song.html` (redondant avec la nav).
+
+**Cards bibliothèque simplifiées**
+- Actions primaires : ✏️ Éditer / 🎵 Paroles (mode répétition) / 📄 PDF Paroles / 🎸 PDF Mémo.
+- Bloc `<details class="song-advanced">` "Options avancées" par card :
+  - 🎸 Mémo répétition
+  - ⬆ Mettre à jour les fiches (export-split)
+  - ⬇ JSON
+  - 🗑 Supprimer
+- Statut révision (select AJAX) reste visible en primaire.
+- Badge validation workflow (`user_validated`/`pending`) conservé dans song-info.
+
+**Transposition améliorée (song.html)**
+- Tonalité actuelle et capo affichés en tête de la carte.
+- Boutons -2/-1/+1/+2 : sélectionnent la valeur dans le champ custom (ne déclenchent plus directement).
+- Aperçu "Tonalité estimée : Gm (+3 demi-tons)" mis à jour en temps réel (JS : `estimateKey`).
+- `estimateKey` en JS : miroir de `_PRACTICAL` + `_ENHARMONIC` de `scripts/transpose.py`.
+- Bouton unique "Appliquer" : confirm enrichie (inclut la tonalité estimée).
+- Route `/song/<slug>/transpose` inchangée.
+
+**Éditeur de remplacement d'accord global**
+- Retiré de la position principale dans `song.html`.
+- Déplacé dans "Options avancées" (`<details>`) de la section Actions.
+- L'édition inline dans l'aperçu couvre l'essentiel des cas d'usage.
+
+**Labels nettoyés**
+- "Valider et exporter 2 PDFs" → "Exporter les fiches" (song.html).
+- "PDFs" (library) → "⬆ Mettre à jour les fiches" (Options avancées).
+- Navigation éditeurs : "Accords" retiré (l'éditeur est en Options avancées).
+
+### Pourquoi
+
+L'interface après P10 avait trop d'actions au premier plan. L'usage courant (répétition, lecture PDF)
+ne nécessite pas l'accès permanent aux outils techniques (JSON, regen PDFs, remplacement global).
+La bibliothèque est la destination principale — autant en faire la page d'accueil.
+
+### Conséquences
+
+- Route `/` change de comportement (redirect) — aucun test ne la couvrait.
+- Route `/add` créée (nouvelle).
+- Aucune modification backend (routes AJAX, logique Python, scripts) — uniquement UI.
+- 196 tests passent sur 203 ; les 7 échecs sont pré-existants (backend Supabase en environnement de test).
+
+---
+
 ## 2026-05-25 — P10 : Mode répétition + ergonomie + bibliothèque
 
 ### Décisions

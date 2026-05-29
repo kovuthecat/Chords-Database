@@ -1,17 +1,29 @@
 # STATUS.md
 
-> Dernière mise à jour : 2026-05-25 (P10 — mode répétition, transposition, filtres bibliothèque, review_status, raccourcis clavier, export JSON fiche chanson)
+> Dernière mise à jour : 2026-05-29 (P11 — simplification interface, bibliothèque page d'accueil, navigation icônes, transposition améliorée, actions avancées)
 
 ## Phase actuelle
 
-**Phase 10 — Mode répétition + ergonomie + bibliothèque**
+**Phase 11 — Simplification interface**
 
-L'éditeur local de songbook guitare/chant est maintenant utilisable en conditions de répétition/live :
-2 vues plein écran sans éléments d'édition (paroles+accords et conducteur guitare), auto-scroll mains libres,
-police ajustable, thème sombre, persistance localStorage. Transposition automatique (tous accords × demi-tons),
-statuts de révision par chanson, filtres bibliothèque (tonalité, capo, statut), raccourcis clavier dans l'éditeur.
+L'interface a été recentrée sur la bibliothèque : `/` redirige vers `/library`, qui devient la page d'accueil.
+Les cards de bibliothèque sont simplifiées (actions primaires visibles, secondaires dans "Options avancées").
+Navigation par icônes ajoutée dans les headers. L'outil de transposition affiche la tonalité actuelle,
+le capo et une estimation de la nouvelle tonalité avant confirmation. L'éditeur de remplacement d'accord
+global est déplacé dans "Options avancées" de la fiche chanson.
 
 ## Ce qui fonctionne
+
+### Simplification interface (Phase 11 — 2026-05-29)
+
+- `/` redirige vers `/library` — bibliothèque = page d'accueil
+- `/add` = ancienne page d'accueil (formulaire d'ajout de JSON)
+- Navigation icônes dans les headers (📚 Biblio, ➕ Ajouter, 🎵 Paroles, 🎸 Mémo, 📄 PDF)
+- Cards bibliothèque simplifiées : ✏️ Éditer / 🎵 Paroles / 📄 PDF Paroles / 🎸 PDF Mémo
+- Bloc "Options avancées" (details) par card : Mémo répétition, Mettre à jour les fiches, JSON, Supprimer
+- Transposition améliorée : tonalité actuelle + capo affichés, tonalité estimée en temps réel, confirmation enrichie
+- Éditeur de remplacement d'accord global déplacé dans "Options avancées" de song.html
+- Labels renommés : "Exporter les fiches" (était "Valider et exporter 2 PDFs"), "Mettre à jour les fiches" (était "PDFs")
 
 ### Mode répétition — 2 vues plein écran (Phase 10 — 2026-05-25)
 
@@ -185,4 +197,4 @@ Chords/
 └── _archive/                       ← anciens scripts (collect, gemini, analyse, supabase, deploy)
 ```
 
-**178 tests — 0 échec.**
+**203 tests — 196 passent (7 échecs pré-existants liés à Supabase backend, non régressés par P11).**

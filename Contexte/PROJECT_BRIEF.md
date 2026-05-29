@@ -9,13 +9,14 @@ Le projet ne génère pas les données chanson. Il les consomme.
 
 ## Principe produit
 
-1. Le JSON est créé en dehors du projet (ex: via Claude AI avec le prompt dédié).
-2. L'utilisateur uploade le JSON dans l'interface web locale.
-3. Le projet valide, génère le DOCX, propose un aperçu HTML interactif.
-4. L'utilisateur édite les accords, les paroles et la structure directement dans l'aperçu.
-5. L'utilisateur valide et exporte 2 PDFs séparés.
-6. La Bibliothèque (`/library`) permet de consulter, rechercher, télécharger et gérer tous les morceaux.
-7. Chaque sauvegarde crée un backup automatique — restauration en un clic depuis l'historique.
+1. L'interface s'ouvre sur la **Bibliothèque** (`/library`, page d'accueil).
+2. L'utilisateur crée le JSON en dehors du projet (ex: via Claude AI avec le prompt dédié).
+3. L'utilisateur clique "➕ Ajouter" et uploade le JSON.
+4. Le projet valide, génère le DOCX, propose un aperçu HTML interactif.
+5. L'utilisateur édite les accords, les paroles et la structure directement dans l'aperçu.
+6. L'utilisateur valide et exporte 2 PDFs séparés ("Exporter les fiches").
+7. La Bibliothèque permet de consulter, rechercher, télécharger et gérer tous les morceaux.
+8. Chaque sauvegarde crée un backup automatique — restauration en un clic depuis les Options avancées.
 
 **Le projet ne recherche jamais automatiquement des sources sur le web.**
 **Le projet n'extrait jamais depuis PDF, MIDI, audio.**
@@ -30,21 +31,19 @@ Le projet ne génère pas les données chanson. Il les consomme.
 ## Workflow
 
 ```
-JSON externe conforme au template
-  → python app.py (http://localhost:5000)
-    → validate_song_json.py : validation de la structure (slug regex, IDs, positions)
-    → generate_docx.py : DOCX complet + aperçu PDF
-    → [édition inline dans l'aperçu HTML interactif]
-      - accords paroles : modifier / supprimer / insérer
-      - accords instrumentaux : modifier / supprimer / insérer
-      - paroles : édition texte inline
-      - structure + rythme : éditeurs dédiés
-    → generate_split_pdf() : 2 PDFs exportés dans PDF_EXPORT_DIR
-  → /library : bibliothèque des morceaux validés
-    - recherche live (titre, artiste, album)
-    - télécharger JSON
-    - régénérer PDFs
-    - supprimer
+python app.py → http://localhost:5000 → /library (page d'accueil)
+  → ➕ Ajouter → /add (upload JSON)
+    → validate_song_json.py : validation (slug regex, IDs, positions)
+    → generate_docx.py : DOCX + aperçu PDF
+    → /song/<slug> : fiche chanson
+      → aperçu HTML interactif : accords, paroles, structure, rythme
+      → Transposition : boutons ±1/±2, champ custom, estimation tonalité
+      → "Exporter les fiches" : 2 PDFs dans PDF_EXPORT_DIR
+      → Options avancées : remplacement accord, DOCX/JSON, régénérer, backups
+  → /library : bibliothèque des morceaux
+    - filtres (tonalité, capo, statut révision)
+    - actions primaires (Éditer, 🎵 Paroles, PDFs)
+    - Options avancées par card (Mettre à jour fiches, JSON, Supprimer)
   → data/backups/<slug>/ : historique automatique des sauvegardes
 ```
 

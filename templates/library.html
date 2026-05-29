@@ -11,10 +11,16 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: Calibri, Arial, sans-serif; background: #f5f5f5; color: #222; }
-    header { background: #1F4E79; color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
-    header h1 { font-size: 1.4rem; font-weight: bold; letter-spacing: 0.04em; }
-    header a { color: #aac4e0; font-size: 0.88rem; text-decoration: none; margin-left: auto; }
-    header a:hover { color: #fff; }
+    header { background: #1F4E79; color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    header h1 { font-size: 1.3rem; font-weight: bold; letter-spacing: 0.04em; }
+    header .count { color: #aac4e0; font-size: .88rem; }
+    .btn-add {
+      margin-left: auto; color: #fff; font-size: .88rem; text-decoration: none;
+      background: rgba(255,255,255,.15); padding: 6px 14px; border-radius: 4px;
+      border: 1px solid rgba(255,255,255,.3); white-space: nowrap;
+    }
+    .btn-add:hover { background: rgba(255,255,255,.25); }
+
     main { max-width: 1100px; margin: 28px auto; padding: 0 16px 60px; }
 
     .card { background: #fff; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.12); padding: 24px; margin-bottom: 24px; }
@@ -22,11 +28,11 @@
     .card-header h2 { font-size: 1.05rem; color: #1F4E79; }
     .export-dir { font-size: 0.78rem; color: #888; font-family: Consolas, monospace; }
 
-    .song-grid { display: flex; flex-direction: column; gap: 16px; }
+    .song-grid { display: flex; flex-direction: column; gap: 14px; }
 
     .song-card {
       background: #fff; border: 1px solid #e4e9f0;
-      border-radius: 8px; padding: 16px 18px;
+      border-radius: 8px; padding: 14px 16px;
       box-shadow: 0 1px 3px rgba(0,0,0,.07);
       display: grid; grid-template-columns: 1fr auto;
       gap: 12px; align-items: start;
@@ -34,13 +40,13 @@
     .song-card:hover { border-color: #aac4e0; box-shadow: 0 2px 8px rgba(31,78,121,.1); }
 
     .song-info { }
-    .song-title { font-size: 1.08rem; font-weight: bold; color: #1F4E79; }
-    .song-artist { font-size: 0.93rem; color: #444; margin-top: 2px; }
-    .song-album { font-size: 0.82rem; color: #777; font-style: italic; margin-top: 1px; }
-    .song-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; align-items: center; }
+    .song-title { font-size: 1.05rem; font-weight: bold; color: #1F4E79; }
+    .song-artist { font-size: .92rem; color: #444; margin-top: 2px; }
+    .song-album { font-size: .82rem; color: #777; font-style: italic; margin-top: 1px; }
+    .song-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; align-items: center; }
 
     /* Badges */
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.73rem; font-weight: bold; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: .73rem; font-weight: bold; }
     .badge-validated  { background: #d4edda; color: #155724; }
     .badge-pending    { background: #fff3cd; color: #856404; }
     .badge-draft      { background: #f0f0f0; color: #555; }
@@ -50,41 +56,53 @@
     .badge-pdf-ok     { background: #e8f5e9; color: #2e7d32; }
     .badge-pdf-miss   { background: #fde8e8; color: #b71c1c; }
 
-    .meta-chip { font-size: 0.78rem; color: #555; background: #f0f4f8; border-radius: 3px; padding: 2px 7px; }
+    .meta-chip { font-size: .78rem; color: #555; background: #f0f4f8; border-radius: 3px; padding: 2px 7px; }
     .score-bar { display: inline-block; width: 50px; height: 7px; background: #ddd; border-radius: 3px; vertical-align: middle; position: relative; }
     .score-fill { height: 100%; border-radius: 3px; background: #1F4E79; }
 
-    /* Actions droite */
-    .song-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; min-width: 180px; }
+    /* Actions */
+    .song-actions { display: flex; flex-direction: column; gap: 7px; align-items: flex-end; min-width: 160px; }
     .btn-group { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
-    .btn { display: inline-block; padding: 6px 12px; border-radius: 4px; font-size: 0.84rem; cursor: pointer; border: none; text-decoration: none; white-space: nowrap; }
+    .btn { display: inline-block; padding: 6px 11px; border-radius: 4px; font-size: .84rem; cursor: pointer; border: none; text-decoration: none; white-space: nowrap; }
     .btn-primary  { background: #1F4E79; color: #fff; }
     .btn-primary:hover  { background: #163a5c; }
     .btn-outline  { background: #fff; color: #1F4E79; border: 1px solid #1F4E79; }
     .btn-outline:hover  { background: #eef3f8; }
     .btn-success  { background: #1a7a3c; color: #fff; }
     .btn-success:hover  { background: #125d2c; }
-    .btn-warning  { background: #856404; color: #fff; }
-    .btn-warning:hover  { background: #6b5003; }
     .btn-disabled { background: #eee; color: #aaa; border: 1px solid #ddd; cursor: default; }
     .btn-danger   { background: #c0392b; color: #fff; }
     .btn-danger:hover   { background: #a93226; }
     .btn-rehearse { background: #1a5c16; color: #fff; }
     .btn-rehearse:hover { background: #125010; }
-    .btn-sm { padding: 4px 9px; font-size: 0.78rem; }
+    .btn-sm { padding: 5px 10px; font-size: .78rem; }
 
-    .pdf-links { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
-    .pdf-link { font-size: 0.78rem; }
     .regen-form { margin: 0; }
-    .section-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: #888; margin-bottom: 4px; }
 
-    /* Filtre statut révision */
+    /* Statut révision */
     .review-select {
       border: 1px solid #ddd; border-radius: 3px;
       padding: 3px 6px; font-size: .75rem; background: #fff;
       color: #555; cursor: pointer; font-family: Calibri, Arial, sans-serif;
     }
     .review-select:focus { outline: none; border-color: #1F4E79; }
+
+    /* Options avancées */
+    .song-advanced { width: 100%; }
+    .song-advanced summary {
+      cursor: pointer; font-size: .75rem; color: #888;
+      user-select: none; list-style: none; text-align: right;
+      padding: 2px 0;
+    }
+    .song-advanced summary::-webkit-details-marker { display: none; }
+    .song-advanced summary::before { content: "▶ "; font-size: .65rem; }
+    .song-advanced[open] summary::before { content: "▼ "; }
+    .advanced-actions {
+      display: flex; flex-direction: column; gap: 6px; align-items: flex-end;
+      margin-top: 8px; padding-top: 8px;
+      border-top: 1px dashed #e0e0e0;
+    }
+    .advanced-actions .btn-group { justify-content: flex-end; }
 
     /* Filtre bar */
     .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
@@ -103,21 +121,21 @@
     .filter-reset:hover { border-color: #1F4E79; color: #1F4E79; }
 
     .empty { color: #888; font-style: italic; text-align: center; padding: 40px 0; }
-    .mdate { font-size: 0.73rem; color: #bbb; }
+    .mdate { font-size: .73rem; color: #bbb; }
   </style>
 </head>
 <body>
 <header>
-  <h1>Bibliothèque</h1>
-  <span style="color:#aac4e0;font-size:.88rem">{{ songs|length }} morceau{% if songs|length != 1 %}x{% endif %}</span>
-  <a href="/">← Accueil</a>
+  <h1>📚 Bibliothèque</h1>
+  <span class="count">{{ songs|length }} morceau{% if songs|length != 1 %}x{% endif %}</span>
+  <a href="/add" class="btn-add">➕ Ajouter</a>
 </header>
 <main>
 
   <div class="card">
     <div class="card-header">
       <h2>Morceaux disponibles</h2>
-      <span class="export-dir">PDFs exportés → {{ export_dir }}</span>
+      <span class="export-dir">PDFs → {{ export_dir }}</span>
     </div>
 
     {% if songs %}
@@ -171,15 +189,6 @@
           {% endif %}
 
           <div class="song-meta">
-            {# Badge statut workflow #}
-            {% if s.status == 'user_validated' %}
-              <span class="badge badge-validated">Validé</span>
-            {% elif s.status == 'pending' %}
-              <span class="badge badge-pending">En attente</span>
-            {% else %}
-              <span class="badge badge-draft">{{ s.status }}</span>
-            {% endif %}
-
             {# Badge statut révision #}
             {% if s.review_status == 'ok' %}
               <span class="badge badge-ok">✓ Prêt</span>
@@ -198,13 +207,13 @@
 
             {# Chips méta #}
             {% if s.key %}
-            <span class="meta-chip">{{ s.key }} {% if s.key_mode == 'major' %}maj{% else %}min{% endif %}</span>
+            <span class="meta-chip">{{ s.key }}{% if s.key_mode == 'major' %} maj{% elif s.key_mode == 'minor' %} min{% endif %}</span>
             {% endif %}
             {% if s.capo %}
             <span class="meta-chip">Capo {{ s.capo }}</span>
             {% endif %}
             {% if s.tempo %}
-            <span class="meta-chip">♩ {{ s.tempo }} bpm</span>
+            <span class="meta-chip">♩ {{ s.tempo }}</span>
             {% endif %}
             {% if s.score %}
             <span style="display:flex;align-items:center;gap:5px">
@@ -219,57 +228,57 @@
         <!-- Actions -->
         <div class="song-actions">
 
-          {# Mode répétition #}
-          <div>
-            <div class="section-label">Mode répétition</div>
-            <div class="btn-group">
-              <a class="btn btn-rehearse btn-sm" href="/song/{{ s.slug }}/rehearsal/chords" target="_blank">Paroles</a>
-              <a class="btn btn-rehearse btn-sm" href="/song/{{ s.slug }}/rehearsal/memo" target="_blank">Mémo</a>
-            </div>
-          </div>
-
-          {# Fiches PDF exportées #}
-          <div>
-            <div class="section-label">Fiches PDF</div>
-            <div class="pdf-links">
-              {% if s.pdf_chords and s.pdf_chords_url %}
-              <a class="btn btn-outline btn-sm pdf-link" href="{{ s.pdf_chords_url }}" target="_blank">Paroles &amp; Accords</a>
-              {% else %}
-              <span class="btn btn-disabled btn-sm pdf-link">Paroles &amp; Accords</span>
-              {% endif %}
-              {% if s.pdf_memo and s.pdf_memo_url %}
-              <a class="btn btn-outline btn-sm pdf-link" href="{{ s.pdf_memo_url }}" target="_blank">Mémo Guitare</a>
-              {% else %}
-              <span class="btn btn-disabled btn-sm pdf-link">Mémo Guitare</span>
-              {% endif %}
-            </div>
-          </div>
-
-          {# Actions principales #}
+          {# Actions primaires #}
           <div class="btn-group">
-            <a class="btn btn-primary btn-sm" href="/song/{{ s.slug }}">Éditer</a>
+            <a class="btn btn-primary btn-sm" href="/song/{{ s.slug }}" title="Éditer la fiche">✏️ Éditer</a>
+            <a class="btn btn-rehearse btn-sm" href="/song/{{ s.slug }}/rehearsal/chords" target="_blank" title="Mode répétition Paroles & Accords">🎵 Paroles</a>
+          </div>
 
-            <form class="regen-form" action="/song/{{ s.slug }}/export-split" method="post">
-              <button type="submit" class="btn btn-success btn-sm">PDFs</button>
-            </form>
-
-            <a class="btn btn-outline btn-sm" href="/song/{{ s.slug }}/download-json" title="Télécharger JSON">JSON</a>
-
-            <form class="regen-form" action="/song/{{ s.slug }}/delete" method="post"
-                  onsubmit="return confirm('Supprimer « {{ s.title }} » et tous les fichiers liés ?')">
-              <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-            </form>
+          {# Fiches PDF #}
+          <div class="btn-group">
+            {% if s.pdf_chords and s.pdf_chords_url %}
+            <a class="btn btn-outline btn-sm" href="{{ s.pdf_chords_url }}" target="_blank" title="PDF Paroles & Accords">📄 Paroles</a>
+            {% else %}
+            <span class="btn btn-disabled btn-sm" title="PDF non généré">📄 Paroles</span>
+            {% endif %}
+            {% if s.pdf_memo and s.pdf_memo_url %}
+            <a class="btn btn-outline btn-sm" href="{{ s.pdf_memo_url }}" target="_blank" title="PDF Mémo Guitare">🎸 Mémo</a>
+            {% else %}
+            <span class="btn btn-disabled btn-sm" title="PDF non généré">🎸 Mémo</span>
+            {% endif %}
           </div>
 
           {# Statut révision inline #}
           <form style="margin:0" onsubmit="changeReviewStatus(event, '{{ s.slug }}', this)">
             <select name="status" class="review-select" onchange="this.form.dispatchEvent(new Event('submit'))">
-              <option value="" {% if not s.review_status %}selected{% endif %}>— statut révision —</option>
+              <option value="" {% if not s.review_status %}selected{% endif %}>— statut —</option>
               <option value="ok"        {% if s.review_status == 'ok'        %}selected{% endif %}>✓ Prêt</option>
               <option value="to_review" {% if s.review_status == 'to_review' %}selected{% endif %}>⚠ À revoir</option>
               <option value="draft"     {% if s.review_status == 'draft'     %}selected{% endif %}>Brouillon</option>
             </select>
           </form>
+
+          {# Options avancées #}
+          <details class="song-advanced">
+            <summary>Options avancées</summary>
+            <div class="advanced-actions">
+
+              <a class="btn btn-rehearse btn-sm" href="/song/{{ s.slug }}/rehearsal/memo" target="_blank" title="Mode répétition Mémo Guitare">🎸 Mémo répétition</a>
+
+              <div class="btn-group">
+                <form class="regen-form" action="/song/{{ s.slug }}/export-split" method="post">
+                  <button type="submit" class="btn btn-success btn-sm" title="Régénérer et exporter les fiches PDF">⬆ Mettre à jour les fiches</button>
+                </form>
+                <a class="btn btn-outline btn-sm" href="/song/{{ s.slug }}/download-json" title="Télécharger le JSON source">⬇ JSON</a>
+              </div>
+
+              <form class="regen-form" action="/song/{{ s.slug }}/delete" method="post"
+                    onsubmit="return confirm('Supprimer « {{ s.title }} » et tous les fichiers liés ?')">
+                <button type="submit" class="btn btn-danger btn-sm">🗑 Supprimer</button>
+              </form>
+
+            </div>
+          </details>
 
         </div>
       </div>
@@ -278,7 +287,7 @@
 
     {% else %}
     <div class="empty">
-      Aucun morceau disponible. <a href="/">Importer un JSON</a> pour commencer.
+      Aucun morceau disponible. <a href="/add">Ajouter un JSON</a> pour commencer.
     </div>
     {% endif %}
   </div>
@@ -314,8 +323,6 @@
     if (countEl) countEl.textContent = hasFilter ? (visible + ' résultat' + (visible !== 1 ? 's' : '')) : '';
   }
 
-  function filterSongs(q) { applyFilters(); }
-
   function resetFilters() {
     var si = document.getElementById('search-input'); if (si) si.value = '';
     var fk = document.getElementById('filter-key');   if (fk) fk.value = '';
@@ -324,7 +331,7 @@
     applyFilters();
   }
 
-  /* ---- Mise à jour statut révision (AJAX) ---- */
+  /* ---- Statut révision (AJAX) ---- */
   function changeReviewStatus(e, slug, form) {
     e.preventDefault();
     var status = form.querySelector('[name=status]').value;

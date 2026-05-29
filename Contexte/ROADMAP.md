@@ -54,7 +54,16 @@
 - [x] **Export JSON depuis la fiche chanson** : bouton "Télécharger JSON" dans la section Actions.
 - [x] **178 tests au total — 0 régression.**
 
-## P11 — Pistes possibles
+## Version 5 — P11 : Simplification interface (terminé) ✓
+
+- [x] **Page d'accueil** : `/` redirige vers `/library` — `/add` pour l'ajout.
+- [x] **Navigation icônes** : headers avec emojis (📚 Biblio · ➕ Ajouter · 🎵 · 🎸 · 📄).
+- [x] **Cards bibliothèque simplifiées** : actions primaires + bloc "Options avancées" (`<details>`).
+- [x] **Labels nettoyés** : "Exporter les fiches", "Mettre à jour les fiches".
+- [x] **Transposition améliorée** : tonalité actuelle + capo + estimation temps réel + confirmation enrichie.
+- [x] **Remplacement d'accord** déplacé dans "Options avancées" de song.html.
+
+## P12 — Pistes possibles
 
 - [ ] Diagrammes d'accords en ASCII dans le mémo.
 - [ ] LibreOffice headless comme moteur PDF principal (si installé).
